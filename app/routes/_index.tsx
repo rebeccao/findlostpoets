@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { V2_MetaFunction } from "@remix-run/cloudflare";
 
 export const meta: V2_MetaFunction = () => {
@@ -8,11 +9,15 @@ export const meta: V2_MetaFunction = () => {
 };
 
 export default function Index() {
+  const [count, setCount] = useState(0);
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
       <h1 className="text-3xl font-bold underline">
         Welcome to Remix
       </h1>
+      <p>{count}</p>
+		  <button onClick={() => setCount(count + 1)}>Increment</button>
+		  <button onClick={() => setCount(count - 1)}>Decrement</button>
       <ul>
         <li>
           <a
