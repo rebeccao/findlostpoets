@@ -27,27 +27,45 @@ const SidebarRow = ({ item, onTermSelect }) => {
             : null}
         </div>
       </div>
-      {subnav &&
-        item.subNav.map((subItem, index) => (
-          <div 
+        {subnav &&
+         item.subNav.map((subItem, index) => (
+          <div
             key={index}
-            onClick={() => handleTermSelect(subItem.searchTerm)}
-            className="flex items-center p-2 pl-9 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
+            onClick={() => subItem.type === 'checkbox' && handleTermSelect(subItem.searchTerm)}
+            className="flex items-center p-2 pl-8 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
           >
-            <label className="w-full flex items-center">
-              <input 
+            {subItem.type === 'checkbox' ? (
+              <label className="w-full flex items-center">
+                <input
+                  id={index.toString()}
+                  type="checkbox"
+                  name={item.title}
+                  value={subItem.title}
+                  className="..."
+                />
+                <span className="...">{subItem.title}</span>
+              </label>
+            ) : subItem.type === 'search' ? (
+              <input
                 id={index.toString()}
-                type="checkbox" 
-                name={item.title} 
-                value={subItem.title} 
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounde dark:bg-gray-600 dark:border-gray-500"
+                type="text"
+                placeholder="Search..."
+                className="..."
               />
-              <span
-                className="w-full ml-2 text-md font-medium text-gray-900 rounded dark:text-gray-300"
-              >
-                {subItem.title}
-              </span>
-            </label>
+            ) : (
+              <div className="flex flex-col items-start">
+                <label htmlFor={index.toString()} className="mb-1">{subItem.title}</label>
+                <input
+                  id={index.toString()}
+                  type="range"
+                  min={subItem.min}
+                  max={subItem.max}
+                  step={subItem.step}
+                  className="..."
+                />
+                <span className="text-sm mt-1">Value: {/* Dynamic value display logic */}</span>
+              </div>
+            )}
           </div>
         ))}
     </>

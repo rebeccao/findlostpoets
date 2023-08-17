@@ -15,8 +15,11 @@ export const getOnePoet = async () => {
 
 export const getPoets = async () => {
   return prisma.poet.findMany ({
-    skip: 7042,
-    take: 20,
+    skip: 6079,
+    take: 21,
+    orderBy: {
+      pid: 'asc',
+    },
   })
 }
 
