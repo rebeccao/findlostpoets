@@ -1,13 +1,14 @@
 import { SidebarData } from '~/components/sidebar/sidebar-data';
 import SidebarRow from '~/components/sidebar/sidebar-row';
 
-const SidebarPanel = () => {
+const SidebarPanel = ({ onSelectionChange }) => {
+  console.log('SidebarPanel: received onSelectionChange');
   return (
     <>
       <h2>Search</h2>
       {SidebarData.map((item, index) => {
-        console.log('Made it here too!', { index });
-        return <SidebarRow item={item} key={index} />;
+        //console.log('Made it here too!', { index });
+        return <SidebarRow item={item} key={index} onTermSelect={onSelectionChange} />;
       })}
     </>
   );

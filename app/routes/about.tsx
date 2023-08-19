@@ -1,17 +1,20 @@
 import { useLoaderData } from '@remix-run/react'
 import { json } from '@remix-run/node'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import ImageCard from '~/components/image-card';
 import { getPoets } from '~/utils/poet.server';
 import {HiMenuAlt3} from 'react-icons/hi';
 //import {AiOutlineClose} from 'react-icons/ai';
 
-function Sidebar() {
+function Sidebar({ setSearchCriteria }) {
 	return (
 		<section className="top-navbar shadow-inner-top-left translate-x-0 fixed left-0 h-full w-64 p-4 bg-gray-100 transform transition-transform duration-300">
       {/* Search Filters */}
-      <SidebarPanel />
+      <SidebarPanel onSelectionChange={(newCriteria) => {
+				console.log('Sidebar: passing new criteria to setSearchCriteria');
+				setSearchCriteria(newCriteria);
+			}} />
       {/* Add your search filters and form inputs here */}
     </section>
 	);
@@ -33,25 +36,44 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 		</header>
 	);
 }
+
 export const loader = async () => {
 	return json(await getPoets())
 }
+
 function About() {
 
 	const poets = useLoaderData<typeof loader>();
+	const [searchCriteria, setSearchCriteria] = useState({});
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
+	useEffect(() => {
+		// Use loader function to fetch data based on searchCriteria
+		const fetchData = async () => {
+			console.log('About: useEffect fetchData');
+			//const results = await loader(searchCriteria);
+			// Do something with the results (e.g., set them in state)
+		};
+		
+		fetchData();
+ 	}, [searchCriteria]); 
+
+	function setSearchCriteriaWrapper(newCriteria) {
+		console.log('About: setSearchCriteria called with:', newCriteria);
+		setSearchCriteria(newCriteria);
+	}
+
   return (
 		<div className="flex">
-			{sidebarOpen && <Sidebar />}
+			{sidebarOpen && <Sidebar setSearchCriteria={setSearchCriteriaWrapper}/>}
 			<div className="flex flex-col w-full">
 				<Navbar toggleSidebar={toggleSidebar} />
 				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
 					<div className="mt-4 px-4">
 						<div className="grid grid-cols-3 gap-4">
-							{poets.map(poet => (
+							{poets && poets.map(poet => (
 								<ImageCard key={poet.pid} poet={poet} />
 							))}
 						</div>

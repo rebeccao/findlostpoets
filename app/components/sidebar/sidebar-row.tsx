@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 
 const SidebarRow = ({ item, onTermSelect }) => {
+  //console.log('SidebarRow: received onTermSelect', item);
+
   const [subnav, setSubnav] = useState(false);
 
-  const showSubnav = () => setSubnav(!subnav);
-  const handleTermSelect = (term) => {
-    onTermSelect(term); // Call the callback passed from the parent to handle the selected term
+  const showSubnav = () => {
+    console.log('SidebarRow: showSubnav');
+    setSubnav(!subnav);
+  };
+
+  const handleTermSelect = (criteria) => {
+    console.log('SidebarRow: invoking onTermSelect with term:', criteria);
+    onTermSelect(criteria); // Call the callback passed from the parent to handle the selected term
   };
 
   return (
@@ -31,7 +38,7 @@ const SidebarRow = ({ item, onTermSelect }) => {
          item.subNav.map((subItem, index) => (
           <div
             key={index}
-            onClick={() => subItem.type === 'checkbox' && handleTermSelect(subItem.searchTerm)}
+            onClick={() => subItem.type === 'checkbox' && handleTermSelect({ [item.searchTerm]: subItem.title })}
             className="flex items-center p-2 pl-8 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
           >
             {subItem.type === 'checkbox' ? (
