@@ -1,78 +1,87 @@
-// app/routes/_index.tsx
 import { useLoaderData } from '@remix-run/react'
 import { json } from '@remix-run/node'
-import { Layout } from '~/components/layout'
-//import { SearchPanel } from '~/components/search-panel'
-//import { getPoetBreed, getPoetCount } from '~/utils/poet.server'
-import { getPoets } from '~/utils/poet.server'
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import SidebarPanel from '~/components/sidebar/sidebar-panel';
+import ImageCard from '~/components/image-card';
+import { getPoets } from '~/utils/poet.server';
+import {HiMenuAlt3} from 'react-icons/hi';
+//import {AiOutlineClose} from 'react-icons/ai';
+
+function Sidebar({ setSearchCriteria }) {
+	return (
+		<section className="top-navbar shadow-inner-top-left translate-x-0 fixed left-0 h-full w-64 p-4 bg-gray-100 transform transition-transform duration-300">
+      {/* Search Filters */}
+      <SidebarPanel onSelectionChange={(newCriteria) => {
+				console.log('Sidebar: passing new criteria to setSearchCriteria');
+				setSearchCriteria(newCriteria);
+			}} />
+      {/* Add your search filters and form inputs here */}
+    </section>
+	);
+}
+
+interface NavbarProps {
+  toggleSidebar: () => void;
+}
+
+function Navbar({ toggleSidebar }: NavbarProps) {
+	return(
+		<header className="sticky top-0 z-[1] h-navbar mx-auto bg-gray-100 border-b border-gray-200 p-2 shadow-md flex w-full justify-between items-center  font-sans font-bold uppercase text-white-100 dark:border-gray-800 dark:bg-d-background dark:text-d-text-primary">
+			<div className="flex items-center">
+				<button onClick={toggleSidebar} className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-gray-300 hover:bg-gray-400">
+					<HiMenuAlt3 size={26} className="cursor-pointer text-white" />
+				</button>
+			</div>
+			{/* Rest of Navbar */}
+		</header>
+	);
+}
 
 export const loader = async () => {
-  return json(await getPoets())
+	return json(await getPoets())
 }
 
-export default function Index() {
-    const [filterSidebarOpen, setFilterSidebarOpen] = useState(true);
+function Index() {
 
-    function handleShowFilterSidebar() {
-      setFilterSidebarOpen(!filterSidebarOpen);
-      alert(`You clicked me! ${filterSidebarOpen}`);
-    }
+	const poets = useLoaderData<typeof loader>();
+	const [searchCriteria, setSearchCriteria] = useState({});
+	const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    function NavBar() {
-        return (
-            <nav className="bg-blue-500 p-4 flex justify-between items-center">
-                <button 
-                    className="bg-white p-2 rounded" 
-                    onClick={handleShowFilterSidebar}
-                >
-                    {filterSidebarOpen ? 'Hide' : 'Show'} Poet Filters
-                </button>
-      
-                {/* Other navigation items... */}
-            </nav>
-        );
-    }
+	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-    function FilterSidebar() {
-        //const [filters, setFilters] = useState({ /* initial filter state */ });
-        // Set up filters as an object where each key is a filter name and the 
-        // corresponding value is the filter state.
-    
-        // Update the filters as needed
-    
-        return (
-          <aside className={`h-full overflow-auto flex-grow bg-gray-200 fixed left-0 transform transition-transform duration-200 ease-in-out`}>
-            {/* Render the filters */}
-          </aside>
-        );
-    }
-    
-    function ImageFeed() {
-        // Handle infinite scrolling using IntersectionObserver API or a library
-        const poets = useLoaderData<typeof loader>();
-        return (
-          <main className="p-4 flex-grow overflow-auto">
-           {poets.map(poet => (
-             <img 
-                key={poet.pid} 
-                src={poet.g0ThUrl} 
-                alt={poet.pNam} 
-                className="w-full h-auto"
-              />
-            ))}
-        </main>
-      );
-    }
+	useEffect(() => {
+		// Use loader function to fetch data based on searchCriteria
+		const fetchData = async () => {
+			console.log('About: useEffect fetchData');
+			//const results = await loader(searchCriteria);
+			// Do something with the results (e.g., set them in state)
+		};
+		
+		fetchData();
+ 	}, [searchCriteria]); 
 
-    return (
-      <Layout>
-        <div className="flex flex-col h-screen">
-            <NavBar />
-            {filterSidebarOpen && <FilterSidebar />}
-            <ImageFeed />
-            <FilterSidebar />
-        </div>
-      </Layout>
-    );
+	function setSearchCriteriaWrapper(newCriteria) {
+		console.log('About: setSearchCriteria called with:', newCriteria);
+		setSearchCriteria(newCriteria);
+	}
+
+  return (
+		<div className="flex">
+			{sidebarOpen && <Sidebar setSearchCriteria={setSearchCriteriaWrapper}/>}
+			<div className="flex flex-col w-full">
+				<Navbar toggleSidebar={toggleSidebar} />
+				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
+					<div className="mt-4 px-4">
+						<div className="grid grid-cols-3 gap-4">
+							{poets && poets.map(poet => (
+								<ImageCard key={poet.pid} poet={poet} />
+							))}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+  );
 }
+
+export default Index;
