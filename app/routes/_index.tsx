@@ -56,7 +56,7 @@ function Index() {
 	useEffect(() => {
 		// Use loader function to fetch data based on searchCriteria
 		const fetchData = async () => {
-			console.log('About: useEffect fetchData');
+			console.log('Index: useEffect fetchData');
 			//const results = await loader(searchCriteria);
 			// Do something with the results (e.g., set them in state)
 		};
@@ -65,7 +65,7 @@ function Index() {
  	}, [searchCriteria]); 
 
 	function setSearchCriteriaWrapper(newCriteria) {
-		console.log('About: setSearchCriteria called with:', newCriteria);
+		console.log('Index: setSearchCriteria called with:', newCriteria);
 		setSearchCriteria(newCriteria);
 	}
 
