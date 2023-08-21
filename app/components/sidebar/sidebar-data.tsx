@@ -1,12 +1,12 @@
 import React from 'react';
-import * as RiIcons from 'react-icons/ri';
+import { BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 
 export const SidebarData = [
   {
     title: 'Poet Name',
     searchTerm: 'pNam',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'search', title: 'search-bar' }
@@ -15,8 +15,8 @@ export const SidebarData = [
   {
     title: 'Origin',
     searchTerm: 'ori',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'search', title: 'search-bar' }
@@ -25,8 +25,8 @@ export const SidebarData = [
   {
     title: 'Latent',
     searchTerm: 'lat',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'search', title: 'search-bar' }
@@ -35,8 +35,8 @@ export const SidebarData = [
   {
     title: 'Prime Number',
     searchTerm: 'prim',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'range', title: 'search-bar' },
@@ -45,8 +45,8 @@ export const SidebarData = [
   {
     title: 'Breed',
     searchTerm: 'brd',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'checkbox', title: 'naren' },
@@ -57,8 +57,8 @@ export const SidebarData = [
   {
     title: 'Age',
     searchTerm: 'age',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'checkbox', title: '0.00' },
@@ -69,8 +69,8 @@ export const SidebarData = [
   {
     title: 'Genre',
     searchTerm: 'gen',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'checkbox', title: 'aea' },
@@ -81,8 +81,8 @@ export const SidebarData = [
   {
     title: 'Polarity',
     searchTerm: 'pol',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'checkbox', title: 'ka' },
@@ -92,8 +92,8 @@ export const SidebarData = [
   {
     title: 'Ego',
     searchTerm: 'ego',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'checkbox', title: 'I' },
@@ -104,8 +104,8 @@ export const SidebarData = [
   {
     title: 'Word Count',
     searchTerm: 'wrdCnt',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'range', title: '' }
@@ -114,8 +114,8 @@ export const SidebarData = [
   {
     title: 'Lexicon',
     searchTerm: 'lexCnt',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'range', title: '' }
@@ -124,8 +124,8 @@ export const SidebarData = [
   {
     title: 'Rewrites',
     searchTerm: 'rewrCnt',
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
+    iconClosed: <BiSolidChevronDown />,
+    iconOpened: <BiSolidChevronUp />,
 
     subNav: [
       { type: 'range', title: '' }

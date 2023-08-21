@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SidebarRowSearch from '~/components/sidebar/sidebar-row-search';
 
 const SidebarRow = ({ item, onTermSelect }) => {
   //console.log('SidebarRow: received onTermSelect', item);
@@ -53,12 +54,10 @@ const SidebarRow = ({ item, onTermSelect }) => {
                 <span className="...">{subItem.title}</span>
               </label>
             ) : subItem.type === 'search' ? (
-              <input
-                id={index.toString()}
-                type="text"
-                placeholder="Search..."
-                className="..."
-              />
+              <SidebarRowSearch 
+                handleTermSelect={handleTermSelect} 
+                searchTerm={item.searchTerm} 
+                index={index} />
             ) : (
               <div className="flex flex-col items-start">
                 <label htmlFor={index.toString()} className="mb-1">{subItem.title}</label>

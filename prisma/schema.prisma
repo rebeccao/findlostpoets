@@ -30,7 +30,7 @@ model Poet {
   ori     String
   oriCnt  Float
   pNam    String
-  pid     Int
+  pid     Int      @unique   
   poem    String?
   pol     String?
   polCnt  Float?

@@ -3,11 +3,19 @@ import { json } from '@remix-run/node'
 import React, { useState, useEffect } from 'react';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import ImageCard from '~/components/image-card';
-import { getPoets } from '~/utils/poet.server';
+import { getPoets, getOnePoet } from '~/utils/poet.server';
 import {HiMenuAlt3} from 'react-icons/hi';
 //import {AiOutlineClose} from 'react-icons/ai';
 
-function Sidebar({ setSearchCriteria }) {
+interface SidebarProps {
+  setSearchCriteria: (newCriteria: YourCriteriaType) => void;
+}
+
+interface NavbarProps {
+  toggleSidebar: () => void;
+}
+
+function Sidebar({ setSearchCriteria }: SidebarProps) {
 	return (
 		<section className="top-navbar shadow-inner-top-left translate-x-0 fixed left-0 h-full w-64 p-4 bg-gray-100 transform transition-transform duration-300">
       {/* Search Filters */}
@@ -18,10 +26,6 @@ function Sidebar({ setSearchCriteria }) {
       {/* Add your search filters and form inputs here */}
     </section>
 	);
-}
-
-interface NavbarProps {
-  toggleSidebar: () => void;
 }
 
 function Navbar({ toggleSidebar }: NavbarProps) {

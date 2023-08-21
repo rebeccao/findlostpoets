@@ -1,14 +1,10 @@
 // app/utils/user.server.ts
 import { prisma } from '~/utils/prisma.server'
-
-export const getPoetCount = async () => {
-    return prisma.poet.count()
-  }
   
 export const getOnePoet = async () => {
   return prisma.poet.findUnique ({
     where: {
-      id: '1'
+      pid: 1
     }
   })
 }
