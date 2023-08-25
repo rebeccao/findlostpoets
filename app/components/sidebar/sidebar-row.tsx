@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import SidebarRowSearch from '~/components/sidebar/sidebar-row-search';
+import type { SidebarItem, SubNavItem } from '~/components/sidebar/sidebar-data';
 
-const SidebarRow = ({ item, onTermSelect }) => {
+type SidebarRowProps = {
+  item: SidebarItem;
+  onTermSelect: (term: any) => void;  // Replace `any` with the appropriate type if known
+}
+
+//const SidebarRow: FC<SidebarRowProps> = ({ item, onTermSelect }) => {
+const SidebarRow = ({ item, onTermSelect }: SidebarRowProps) => {
   //console.log('SidebarRow: received onTermSelect', item);
 
   const [subnav, setSubnav] = useState(false);
+  const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(null); // state to store selected checkbox
 
   const showSubnav = () => {
     console.log('SidebarRow: showSubnav');
@@ -16,11 +24,18 @@ const SidebarRow = ({ item, onTermSelect }) => {
     onTermSelect(criteria); // Call the callback passed from the parent to handle the selected term
   };
 
+  const handleCheckboxChange = (subNavItem: SubNavItem) => {
+    if (selectedCheckbox !== subNavItem.title) {
+      setSelectedCheckbox(subNavItem.title);
+      handleTermSelect({ [subNavItem.name]: subNavItem.value }); 
+    }
+  };
+
   return (
     <>
       <div
         onClick={() => {
-          item.subNav ? showSubnav() : handleTermSelect(item.searchTerm);
+          item.subNav ? showSubnav() : handleTermSelect(item.title);
         }}
         className="flex justify-between items-center px-1 py-1 list-none h-15 text-lg text-link-blue cursor-pointer hover:bg-sidebar-hover-bg hover:border-l-4 hover:border-sidebar-hover-border"
       >
@@ -35,28 +50,28 @@ const SidebarRow = ({ item, onTermSelect }) => {
             : null}
         </div>
       </div>
-        {subnav &&
-         item.subNav.map((subItem, index) => (
+        {subnav && item.subNav.map((subItem, index) => (
           <div
             key={index}
-            onClick={() => subItem.type === 'checkbox' && handleTermSelect({ [item.searchTerm]: subItem.title })}
             className="flex items-center p-2 pl-8 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
           >
             {subItem.type === 'checkbox' ? (
-              <label className="w-full flex items-center">
+              <label className="w-full flex items-center cursor-pointer" htmlFor={index.toString()}>
                 <input
                   id={index.toString()}
                   type="checkbox"
-                  name={item.title}
-                  value={subItem.title}
-                  className="..."
+                  name={subItem.name}
+                  value={subItem.value}
+                  checked={selectedCheckbox === subItem.title}
+                  onChange={() => handleCheckboxChange(subItem)}
+                  className="appearance-none w-4 h-4 border border-gray-200 rounded-sm shadow-sm bg-white mr-2"
                 />
-                <span className="...">{subItem.title}</span>
+                {subItem.title}
               </label>
             ) : subItem.type === 'search' ? (
               <SidebarRowSearch 
                 handleTermSelect={handleTermSelect} 
-                searchTerm={item.searchTerm} 
+                searchTerm={subItem.name} 
                 index={index} />
             ) : (
               <div className="flex flex-col items-start">

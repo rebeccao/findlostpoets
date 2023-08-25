@@ -1,134 +1,95 @@
-import React from 'react';
+import type { ReactElement } from 'react';
 import { BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 
-export const SidebarData = [
+interface SubNavItem {
+  type: 'search' | 'range' | 'checkbox';
+  title?: string;  
+  name: string;
+  value?: string;  
+}
+
+export interface SidebarItem {
+  title: string;
+  iconClosed: ReactElement;
+  iconOpened: ReactElement;
+  subNav: SubNavItem[];
+}
+
+export const SidebarData: SidebarItem[] = [
   {
     title: 'Poet Name',
-    searchTerm: 'pNam',
     iconClosed: <BiSolidChevronDown />,
     iconOpened: <BiSolidChevronUp />,
 
     subNav: [
-      { type: 'search', title: 'search-bar' }
+      { type: 'search', name: 'pNam' }
     ]
   },
   {
     title: 'Origin',
-    searchTerm: 'ori',
     iconClosed: <BiSolidChevronDown />,
     iconOpened: <BiSolidChevronUp />,
 
     subNav: [
-      { type: 'search', title: 'search-bar' }
+      { type: 'search', name: 'ori' }
     ]
   },
   {
     title: 'Latent',
-    searchTerm: 'lat',
     iconClosed: <BiSolidChevronDown />,
     iconOpened: <BiSolidChevronUp />,
 
     subNav: [
-      { type: 'search', title: 'search-bar' }
+      { type: 'search', name: 'lat' }
     ]
   },
   {
     title: 'Prime Number',
-    searchTerm: 'prim',
     iconClosed: <BiSolidChevronDown />,
     iconOpened: <BiSolidChevronUp />,
 
     subNav: [
-      { type: 'range', title: 'search-bar' },
+      { type: 'range', name: 'prim' },
     ]
   },
   {
-    title: 'Breed',
-    searchTerm: 'brd',
+    title: 'Rare Traits',
     iconClosed: <BiSolidChevronDown />,
     iconOpened: <BiSolidChevronUp />,
 
     subNav: [
-      { type: 'checkbox', title: 'naren' },
-      { type: 'checkbox', title: 'navi' },
-      { type: 'checkbox', title: 'naxo' }
-    ]
-  },
-  {
-    title: 'Age',
-    searchTerm: 'age',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
-    subNav: [
-      { type: 'checkbox', title: '0.00' },
-      { type: 'checkbox', title: '0.02' },
-      { type: 'checkbox', title: '0.05' }
-    ]
-  },
-  {
-    title: 'Genre',
-    searchTerm: 'gen',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
-    subNav: [
-      { type: 'checkbox', title: 'aea' },
-      { type: 'checkbox', title: 'aef' },
-      { type: 'checkbox', title: 'aeh' }
-    ]
-  },
-  {
-    title: 'Polarity',
-    searchTerm: 'pol',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
-    subNav: [
-      { type: 'checkbox', title: 'ka' },
-      { type: 'checkbox', title: 'qu' }
-    ]
-  },
-  {
-    title: 'Ego',
-    searchTerm: 'ego',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
-    subNav: [
-      { type: 'checkbox', title: 'I' },
-      { type: 'checkbox', title: 'II' },
-      { type: 'checkbox', title: 'III' }
+      { type: 'checkbox', title: 'Breed', name: 'orderBy', value: 'brdCnt' },
+      { type: 'checkbox', title: 'Age', name: 'orderBy', value: 'ageCnt' },
+      { type: 'checkbox', title: 'Genre', name: 'orderBy', value: 'genCnt' },
+      { type: 'checkbox', title: 'Polarity', name: 'orderBy', value: 'polCnt' },
+      { type: 'checkbox', title: 'Ego', name: 'orderBy', value: 'egoCnt' }
     ]
   },
   {
     title: 'Word Count',
-    searchTerm: 'wrdCnt',
     iconClosed: <BiSolidChevronDown />,
     iconOpened: <BiSolidChevronUp />,
 
     subNav: [
-      { type: 'range', title: '' }
+      { type: 'range', name: 'wrdCnt' }
     ]
   },
   {
     title: 'Lexicon',
-    searchTerm: 'lexCnt',
     iconClosed: <BiSolidChevronDown />,
     iconOpened: <BiSolidChevronUp />,
 
     subNav: [
-      { type: 'range', title: '' }
+      { type: 'range', name: 'lexCnt' }
     ]
   },
   {
     title: 'Rewrites',
-    searchTerm: 'rewrCnt',
     iconClosed: <BiSolidChevronDown />,
     iconOpened: <BiSolidChevronUp />,
 
     subNav: [
-      { type: 'range', title: '' }
+      { type: 'range', name: 'rewrCnt' }
     ]
   }
 ];
