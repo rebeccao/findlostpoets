@@ -1,14 +1,14 @@
 import type { ReactElement } from 'react';
 import { BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 
-interface SubNavItem {
+export type SubNavItem = {
   type: 'search' | 'range' | 'checkbox';
   title?: string;  
   name: string;
   value?: string;  
 }
 
-export interface SidebarItem {
+export type SidebarItem = {
   title: string;
   iconClosed: ReactElement;
   iconOpened: ReactElement;

@@ -2,7 +2,7 @@
 import { prisma } from '~/utils/prisma.server'
   
 export const getOnePoet = async () => {
-  return prisma.poet.findUnique ({
+  return prisma.poet.findMany ({
     where: {
       pid: 1
     }

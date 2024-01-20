@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import SidebarRowSearch from '~/components/sidebar/sidebar-row-search';
 import type { SidebarItem, SubNavItem } from '~/components/sidebar/sidebar-data';
+import type { SearchCriteria } from '~/routes/_index';
 
 type SidebarRowProps = {
   item: SidebarItem;
-  onTermSelect: (term: any) => void;  // Replace `any` with the appropriate type if known
+  onTermSelect: (term: SearchCriteria) => void;  
 }
 
-//const SidebarRow: FC<SidebarRowProps> = ({ item, onTermSelect }) => {
-const SidebarRow = ({ item, onTermSelect }: SidebarRowProps) => {
+const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
   //console.log('SidebarRow: received onTermSelect', item);
 
   const [subnav, setSubnav] = useState(false);
@@ -19,13 +19,13 @@ const SidebarRow = ({ item, onTermSelect }: SidebarRowProps) => {
     setSubnav(!subnav);
   };
 
-  const handleTermSelect = (criteria) => {
+  const handleTermSelect = (criteria: SearchCriteria) => {
     console.log('SidebarRow: invoking onTermSelect with term:', criteria);
     onTermSelect(criteria); // Call the callback passed from the parent to handle the selected term
   };
 
   const handleCheckboxChange = (subNavItem: SubNavItem) => {
-    if (selectedCheckbox !== subNavItem.title) {
+    if (subNavItem.title && subNavItem.value && selectedCheckbox !== subNavItem.title) {
       setSelectedCheckbox(subNavItem.title);
       handleTermSelect({ [subNavItem.name]: subNavItem.value }); 
     }
@@ -34,9 +34,7 @@ const SidebarRow = ({ item, onTermSelect }: SidebarRowProps) => {
   return (
     <>
       <div
-        onClick={() => {
-          item.subNav ? showSubnav() : handleTermSelect(item.title);
-        }}
+        onClick={showSubnav}
         className="flex justify-between items-center px-1 py-1 list-none h-15 text-lg text-link-blue cursor-pointer hover:bg-sidebar-hover-bg hover:border-l-4 hover:border-sidebar-hover-border"
       >
         <div className="flex items-center">
@@ -71,7 +69,7 @@ const SidebarRow = ({ item, onTermSelect }: SidebarRowProps) => {
             ) : subItem.type === 'search' ? (
               <SidebarRowSearch 
                 handleTermSelect={handleTermSelect} 
-                searchTerm={subItem.name} 
+                searchItem={subItem.name} 
                 index={index} />
             ) : (
               <div className="flex flex-col items-start">
@@ -79,10 +77,10 @@ const SidebarRow = ({ item, onTermSelect }: SidebarRowProps) => {
                 <input
                   id={index.toString()}
                   type="range"
-                  min={subItem.min}
+                  {/* min={subItem.min}
                   max={subItem.max}
-                  step={subItem.step}
-                  className="..."
+                  step={subItem.step}  
+                  className="..."  */}
                 />
                 <span className="text-sm mt-1">Value: {/* Dynamic value display logic */}</span>
               </div>

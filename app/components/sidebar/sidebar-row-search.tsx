@@ -1,8 +1,17 @@
 import React, { useRef } from 'react';
 import { BiSearch } from "react-icons/bi";
 import { GrFormClose } from "react-icons/gr";
+import type { SearchCriteria } from '~/routes/_index';
+import type { SidebarItem } from './sidebar-data';
 
-const SidebarRowSearch = ({ handleTermSelect, searchTerm, index }) => {
+type SidebarRowSearchProps = {
+  sidebarItem: SidebarItem;
+  onTermSelect: (term: SearchCriteria) => void;  
+  index: number;
+}
+
+//const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
+const SidebarRowSearch: React.FC<SidebarRowSearchProps> = ({ sidebarItem, onTermSelect, index }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const clearInput = () => {
@@ -11,13 +20,19 @@ const SidebarRowSearch = ({ handleTermSelect, searchTerm, index }) => {
     }
   };
 
+  console.log('SidebarRowSearch: sidebarItem:', sidebarItem);
+
   return (
     <div className="relative rounded-md shadow-sm">
       <div
         className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
         onClick={(e) => {
           if (inputRef.current) {
-            handleTermSelect({ [searchTerm]: inputRef.current.value });
+            onTermSelect({ 
+              [where]: {
+                [sidebarItem]: inputRef.current.value 
+              }
+            });
           }
         }}
       >
@@ -31,7 +46,11 @@ const SidebarRowSearch = ({ handleTermSelect, searchTerm, index }) => {
         placeholder="Search"
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
-            handleTermSelect({ [searchTerm]: e.currentTarget.value });
+            onTermSelect({ 
+              [where]: {
+                [sidebarItem]: e.currentTarget.value 
+              }
+            });
             e.currentTarget.blur();  // remove focus from the input
           }
         }}

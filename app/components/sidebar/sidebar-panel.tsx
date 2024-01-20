@@ -1,7 +1,12 @@
 import { SidebarData } from '~/components/sidebar/sidebar-data';
 import SidebarRow from '~/components/sidebar/sidebar-row';
+import type { SearchCriteria } from '~/routes/_index';
 
-const SidebarPanel = ({ onSelectionChange }) => {
+interface SidebarPanelProps {
+  onSelectionChange: (newCriteria: SearchCriteria) => void;
+}
+
+const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
   console.log('SidebarPanel: received onSelectionChange');
   return (
     <>
