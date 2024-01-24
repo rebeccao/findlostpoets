@@ -68,8 +68,8 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
               </label>
             ) : subItem.type === 'search' ? (
               <SidebarRowSearch 
-                handleTermSelect={handleTermSelect} 
-                searchItem={subItem.name} 
+                onTermSelect={onTermSelect} 
+                name={subItem.name} 
                 index={index} />
             ) : (
               <div className="flex flex-col items-start">
@@ -77,10 +77,10 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
                 <input
                   id={index.toString()}
                   type="range"
-                  {/* min={subItem.min}
-                  max={subItem.max}
-                  step={subItem.step}  
-                  className="..."  */}
+                  //min={subItem.min}
+                  //max={subItem.max}
+                  //step={subItem.step}  
+                  className="..."
                 />
                 <span className="text-sm mt-1">Value: {/* Dynamic value display logic */}</span>
               </div>

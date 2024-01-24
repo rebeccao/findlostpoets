@@ -1,12 +1,9 @@
 import { useLoaderData } from '@remix-run/react'
 import { prisma } from '~/utils/prisma.server'
-//import { json } from '@remix-run/node'
 import React, { useState, useEffect } from 'react';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import ImageCard from '~/components/image-card';
-//import { getPoets, getOnePoet } from '~/utils/poet.server';
 import {HiMenuAlt3} from 'react-icons/hi';
-//import {AiOutlineClose} from 'react-icons/ai';
 
 export type SearchCriteria =
 	{ [field: string]: any } 
@@ -38,7 +35,11 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 	return(
 		<header className="sticky top-0 z-[1] h-navbar mx-auto bg-gray-100 border-b border-gray-200 p-2 shadow-md flex w-full justify-between items-center  font-sans font-bold uppercase text-white-100 dark:border-gray-800 dark:bg-d-background dark:text-d-text-primary">
 			<div className="flex items-center">
-				<button onClick={toggleSidebar} className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-gray-300 hover:bg-gray-400">
+				<button 
+				  onClick={toggleSidebar} 
+					className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-gray-300 hover:bg-gray-400"
+					aria-label='Toggle Sidebar'
+				>
 					<HiMenuAlt3 size={26} className="cursor-pointer text-white" />
 				</button>
 			</div>
@@ -78,7 +79,7 @@ function Index() {
  	}, [searchCriteria]); 
 
 	function setSearchCriteriaWrapper(newCriteria: SearchCriteria) {
-		console.log('Index: setSearchCriteria called with:', newCriteria);
+		console.log('Index: setSearchCriteria newCriteria = ', newCriteria);
 		setSearchCriteria(newCriteria);
 	}
 
