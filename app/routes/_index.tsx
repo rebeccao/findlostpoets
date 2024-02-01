@@ -49,6 +49,7 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 }
 
 export const loader = async ({ searchCriteria }: { searchCriteria: SearchCriteria }) => {
+	console.log('Index: loader ...searchCriteria = ', searchCriteria);
 	const data = await prisma.poet.findMany ({
 		...searchCriteria,
 		skip: 20,
