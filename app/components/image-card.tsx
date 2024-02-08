@@ -1,6 +1,7 @@
 import React from 'react';
+import type { Poet } from '@prisma/client'
 
-const ImageCard = ({poet}) => {
+const ImageCard = ({poet}: {poet: Poet}) => {
   return (
 		<div className="max-w-2xl rounded overflow-hidden shadow-lg">
 			<img src={poet.g1Url} alt="" className="w-full"/>

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import SidebarRowSearch from '~/components/sidebar/sidebar-row-search';
+import React, { useState, useRef  } from 'react';
+import { BiSearch } from "react-icons/bi";
+import { GrFormClose } from "react-icons/gr";
 import type { SidebarItem, SubNavItem } from '~/components/sidebar/sidebar-data';
 import type { SearchCriteria } from '~/routes/_index';
 
@@ -19,7 +20,7 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
     setSubnav(!subnav);
   };
 
-  const handleTermSelect = (criteria: SearchCriteria) => {
+  const handleTermSelectCheckbox = (criteria: SearchCriteria) => {
     console.log('SidebarRow: invoking onTermSelect with term:', criteria);
     onTermSelect(criteria); // Call the callback passed from the parent to handle the selected term
   };
@@ -27,8 +28,25 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
   const handleCheckboxChange = (subNavItem: SubNavItem) => {
     if (subNavItem.title && subNavItem.value && selectedCheckbox !== subNavItem.title) {
       setSelectedCheckbox(subNavItem.title);
-      handleTermSelect({ [subNavItem.name]: subNavItem.value }); 
+      handleTermSelectCheckbox({ [subNavItem.name]: subNavItem.value }); 
     }
+  };
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const clearInput = () => {
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+
+  const handleSearch = (subNavItem: SubNavItem, value: string) => {
+    const searchCriteria = {
+      where: {
+        [subNavItem.name]: value  // Use dynamic field name
+      }
+    };
+    onTermSelect(searchCriteria);
   };
 
   return (
@@ -67,10 +85,35 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
                 {subItem.title}
               </label>
             ) : subItem.type === 'search' ? (
-              <SidebarRowSearch 
-                onTermSelect={onTermSelect} 
-                name={subItem.name} 
-                index={index} />
+              <div className="relative rounded-md shadow-sm">
+                <div
+                  className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
+                  onClick={() => inputRef.current && handleSearch(subItem, inputRef.current.value)}
+                >
+                <BiSearch />
+              </div>
+        
+              <input
+                ref={inputRef}
+                type="text"
+                id={index.toString()}
+                placeholder="Search"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && inputRef.current) {
+                    handleSearch(subItem, e.currentTarget.value);
+                    e.currentTarget.blur();  // remove focus from the input
+                  }
+                }}
+                className="form-input block w-full sm:text-sm pl-10 pr-8 sm:leading-9 rounded-md focus:outline-none"
+              />
+        
+              <div 
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                onClick={clearInput}
+              >
+                <GrFormClose />
+              </div>
+            </div>
             ) : (
               <div className="flex flex-col items-start">
                 <label htmlFor={index.toString()} className="mb-1">{subItem.title}</label>
