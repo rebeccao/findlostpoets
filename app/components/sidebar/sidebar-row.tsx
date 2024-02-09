@@ -1,23 +1,23 @@
 import React, { useState, useRef  } from 'react';
 import { BiSearch, BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 import { GrFormClose } from "react-icons/gr";
-import type { SidebarItem, SubNavItem } from '~/components/sidebar/sidebar-data';
+import type { SidebarItem, SidebarItemExpanded } from '~/components/sidebar/sidebar-data';
 import type { SearchCriteria } from '~/routes/_index';
 
 type SidebarRowProps = {
-  item: SidebarItem;
+  sidebarItem: SidebarItem;
   onTermSelect: (term: SearchCriteria) => void;  
 }
 
-const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
-  console.log('SidebarRow: received row item', item);
+const SidebarRow: React.FC<SidebarRowProps> = ({ sidebarItem, onTermSelect }) => {
+  console.log('SidebarRow: received row item', sidebarItem);
 
-  const [subnav, setSubnav] = useState(false);
+  const [rowExpanded, setRowExpanded] = useState(false);
   const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(null); // state to store selected checkbox
 
-  const showSubnav = () => {
-    setSubnav(!subnav);
-    console.log('SidebarRow: showSubnav = ', subnav);
+  const showOrHideRow = () => {
+    setRowExpanded(!rowExpanded);
+    console.log('SidebarRow: showOrHideRow = ', rowExpanded);
   };
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -28,12 +28,12 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
     }
   };
 
-  const handleCheckboxChange = (subNavItem: SubNavItem) => {
-    if (subNavItem.title && subNavItem.dbField && selectedCheckbox !== subNavItem.title) {
-      setSelectedCheckbox(subNavItem.title);
+  const handleCheckboxChange = (sidebarItemExpanded: SidebarItemExpanded) => {
+    if (sidebarItemExpanded.title && sidebarItemExpanded.dbField && selectedCheckbox !== sidebarItemExpanded.title) {
+      setSelectedCheckbox(sidebarItemExpanded.title);
       const searchCriteria = {
         orderBy: {
-          [subNavItem.dbField]: 'asc'  // Use dynamic field name
+          [sidebarItemExpanded.dbField]: 'asc'  // Use dynamic field name
         }
       }; 
       console.log('SidebarRow: Checkbox onTermSelect:', searchCriteria);
@@ -41,10 +41,10 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
     }
   };
 
-  const handleSearchText = (subNavItem: SubNavItem, value: string) => {
+  const handleSearchText = (sidebarItemExpanded: SidebarItemExpanded, value: string) => {
     const searchCriteria = {
       where: {
-        [subNavItem.dbField]: value  // Use dynamic field name
+        [sidebarItemExpanded.dbField]: value  // Use dynamic field name
       }
     };
     console.log('SidebarRow: Search onTermSelect:', searchCriteria);
@@ -54,22 +54,22 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
   return (
     <>
       <div
-        onClick={showSubnav}
+        onClick={showOrHideRow}
         className="flex justify-between items-center px-1 py-1 list-none h-15 text-lg text-link-blue cursor-pointer hover:bg-sidebar-hover-bg hover:border-l-4 hover:border-sidebar-hover-border"
       >
         <div className="flex items-center">
-          <span className="ml-4">{item.title}</span>
+          <span className="ml-4">{sidebarItem.title}</span>
         </div>
         <div>
-          {item.subNav && subnav ? <BiSolidChevronUp /> : <BiSolidChevronDown />}
+          {sidebarItem.sidebarItemExpanded && rowExpanded ? <BiSolidChevronUp /> : <BiSolidChevronDown />}
         </div>
       </div>
-        {subnav && item.subNav.map((subItem, index) => (
+        {rowExpanded && sidebarItem.sidebarItemExpanded.map((subItem, index) => (
           <div
             key={index}
             className="flex items-center p-2 pl-8 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
           >
-            {item.type === 'checkbox' ? (
+            {sidebarItem.type === 'checkbox' ? (
               <label className="w-full flex items-center cursor-pointer" htmlFor={index.toString()}>
                 <input
                   id={index.toString()}
@@ -81,7 +81,7 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
                 />
                 {subItem.title}
               </label>
-            ) : item.type === 'search' ? (
+            ) : sidebarItem.type === 'search' ? (
               <div className="relative rounded-md shadow-sm">
                 <div
                   className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"

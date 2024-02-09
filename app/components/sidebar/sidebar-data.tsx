@@ -1,4 +1,4 @@
-export type SubNavItem = {
+export type SidebarItemExpanded = {
   title?: string;  
   dbField: string;  
 }
@@ -6,35 +6,35 @@ export type SubNavItem = {
 export type SidebarItem = {
   title: string;
   type: 'search' | 'range' | 'checkbox';
-  subNav: SubNavItem[];
+  sidebarItemExpanded: SidebarItemExpanded[];
 }
 
-export const SidebarData: SidebarItem[] = [
+export const sidebarItems: SidebarItem[] = [
   {
     title: 'Poet Name',
     type: 'search',
-    subNav: [
+    sidebarItemExpanded: [
       { dbField: 'pNam' }, 
     ]
   },
   {
     title: 'Origin',
     type: 'search',
-    subNav: [
+    sidebarItemExpanded: [
       { dbField: 'ori' }
     ]
   },
   {
     title: 'Latent',
     type: 'search',
-    subNav: [
+    sidebarItemExpanded: [
       { dbField: 'lat' }
     ]
   },
   {
     title: 'Rare Traits',
     type: 'checkbox',
-    subNav: [
+    sidebarItemExpanded: [
       { title: 'Breed', dbField: 'brdCnt' },
       { title: 'Age', dbField: 'ageCnt' },
       { title: 'Genre', dbField: 'genCnt' },
@@ -45,28 +45,28 @@ export const SidebarData: SidebarItem[] = [
   {
     title: 'Prime Number',
     type: 'range', 
-    subNav: [
+    sidebarItemExpanded: [
       { dbField: 'prim' },
     ]
   },
   {
     title: 'Word Count',
     type: 'range', 
-    subNav: [
+    sidebarItemExpanded: [
       { dbField: 'wrdCnt' }
     ]
   },
   {
     title: 'Lexicon',
     type: 'range', 
-    subNav: [
+    sidebarItemExpanded: [
       { dbField: 'lexCnt' }
     ]
   },
   {
     title: 'Rewrites',
     type: 'range', 
-    subNav: [
+    sidebarItemExpanded: [
       { dbField: 'rewrCnt' }
     ]
   }
