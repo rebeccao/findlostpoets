@@ -1,5 +1,5 @@
 import React, { useState, useRef  } from 'react';
-import { BiSearch } from "react-icons/bi";
+import { BiSearch, BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 import { GrFormClose } from "react-icons/gr";
 import type { SidebarItem, SubNavItem } from '~/components/sidebar/sidebar-data';
 import type { SearchCriteria } from '~/routes/_index';
@@ -10,25 +10,25 @@ type SidebarRowProps = {
 }
 
 const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
-  //console.log('SidebarRow: received onTermSelect', item);
+  console.log('SidebarRow: received row item', item);
 
   const [subnav, setSubnav] = useState(false);
   const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(null); // state to store selected checkbox
 
   const showSubnav = () => {
-    console.log('SidebarRow: showSubnav');
     setSubnav(!subnav);
+    console.log('SidebarRow: showSubnav = ', subnav);
   };
 
-  const handleTermSelectCheckbox = (criteria: SearchCriteria) => {
-    console.log('SidebarRow: invoking onTermSelect with term:', criteria);
-    onTermSelect(criteria); // Call the callback passed from the parent to handle the selected term
+  const handleTermSelectCheckbox = (searchCriteria: SearchCriteria) => {
+    console.log('SidebarRow: Checkbox onTermSelect:', searchCriteria);
+    onTermSelect(searchCriteria); // Call the callback passed from the parent to handle the selected term
   };
 
   const handleCheckboxChange = (subNavItem: SubNavItem) => {
-    if (subNavItem.title && subNavItem.value && selectedCheckbox !== subNavItem.title) {
+    if (subNavItem.title && subNavItem.dbField && selectedCheckbox !== subNavItem.title) {
       setSelectedCheckbox(subNavItem.title);
-      handleTermSelectCheckbox({ [subNavItem.name]: subNavItem.value }); 
+      handleTermSelectCheckbox({ orderBy: subNavItem.dbField }); 
     }
   };
 
@@ -43,9 +43,10 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
   const handleSearch = (subNavItem: SubNavItem, value: string) => {
     const searchCriteria = {
       where: {
-        [subNavItem.name]: value  // Use dynamic field name
+        [subNavItem.dbField]: value  // Use dynamic field name
       }
     };
+    console.log('SidebarRow: Search onTermSelect:', searchCriteria);
     onTermSelect(searchCriteria);
   };
 
@@ -60,9 +61,9 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
         </div>
         <div>
           {item.subNav && subnav
-            ? item.iconOpened
+            ? <BiSolidChevronUp />
             : item.subNav
-            ? item.iconClosed
+            ? <BiSolidChevronDown />
             : null}
         </div>
       </div>
@@ -71,20 +72,19 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
             key={index}
             className="flex items-center p-2 pl-8 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
           >
-            {subItem.type === 'checkbox' ? (
+            {item.type === 'checkbox' ? (
               <label className="w-full flex items-center cursor-pointer" htmlFor={index.toString()}>
                 <input
                   id={index.toString()}
                   type="checkbox"
-                  name={subItem.name}
-                  value={subItem.value}
+                  value={subItem.dbField}
                   checked={selectedCheckbox === subItem.title}
                   onChange={() => handleCheckboxChange(subItem)}
                   className="appearance-none w-4 h-4 border border-gray-200 rounded-sm shadow-sm bg-white mr-2"
                 />
                 {subItem.title}
               </label>
-            ) : subItem.type === 'search' ? (
+            ) : item.type === 'search' ? (
               <div className="relative rounded-md shadow-sm">
                 <div
                   className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"

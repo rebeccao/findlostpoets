@@ -1,95 +1,73 @@
-import type { ReactElement } from 'react';
-import { BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
-
 export type SubNavItem = {
-  type: 'search' | 'range' | 'checkbox';
   title?: string;  
-  name: string;
-  value?: string;  
+  dbField: string;  
 }
 
 export type SidebarItem = {
   title: string;
-  iconClosed: ReactElement;
-  iconOpened: ReactElement;
+  type: 'search' | 'range' | 'checkbox';
   subNav: SubNavItem[];
 }
 
 export const SidebarData: SidebarItem[] = [
   {
     title: 'Poet Name',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
+    type: 'search',
     subNav: [
-      { type: 'search', name: 'pNam' }
+      { dbField: 'pNam' }, 
     ]
   },
   {
     title: 'Origin',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
+    type: 'search',
     subNav: [
-      { type: 'search', name: 'ori' }
+      { dbField: 'ori' }
     ]
   },
   {
     title: 'Latent',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
+    type: 'search',
     subNav: [
-      { type: 'search', name: 'lat' }
-    ]
-  },
-  {
-    title: 'Prime Number',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
-    subNav: [
-      { type: 'range', name: 'prim' },
+      { dbField: 'lat' }
     ]
   },
   {
     title: 'Rare Traits',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
+    type: 'checkbox',
     subNav: [
-      { type: 'checkbox', title: 'Breed', name: 'orderBy', value: 'brdCnt' },
-      { type: 'checkbox', title: 'Age', name: 'orderBy', value: 'ageCnt' },
-      { type: 'checkbox', title: 'Genre', name: 'orderBy', value: 'genCnt' },
-      { type: 'checkbox', title: 'Polarity', name: 'orderBy', value: 'polCnt' },
-      { type: 'checkbox', title: 'Ego', name: 'orderBy', value: 'egoCnt' }
+      { title: 'Breed', dbField: 'brdCnt' },
+      { title: 'Age', dbField: 'ageCnt' },
+      { title: 'Genre', dbField: 'genCnt' },
+      { title: 'Polarity', dbField: 'polCnt' },
+      { title: 'Ego', dbField: 'egoCnt' }
+    ]
+  },
+  {
+    title: 'Prime Number',
+    type: 'range', 
+    subNav: [
+      { dbField: 'prim' },
     ]
   },
   {
     title: 'Word Count',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
+    type: 'range', 
     subNav: [
-      { type: 'range', name: 'wrdCnt' }
+      { dbField: 'wrdCnt' }
     ]
   },
   {
     title: 'Lexicon',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
+    type: 'range', 
     subNav: [
-      { type: 'range', name: 'lexCnt' }
+      { dbField: 'lexCnt' }
     ]
   },
   {
     title: 'Rewrites',
-    iconClosed: <BiSolidChevronDown />,
-    iconOpened: <BiSolidChevronUp />,
-
+    type: 'range', 
     subNav: [
-      { type: 'range', name: 'rewrCnt' }
+      { dbField: 'rewrCnt' }
     ]
   }
 ];

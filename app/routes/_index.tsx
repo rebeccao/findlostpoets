@@ -22,7 +22,7 @@ interface NavbarProps {
 
 function Navbar({ toggleSidebar }: NavbarProps) {
 	return(
-		<header className="sticky top-0 z-[1] h-navbar mx-auto bg-gray-100 border-b border-gray-200 p-2 shadow-md flex w-full justify-between items-center  font-sans font-bold uppercase text-white-100 dark:border-gray-800 dark:bg-d-background dark:text-d-text-primary">
+		<header className="sticky top-0 z-[1] h-navbar mx-auto bg-gray-100 border-b border-gray-200 p-2 shadow-md flex w-full justify-between items-center  font-sans font-bold uppercase text-white dark:border-gray-800 dark:bg-d-background dark:text-d-text-primary">
 			<div className="flex items-center">
 				<button 
 				  onClick={toggleSidebar} 
@@ -37,7 +37,9 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 	);
 }
 
-function Sidebar( { fetcher } ) {
+function Sidebar() {
+	const fetcher = useFetcher();
+
 	const handleSelectionChange = (newCriteria: SearchCriteria) => {
     fetcher.submit({ criteria: JSON.stringify(newCriteria) }, { method: "get", action: "/" });
   };
@@ -78,8 +80,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 function Index() {
-	const data = useLoaderData<typeof loader>();
+	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
+	const data = useLoaderData<typeof loader>();
 	// If there's an error key in the data, it means something went wrong.
   if (data.error) {
     // Splitting the error message into lines for styling
@@ -87,7 +91,7 @@ function Index() {
     return (
       <div className="flex items-start justify-center h-screen">
         <div className="text-center pt-32 space-y-2">
-          {errorMessageLines.map((line, index) => (
+          {errorMessageLines.map((line: string, index: number) => (
             <p key={index} className={`${index === 0 ? 'text-lg font-semibold' : 'text-md'}`}>
               {line}{index < errorMessageLines.length - 1 ? '.' : ''}
             </p>
@@ -99,16 +103,10 @@ function Index() {
 
   console.log(data); // Check the structure of 'data'
   const poets: Poet[] = data.poets; // Assuming 'poets' is expected to be a key in the object returned by the loader
-	
-
-	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const fetcher = useFetcher();
-
-	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   return (
 		<div className="flex">
-			{sidebarOpen && <Sidebar fetcher={fetcher} />}
+			{sidebarOpen && <Sidebar />}
 			<div className="flex flex-col w-full">
 				<Navbar toggleSidebar={toggleSidebar} />
 				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
