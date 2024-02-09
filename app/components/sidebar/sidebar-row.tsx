@@ -20,18 +20,6 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
     console.log('SidebarRow: showSubnav = ', subnav);
   };
 
-  const handleTermSelectCheckbox = (searchCriteria: SearchCriteria) => {
-    console.log('SidebarRow: Checkbox onTermSelect:', searchCriteria);
-    onTermSelect(searchCriteria); // Call the callback passed from the parent to handle the selected term
-  };
-
-  const handleCheckboxChange = (subNavItem: SubNavItem) => {
-    if (subNavItem.title && subNavItem.dbField && selectedCheckbox !== subNavItem.title) {
-      setSelectedCheckbox(subNavItem.title);
-      handleTermSelectCheckbox({ orderBy: subNavItem.dbField }); 
-    }
-  };
-
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const clearInput = () => {
@@ -40,7 +28,20 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
     }
   };
 
-  const handleSearch = (subNavItem: SubNavItem, value: string) => {
+  const handleCheckboxChange = (subNavItem: SubNavItem) => {
+    if (subNavItem.title && subNavItem.dbField && selectedCheckbox !== subNavItem.title) {
+      setSelectedCheckbox(subNavItem.title);
+      const searchCriteria = {
+        orderBy: {
+          [subNavItem.dbField]: 'asc'  // Use dynamic field name
+        }
+      }; 
+      console.log('SidebarRow: Checkbox onTermSelect:', searchCriteria);
+      onTermSelect(searchCriteria); // Call the callback passed from the parent to handle the selected term
+    }
+  };
+
+  const handleSearchText = (subNavItem: SubNavItem, value: string) => {
     const searchCriteria = {
       where: {
         [subNavItem.dbField]: value  // Use dynamic field name
@@ -60,11 +61,7 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
           <span className="ml-4">{item.title}</span>
         </div>
         <div>
-          {item.subNav && subnav
-            ? <BiSolidChevronUp />
-            : item.subNav
-            ? <BiSolidChevronDown />
-            : null}
+          {item.subNav && subnav ? <BiSolidChevronUp /> : <BiSolidChevronDown />}
         </div>
       </div>
         {subnav && item.subNav.map((subItem, index) => (
@@ -88,7 +85,7 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
               <div className="relative rounded-md shadow-sm">
                 <div
                   className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
-                  onClick={() => inputRef.current && handleSearch(subItem, inputRef.current.value)}
+                  onClick={() => inputRef.current && handleSearchText(subItem, inputRef.current.value)}
                 >
                 <BiSearch />
               </div>
@@ -100,7 +97,7 @@ const SidebarRow: React.FC<SidebarRowProps> = ({ item, onTermSelect }) => {
                 placeholder="Search"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && inputRef.current) {
-                    handleSearch(subItem, e.currentTarget.value);
+                    handleSearchText(subItem, e.currentTarget.value);
                     e.currentTarget.blur();  // remove focus from the input
                   }
                 }}
