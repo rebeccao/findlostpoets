@@ -1,5 +1,4 @@
 import { useLoaderData, useFetcher } from '@remix-run/react'
-//import type { Fetcher } from '@remix-run/react'
 import { json } from '@remix-run/node'
 import type { LoaderFunction } from '@remix-run/node'
 import { prisma } from '~/utils/prisma.server'
@@ -41,7 +40,13 @@ function Sidebar() {
 	const fetcher = useFetcher();
 
 	const handleSelectionChange = (newCriteria: SearchCriteria) => {
-    fetcher.submit({ criteria: JSON.stringify(newCriteria) }, { method: "get", action: "/" });
+		console.log('Index handleSelectionChange:', newCriteria);
+		const criteriaString = JSON.stringify(newCriteria);
+    console.log('Index handleSelectionChange: Criteria as string:', criteriaString);
+    // Log the expected URL
+    console.log('Index handleSelectionChange: Expected fetch URL:', `${window.location.origin}/?criteria=${encodeURIComponent(criteriaString)}`);
+    fetcher.submit({ criteria: criteriaString }, { method: "get", action: "/" });
+    //fetcher.submit({ criteria: JSON.stringify(newCriteria) }, { method: "get", action: "/" });
   };
 
 	return (
@@ -56,15 +61,24 @@ function Sidebar() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+	console.log('Index loader: start');
 	try {
 		const url = new URL(request.url);
+
+		console.log('Index loader: Request URL:', url.toString());
 		let searchCriteria: SearchCriteria = { orderBy: { pid: 'asc' } }; // Default criteria
 		
 		const criteriaParam = url.searchParams.get("criteria");
-		if (criteriaParam) {
-			const criteria = JSON.parse(decodeURIComponent(criteriaParam));
+		console.log('Index loader: Received criteriaParam:', criteriaParam);
+
+		try {
+			const criteria = JSON.parse(decodeURIComponent(criteriaParam!));
+			console.log('Index loader: Parsed criteria:', criteria);
 			searchCriteria = { ...searchCriteria, ...criteria };
-		}
+	} catch (error) {
+			console.error('Index loader: Error parsing criteriaParam:', error);
+			// Consider returning an error response or handling the error gracefully
+	}
 
 		const poets = await prisma.poet.findMany({
 			...searchCriteria,
@@ -101,7 +115,7 @@ function Index() {
     );
   }
 
-  console.log(data); // Check the structure of 'data'
+  console.log("******************* const poets: Poet[] = data.poets; "); // Check the structure of 'data'
   const poets: Poet[] = data.poets; // Assuming 'poets' is expected to be a key in the object returned by the loader
 
   return (
