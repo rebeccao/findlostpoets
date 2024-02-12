@@ -6,7 +6,7 @@ import { GrFormClose } from "react-icons/gr";
 import type { SidebarItemExpanded } from "~/components/sidebar/sidebar-data";
 
 interface SidebarPanelProps {
-  onSelectionChange: (newCriteria: SearchCriteria) => void;
+  onSelectionChange: (dbQuery: SearchCriteria) => void;
 }
 
 const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
@@ -30,40 +30,32 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
     }
   };
 
-  const handleCheckboxChange = (sidebarItemExpanded: SidebarItemExpanded) => {
-    if (
-      sidebarItemExpanded.title &&
-      sidebarItemExpanded.dbField &&
-      selectedCheckbox !== sidebarItemExpanded.title
-    ) {
-      setSelectedCheckbox(sidebarItemExpanded.title);
+  const handleCheckboxChange = (title: string, dbField: string) => {
+    if (title && dbField && selectedCheckbox !== title) {
+      setSelectedCheckbox(title);
 
-      //const dbAttribute = sidebarItemExpanded.dbField.replace("Cnt", "");
-      const searchCriteria = {
-        where: {
-          [sidebarItemExpanded.dbField]: { gt: 0 },
-        },
+      // Complex DB query
+      const dbQuery = {
         orderBy: {
-          [sidebarItemExpanded.dbField]: "asc", // Use dynamic field name
+          [dbField]: "asc", // Use dynamic field name
         },
-
       };
-      console.log("SidebarRow: Checkbox onSelectionChange:", searchCriteria);
-      onSelectionChange(searchCriteria); // Call the callback passed from the parent
+
+      console.log("SidebarPanel: handleCheckboxChange dbQuery: ", dbQuery);
+      onSelectionChange(dbQuery);
     }
   };
 
-  const handleSearchText = (
-    sidebarItemExpanded: SidebarItemExpanded,
-    value: string
-  ) => {
-    const searchCriteria = {
+  const handleSearchText = (dbField: string, value: string) => {
+    // Complex DB query
+    const dbQuery = {
       where: {
-        [sidebarItemExpanded.dbField]: { equals: value, mode: "insensitive" }, // Use dynamic field name
+        [dbField]: { equals: value, mode: "insensitive" },
       },
     };
-    console.log("SidebarRow: Search onSelectionChange:", searchCriteria);
-    onSelectionChange(searchCriteria); // Call the callback passed from the parent
+
+    console.log("SidebarPanel: handleSearchText dbQuery: ", dbQuery);
+    onSelectionChange(dbQuery);
   };
 
   const handleRange = (
@@ -78,7 +70,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
       },
     };
     console.log("SidebarRow: Range onSelectionChange:", searchCriteria);
-    onSelectionChange(searchCriteria); // Call the callback passed from the parent
+    //onSelectionChange(dbQuery, urlSegment); // Call the callback passed from the parent
   };
 
   return (
@@ -125,7 +117,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                             selectedCheckbox === expandedSidebarItem.title
                           }
                           onChange={() =>
-                            handleCheckboxChange(expandedSidebarItem)
+                            handleCheckboxChange(expandedSidebarItem.title!, expandedSidebarItem.dbField) 
                           }
                           className="appearance-none w-4 h-4 border border-gray-200 rounded-sm shadow-sm bg-white mr-2"
                         />
@@ -137,10 +129,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                           className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
                           onClick={() =>
                             inputRef.current &&
-                            handleSearchText(
-                              expandedSidebarItem,
-                              inputRef.current.value
-                            )
+                            handleSearchText(expandedSidebarItem.dbField, inputRef.current.value) 
                           }
                         >
                           <BiSearch />
@@ -153,9 +142,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                           placeholder="Search"
                           onKeyDown={(e) => {
                             if (e.key === "Enter" && inputRef.current) {
-                              handleSearchText(
-                                expandedSidebarItem,
-                                e.currentTarget.value
+                              handleSearchText(expandedSidebarItem.dbField, e.currentTarget.value
                               );
                               e.currentTarget.blur(); // remove focus from the input
                             }

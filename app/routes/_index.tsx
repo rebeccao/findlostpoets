@@ -39,8 +39,8 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 function Sidebar() {
 	const navigate = useNavigate();
 
-	const handleSelectionChange = (newCriteria: SearchCriteria) => {
-		const criteriaString = JSON.stringify(newCriteria);
+	const handleSelectionChange = (dbQuery: SearchCriteria) => {
+		const criteriaString = JSON.stringify(dbQuery);
     console.log('Index handleSelectionChange: Criteria as string:', criteriaString);
     
 		// Convert the criteria to a query string

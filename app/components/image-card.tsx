@@ -1,12 +1,11 @@
-import React from 'react';
 import type { Poet } from '@prisma/client'
 
 const ImageCard = ({poet}: {poet: Poet}) => {
   return (
 		<div className="max-w-2xl rounded overflow-hidden shadow-lg">
-			<img src={poet.g1Url} alt="" className="w-full"/>
-			<img src={poet.g0Url} alt="" className="w-full"/>
-		<div className="px-6 py-4">
+			<img src={poet.g1Url} alt={`${poet.pNam+' Gen1'}`} loading="lazy" className="w-full" />
+      <img src={poet.g0Url} alt={`${poet.pNam+' Gen0'}`} loading="lazy" className="w-full" />
+			<div className="px-6 py-4">
 				<div className="font-bold text-xl mb2">
 					{poet.pNam}
 				</div>
