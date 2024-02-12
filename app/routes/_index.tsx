@@ -1,4 +1,4 @@
-import { useLoaderData, useFetcher } from '@remix-run/react'
+import { useLoaderData, useNavigate } from '@remix-run/react'
 import { json } from '@remix-run/node'
 import type { LoaderFunction } from '@remix-run/node'
 import { prisma } from '~/utils/prisma.server'
@@ -37,25 +37,25 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 }
 
 function Sidebar() {
-	const fetcher = useFetcher();
+	const navigate = useNavigate();
 
 	const handleSelectionChange = (newCriteria: SearchCriteria) => {
-		console.log('Index handleSelectionChange:', newCriteria);
 		const criteriaString = JSON.stringify(newCriteria);
     console.log('Index handleSelectionChange: Criteria as string:', criteriaString);
-    // Log the expected URL
-    console.log('Index handleSelectionChange: Expected fetch URL:', `${window.location.origin}/?criteria=${encodeURIComponent(criteriaString)}`);
-    fetcher.submit({ criteria: criteriaString }, { method: "get", action: "/" });
-    //fetcher.submit({ criteria: JSON.stringify(newCriteria) }, { method: "get", action: "/" });
+    
+		// Convert the criteria to a query string
+		const queryString = new URLSearchParams({ criteria: criteriaString }).toString();
+		//console.log('Index handleSelectionChange: Expected fetch URL:', `${window.location.pathname}?${queryString}`);
+		
+		// Navigate to the current route with new query parameters
+		navigate(`/?${queryString}`);
   };
 
 	return (
 		<section className="top-navbar shadow-inner-top-left translate-x-0 fixed left-0 h-full w-64 p-4 bg-gray-100 transform transition-transform duration-300">
-			<fetcher.Form method="get" action="/">
-  			{/* Input and selection components here, triggering handleSelectionChange on change */}
-				{/* Search Filters */}
-				<SidebarPanel onSelectionChange={handleSelectionChange} />
-			</fetcher.Form>
+			{/* Input and selection components here, triggering handleSelectionChange on change */}
+			{/* Search Filters */}
+			<SidebarPanel onSelectionChange={handleSelectionChange} />
     </section>
 	);
 }
