@@ -37,10 +37,16 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
       selectedCheckbox !== sidebarItemExpanded.title
     ) {
       setSelectedCheckbox(sidebarItemExpanded.title);
+
+      //const dbAttribute = sidebarItemExpanded.dbField.replace("Cnt", "");
       const searchCriteria = {
+        where: {
+          [sidebarItemExpanded.dbField]: { gt: 0 },
+        },
         orderBy: {
           [sidebarItemExpanded.dbField]: "asc", // Use dynamic field name
         },
+
       };
       console.log("SidebarRow: Checkbox onSelectionChange:", searchCriteria);
       onSelectionChange(searchCriteria); // Call the callback passed from the parent
