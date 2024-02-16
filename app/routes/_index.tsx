@@ -71,14 +71,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 		const criteriaParam = url.searchParams.get("criteria");
 		console.log('Index loader: Received criteriaParam:', criteriaParam);
 
-		try {
-			const criteria = JSON.parse(decodeURIComponent(criteriaParam!));
-			console.log('Index loader: Parsed criteria:', criteria);
-			searchCriteria = { ...searchCriteria, ...criteria };
-	} catch (error) {
-			console.error('Index loader: Error parsing criteriaParam:', error);
-			// Consider returning an error response or handling the error gracefully
-	}
+		if (criteriaParam) {
+			try {
+				const criteria = JSON.parse(decodeURIComponent(criteriaParam!));
+				console.log('Index loader: Parsed criteria:', criteria);
+				if (Object.keys(criteria).length > 0) {
+					searchCriteria = { ...searchCriteria, ...criteria };
+				}
+			} catch (error) {
+					console.error('Index loader: Error parsing criteriaParam:', error);
+					// Consider returning an error response or handling the error gracefully
+			}
+		}
 
 		const poets = await prisma.poet.findMany({
 			...searchCriteria,

@@ -1,6 +1,8 @@
 export type SidebarItemExpanded = {
   title?: string;  
-  dbField: string;  
+  dbField: string;
+  min?: number;
+  max?: number;
 }
 
 export type SidebarItem = {
@@ -46,28 +48,40 @@ export const sidebarItems: SidebarItem[] = [
     title: 'Prime Number',
     type: 'range', 
     sidebarItemExpanded: [
-      { dbField: 'prim' },   // Mongodb field name for Prime Number
+      { dbField: 'prim',     // Mongodb field name for Word Count
+        min: 2,
+        max: 835399
+      }
     ]
   },
   {
     title: 'Word Count',
     type: 'range', 
     sidebarItemExpanded: [
-      { dbField: 'wrdCnt' }   // Mongodb field name for Word Count
+      { dbField: 'wrdCnt',   // Mongodb field name for Word Count
+        min: 2,
+        max: 255
+      }
     ]
   },
   {
     title: 'Lexicon',
     type: 'range', 
     sidebarItemExpanded: [
-      { dbField: 'lexCnt' }   // Mongodb field name for Lexicon
+      { dbField: 'lexCnt',   // Mongodb field name for Word Count
+        min: 1,
+        max: 255
+      } 
     ]
   },
   {
     title: 'Rewrites',
     type: 'range', 
     sidebarItemExpanded: [
-      { dbField: 'rewrCnt' }   // Mongodb field name for Rewrites
+      { dbField: 'rewrCnt',   // Mongodb field name for Word Count
+        min: 1,
+        max: 89
+      }
     ]
   }
 ];

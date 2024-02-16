@@ -19,6 +19,8 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
   const clearInput = () => {
     if (inputRef.current) {
       inputRef.current.value = "";
+
+      onSelectionChange({}); 
     }
   };
 
@@ -117,7 +119,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                         onChange={() => handleCheckboxChange(expandedSidebarItem.title!, expandedSidebarItem.dbField)}
                         className="opacity-0 absolute h-4 w-4"
                       />
-                      <span className={`ml-1 inline-block w-4 h-4 rounded-sm shadow-sm flex justify-center items-center mr-2 ${selectedCheckbox === expandedSidebarItem.title ? 'bg-gray-400 border-gray-700' : 'bg-white border border-gray-200'}`}>
+                      <span className={`ml-1 w-4 h-4 rounded-sm shadow-sm flex justify-center items-center mr-2 ${selectedCheckbox === expandedSidebarItem.title ? 'bg-gray-400 border-gray-700' : 'bg-white border border-gray-200'}`}>
                         {selectedCheckbox === expandedSidebarItem.title && (
                           <svg className="w-3 h-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
