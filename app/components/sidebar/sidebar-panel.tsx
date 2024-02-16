@@ -13,7 +13,8 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
   console.log("SidebarPanel start");
 
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null); // State to store the title of the currently expanded row, null if none
-  const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(null); // state to store selected checkbox
+  //const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(null); // state to store selected checkbox
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, boolean>>({});
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const clearInput = () => {
@@ -31,7 +32,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
       setExpandedRowId(sidebarItemTitle); // Otherwise, expand the clicked row
     }
   };
-
+  /*
   const handleCheckboxChange = (title: string, dbField: string) => {
     if (title && selectedCheckbox !== title) {
       setSelectedCheckbox(title);
@@ -48,6 +49,40 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
 
       console.log("SidebarPanel: handleCheckboxChange dbQuery: ", dbQuery);
       onSelectionChange(dbQuery);
+    }
+  };   */
+
+  const handleCheckboxChange = (dbField: string, isChecked: boolean) => {
+    const updatedSelections = { ...selectedCheckboxes, [dbField]: isChecked };
+
+    // Update the selected checkboxes state
+    setSelectedCheckboxes(updatedSelections);
+
+    const selectedFields = Object.entries(updatedSelections)
+      .filter(([_, value]) => value)
+      .map(([key]) => key);
+
+    if (selectedFields.length > 0) {
+      // Construct where conditions for each selected checkbox
+      const whereConditions = selectedFields.map(field => ({
+        [field]: { gt: 0 }
+      }));
+
+      // Assuming you want to order by the first selected checkbox for simplicity
+      // Modify this as needed to support more complex ordering logic
+      const orderBy = selectedFields.map(field => ({ [field]: 'asc' }));
+
+      const dbQuery = {
+        where: {
+          AND: whereConditions,
+        },
+        orderBy,
+      };
+
+      onSelectionChange(dbQuery);
+    } else {
+      // If no checkboxes are selected, revert to default query
+      onSelectionChange({ orderBy: { pid: 'asc' } });
     }
   };
 
@@ -74,14 +109,15 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
         [sidebarItemExpanded.dbField]: { gte: gteValue, lte: lteValue }, // Use dynamic field name
       },
     };
-    console.log("SidebarRow: Range onSelectionChange:", searchCriteria);
+    console.log("SidebarPanel: Range onSelectionChange:", searchCriteria);
     //onSelectionChange(dbQuery, urlSegment); // Call the callback passed from the parent
   };
 
   return (
     <div> 
+      console.log("SidebarPanel: sidebarItems.map );
       {sidebarItems.map((sidebarItem, index) => {
-        console.log("SidebarRow: received row item", sidebarItem);
+        //console.log("SidebarRow: received row item", sidebarItem);
         // Determine if the current sidebar item is expanded
         const rowExpanded = expandedRowId === sidebarItem.title;
 
@@ -109,18 +145,18 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                     key={`${sidebarItem.title}-${expandedSidebarItemIndex}`}
                     className="flex items-center p-2 pl-8 rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full"
                   >
-                    {sidebarItem.type === "checkbox" ? (
+                    {sidebarItem.type === "checkbox" && (
                       <label className="w-full flex items-center cursor-pointer" htmlFor={index.toString()}>
                       <input
                         id={index.toString()}
                         type="checkbox"
                         value={expandedSidebarItem.dbField}
-                        checked={selectedCheckbox === expandedSidebarItem.title}
-                        onChange={() => handleCheckboxChange(expandedSidebarItem.title!, expandedSidebarItem.dbField)}
+                        checked={selectedCheckboxes[expandedSidebarItem.dbField] ?? false} 
+                        onChange={(e) => handleCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
                         className="opacity-0 absolute h-4 w-4"
                       />
-                      <span className={`ml-1 w-4 h-4 rounded-sm shadow-sm flex justify-center items-center mr-2 ${selectedCheckbox === expandedSidebarItem.title ? 'bg-gray-400 border-gray-700' : 'bg-white border border-gray-200'}`}>
-                        {selectedCheckbox === expandedSidebarItem.title && (
+                      <span className={`ml-1 w-4 h-4 rounded-sm shadow-sm flex justify-center items-center mr-2 ${selectedCheckboxes[expandedSidebarItem.dbField] ? 'bg-gray-400 border-gray-700' : 'bg-white border border-gray-200'}`}>
+                        {selectedCheckboxes[expandedSidebarItem.dbField] && (
                           <svg className="w-3 h-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
@@ -128,7 +164,8 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                       </span>
                       {expandedSidebarItem.title}
                     </label>
-                    ) : sidebarItem.type === "search" ? (
+                    )} 
+                    {sidebarItem.type === "search" && (
                       <div className="relative rounded-md shadow-sm">
                         <div
                           className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
@@ -162,7 +199,8 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                           <GrFormClose />
                         </div>
                       </div>
-                    ) : (
+                    )} 
+                    {sidebarItem.type === "range" && (
                       <div className="flex flex-col items-start">
                         <label
                           htmlFor={expandedSidebarItemIndex.toString()}

@@ -41,7 +41,7 @@ function Sidebar() {
 
 	const handleSelectionChange = (dbQuery: SearchCriteria) => {
 		const criteriaString = JSON.stringify(dbQuery);
-    console.log('Index handleSelectionChange: Criteria as string:', criteriaString);
+    console.log('Index handleSelectionChange: navigate(/?$(queryString));', criteriaString);
     
 		// Convert the criteria to a query string
 		const queryString = new URLSearchParams({ criteria: criteriaString }).toString();
@@ -65,7 +65,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const url = new URL(request.url);
 
-		console.log('Index loader: Request URL:', url.toString());
 		let searchCriteria: SearchCriteria = { orderBy: { pid: 'asc' } }; // Default criteria
 		
 		const criteriaParam = url.searchParams.get("criteria");
