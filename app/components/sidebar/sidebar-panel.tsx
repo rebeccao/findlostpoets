@@ -1,6 +1,6 @@
 import { sidebarItems } from "~/components/sidebar/sidebar-data";
 import type { SearchCriteria } from "~/routes/_index";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { BiSearch, BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 import { GrFormClose } from "react-icons/gr";
 import type { SidebarItemExpanded } from "~/components/sidebar/sidebar-data";
@@ -13,17 +13,8 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
   console.log("SidebarPanel start");
 
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null); // State to store the title of the currently expanded row, null if none
-  //const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(null); // state to store selected checkbox
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, boolean>>({});
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const clearInput = () => {
-    if (inputRef.current) {
-      inputRef.current.value = "";
-
-      onSelectionChange({}); 
-    }
-  };
+  const [searchTexts, setSearchTexts] = useState<Record<string, string>>({});
 
   const expandCollapseRow = (sidebarItemTitle: string) => {
     if (expandedRowId === sidebarItemTitle) {
@@ -32,26 +23,8 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
       setExpandedRowId(sidebarItemTitle); // Otherwise, expand the clicked row
     }
   };
-  /*
-  const handleCheckboxChange = (title: string, dbField: string) => {
-    if (title && selectedCheckbox !== title) {
-      setSelectedCheckbox(title);
 
-      // Complex DB query
-      const dbQuery = {
-        where: {
-          [dbField]: { gt: 0 },
-        },
-        orderBy: {
-          [dbField]: "asc", // Use dynamic field name
-        },
-      };
-
-      console.log("SidebarPanel: handleCheckboxChange dbQuery: ", dbQuery);
-      onSelectionChange(dbQuery);
-    }
-  };   */
-
+  // Checkbox search. Selecting and unselecting checkbox trigger DB search
   const handleCheckboxChange = (dbField: string, isChecked: boolean) => {
     const updatedSelections = { ...selectedCheckboxes, [dbField]: isChecked };
 
@@ -86,16 +59,60 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
     }
   };
 
+  // Text Search: Magnifying glass and <return> onClick handlers to trigger DB search
   const handleSearchText = (dbField: string, value: string) => {
-    // Complex DB query
-    const dbQuery = {
-      where: {
-        [dbField]: { equals: value, mode: "insensitive" },
-      },
-    };
+    // Update the searchTexts state with the new value, but only if it's not empty or whitespace
+    if (value.trim().length > 0 || dbField === '') {
+      const trimmedValue = value.trim();
+      const newSearchTexts = { ...searchTexts, [dbField]: trimmedValue };
+      setSearchTexts(newSearchTexts);
+  
+      // Explicitly type the accumulator in the reduce function
+      /*const whereConditions = Object.entries(newSearchTexts).reduce<{ [key: string]: { equals: string; mode: 'insensitive' } }[]>((acc, [key, value]) => {
+        if (value.trim()) {
+          acc.push({ [key]: { equals: value, mode: "insensitive" } });
+        }
+        return acc;
+      }, []);  */
+      
+      const whereConditions = Object.entries(newSearchTexts).reduce<{ [key: string]: { equals: string; mode: 'insensitive' } }[]>((acc, [key, val]) => {
+        if (val.trim()) {
+          acc.push({ [key]: { equals: val, mode: "insensitive" } });
+        }
+        return acc;
+      }, []);    // The initial value of the accumulator is an empty array
+    
+      if (whereConditions.length > 0) {
+        // Construct the complex DB query with all the where conditions
+        const dbQuery = {
+          where: {
+            OR: whereConditions,
+          },
+        };
+    
+        console.log("SidebarPanel: handleSearchText dbQuery: ", dbQuery);
+        onSelectionChange(dbQuery);
+      }
+    } else if (dbField === '' && value === '') {
+      // Handle case for clearing the search without a specific field
+      onSelectionChange({});
+    }
+  };
 
-    console.log("SidebarPanel: handleSearchText dbQuery: ", dbQuery);
-    onSelectionChange(dbQuery);
+  // Text Search: `x` onClick handler to trigger DB search
+  const clearInput = (dbField: string) => {
+    const newSearchTexts = { ...searchTexts };
+    delete newSearchTexts[dbField]; // Remove the specific field from searchTexts
+    setSearchTexts(newSearchTexts);
+  
+    // Trigger a default search if all text inputs are cleared
+    // Check if searchTexts is empty to decide whether to revert to default search
+    if (Object.keys(newSearchTexts).length === 0) {
+      onSelectionChange({ orderBy: { pid: 'asc' } });
+    } else {
+      // If other search texts exist, trigger search with remaining conditions
+      handleSearchText('', '');
+    }
   };
 
   const handleRange = (
@@ -115,7 +132,6 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
 
   return (
     <div> 
-      console.log("SidebarPanel: sidebarItems.map );
       {sidebarItems.map((sidebarItem, index) => {
         //console.log("SidebarRow: received row item", sidebarItem);
         // Determine if the current sidebar item is expanded
@@ -169,23 +185,20 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                       <div className="relative rounded-md shadow-sm">
                         <div
                           className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
-                          onClick={() =>
-                            inputRef.current &&
-                            handleSearchText(expandedSidebarItem.dbField, inputRef.current.value) 
-                          }
+                          onClick={() => handleSearchText(expandedSidebarItem.dbField, searchTexts[expandedSidebarItem.dbField] || '')}
                         >
                           <BiSearch />
                         </div>
 
                         <input
-                          ref={inputRef}
                           type="text"
                           id={index.toString()}
+                          value={searchTexts[expandedSidebarItem.dbField] || ''} // Bind input value to state
+                          onChange={(e) => setSearchTexts({ ...searchTexts, [expandedSidebarItem.dbField]: e.target.value })} // Update state on change
                           placeholder="Search"
                           onKeyDown={(e) => {
-                            if (e.key === "Enter" && inputRef.current) {
-                              handleSearchText(expandedSidebarItem.dbField, e.currentTarget.value
-                              );
+                            if (e.key === "Enter") {
+                              handleSearchText(expandedSidebarItem.dbField, e.currentTarget.value);
                               e.currentTarget.blur(); // remove focus from the input
                             }
                           }}
@@ -194,7 +207,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
 
                         <div
                           className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                          onClick={clearInput}
+                          onClick={() => clearInput(expandedSidebarItem.dbField)} // Clear input for specific field
                         >
                           <GrFormClose />
                         </div>
