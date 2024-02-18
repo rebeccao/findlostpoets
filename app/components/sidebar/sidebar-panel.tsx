@@ -201,7 +201,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                               e.currentTarget.blur(); // remove focus from the input
                             }
                           }}
-                          className="form-input block w-full text-xs py-1 pl-10 pr-8 leading-tight rounded-lg focus:outline-none border-gray-200 focus:border-gray-200 focus:ring-1 focus:ring-gray-200"
+                          className="form-input block w-full text-xs py-2 pl-10 pr-8 leading-tight rounded-lg focus:outline-none border-gray-200 focus:border-gray-200 focus:ring-1 focus:ring-gray-200"
                         />
                         <div
                           className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
