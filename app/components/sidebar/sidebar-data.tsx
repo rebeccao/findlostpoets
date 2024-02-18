@@ -1,4 +1,4 @@
-export type SidebarItemExpanded = {
+export type ExpandedSidebarItem = {
   title?: string;  
   dbField: string;
   min?: number;
@@ -8,35 +8,35 @@ export type SidebarItemExpanded = {
 export type SidebarItem = {
   title: string;
   type: 'search' | 'range' | 'checkbox';
-  sidebarItemExpanded: SidebarItemExpanded[];
+  expandedSidebarItems: ExpandedSidebarItem[];
 }
 
 export const sidebarItems: SidebarItem[] = [
   {
     title: 'Poet Name',
     type: 'search',
-    sidebarItemExpanded: [
+    expandedSidebarItems: [
       { dbField: 'pNam' },   // Mongodb field name for Poet Name
     ]
   },
   {
     title: 'Origin',
     type: 'search',
-    sidebarItemExpanded: [
+    expandedSidebarItems: [
       { dbField: 'ori' }   // Mongodb field name for Origin
     ]
   },
   {
     title: 'Latent',
     type: 'search',
-    sidebarItemExpanded: [
+    expandedSidebarItems: [
       { dbField: 'lat' }   // Mongodb field name for Latent
     ]
   },
   {
     title: 'Rare Traits',
     type: 'checkbox',
-    sidebarItemExpanded: [
+    expandedSidebarItems: [
       { title: 'Breed', dbField: 'brdCnt' },   // Mongodb field name for Breed
       { title: 'Age', dbField: 'ageCnt' },
       { title: 'Genre', dbField: 'genCnt' },
@@ -47,7 +47,7 @@ export const sidebarItems: SidebarItem[] = [
   {
     title: 'Prime Number',
     type: 'range', 
-    sidebarItemExpanded: [
+    expandedSidebarItems: [
       { dbField: 'prim',     // Mongodb field name for Word Count
         min: 2,
         max: 835399
@@ -57,7 +57,7 @@ export const sidebarItems: SidebarItem[] = [
   {
     title: 'Word Count',
     type: 'range', 
-    sidebarItemExpanded: [
+    expandedSidebarItems: [
       { dbField: 'wrdCnt',   // Mongodb field name for Word Count
         min: 2,
         max: 255
@@ -67,7 +67,7 @@ export const sidebarItems: SidebarItem[] = [
   {
     title: 'Lexicon',
     type: 'range', 
-    sidebarItemExpanded: [
+    expandedSidebarItems: [
       { dbField: 'lexCnt',   // Mongodb field name for Word Count
         min: 1,
         max: 255
@@ -77,7 +77,7 @@ export const sidebarItems: SidebarItem[] = [
   {
     title: 'Rewrites',
     type: 'range', 
-    sidebarItemExpanded: [
+    expandedSidebarItems: [
       { dbField: 'rewrCnt',   // Mongodb field name for Word Count
         min: 1,
         max: 89

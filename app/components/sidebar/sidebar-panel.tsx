@@ -1,9 +1,7 @@
 import { sidebarItems } from "~/components/sidebar/sidebar-data";
-//import type { SearchCriteria } from "~/routes/_index";
 import React, { useState } from "react";
 import { BiSearch, BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 import { GrFormClose } from "react-icons/gr";
-import type { SidebarItemExpanded } from "~/components/sidebar/sidebar-data";
 import type { SidebarProps } from "~/routes/_index";
 
 const SidebarPanel: React.FC<SidebarProps> = ({ selectedCheckboxes, searchTexts, onCheckboxChange, onSearchTextChange, onSelectionChange }) => {
@@ -111,14 +109,14 @@ const SidebarPanel: React.FC<SidebarProps> = ({ selectedCheckboxes, searchTexts,
   };
 
   const handleRange = (
-    sidebarItemExpanded: SidebarItemExpanded,
+    //expandedSidebarItems: ExpandedSidebarItems,
     gteValue: number,
     lteValue: number
   ) => {
     // { where: { WordCount: { gte: minNumber, lte: maxNumber } } }
     const searchCriteria = {
       where: {
-        [sidebarItemExpanded.dbField]: { gte: gteValue, lte: lteValue }, // Use dynamic field name
+        //[expandedSidebarItems.dbField]: { gte: gteValue, lte: lteValue }, // Use dynamic field name
       },
     };
     console.log("SidebarPanel: Range onSelectionChange:", searchCriteria);
@@ -142,7 +140,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({ selectedCheckboxes, searchTexts,
                 <span className="ml-4">{sidebarItem.title}</span>
               </div>
               <div>
-                {sidebarItem.sidebarItemExpanded && rowExpanded ? (
+                {sidebarItem.expandedSidebarItems && rowExpanded ? (
                   <BiSolidChevronUp />
                 ) : (
                   <BiSolidChevronDown />
@@ -150,7 +148,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({ selectedCheckboxes, searchTexts,
               </div>
             </div>
             {rowExpanded &&
-              sidebarItem.sidebarItemExpanded.map(
+              sidebarItem.expandedSidebarItems.map(
                 (expandedSidebarItem, expandedSidebarItemIndex) => (
                   <div
                     key={`${sidebarItem.title}-${expandedSidebarItemIndex}`}
