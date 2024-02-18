@@ -141,7 +141,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
           <React.Fragment key={sidebarItem.title}>
             <div
               onClick={() => expandCollapseRow(sidebarItem.title)} // Pass the sidebarItem's title to expand or collapse
-              className="flex justify-between items-center px-1 py-1 list-none h-15 text-lg text-link-blue cursor-pointer hover:bg-sidebar-hover-bg hover:border-l-4 hover:border-sidebar-hover-border"
+              className="flex justify-between items-center px-1 py-1 list-none h-15 text-md sans font-medium text-link-blue cursor-pointer hover:bg-sidebar-hover-bg hover:border-l-4 hover:border-sidebar-hover-border"
             >
               <div className="flex items-center">
                 <span className="ml-4">{sidebarItem.title}</span>
@@ -189,7 +189,6 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                         >
                           <BiSearch />
                         </div>
-
                         <input
                           type="text"
                           id={index.toString()}
@@ -202,9 +201,8 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                               e.currentTarget.blur(); // remove focus from the input
                             }
                           }}
-                          className="form-input block w-full sm:text-sm pl-10 pr-8 sm:leading-9 rounded-md focus:outline-none"
+                          className="form-input block w-full text-xs py-1 pl-10 pr-8 leading-tight rounded-lg focus:outline-none border-gray-200 focus:border-gray-200 focus:ring-1 focus:ring-gray-200"
                         />
-
                         <div
                           className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                           onClick={() => clearInput(expandedSidebarItem.dbField)} // Clear input for specific field
