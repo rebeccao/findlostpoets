@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Arial', 'Helvetica'],
+      },
       spacing: {
         'navbar': '56px', // Define custom spacing for navbar height
       },
