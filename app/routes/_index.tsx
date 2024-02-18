@@ -15,6 +15,14 @@ export type SearchCriteria =
 	|
 	{ orderBy?: { [key:string]: 'asc' | 'desc'; }; skip?: number; take?: number; };
 
+export interface SidebarProps {
+	selectedCheckboxes: Record<string, boolean>;
+	searchTexts: Record<string, string>;
+	onCheckboxChange: (checkboxState: Record<string, boolean>) => void;
+	onSearchTextChange: (searchTextState: Record<string, string>) => void;
+	onSelectionChange: (dbQuery: SearchCriteria) => void;
+}
+
 interface NavbarProps {
   toggleSidebar: () => void;
 }
@@ -36,26 +44,16 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 	);
 }
 
-function Sidebar() {
-	const navigate = useNavigate();
-
-	const handleSelectionChange = (dbQuery: SearchCriteria) => {
-		const criteriaString = JSON.stringify(dbQuery);
-    console.log('Index handleSelectionChange: navigate(/?$(queryString));', criteriaString);
-    
-		// Convert the criteria to a query string
-		const queryString = new URLSearchParams({ criteria: criteriaString }).toString();
-		//console.log('Index handleSelectionChange: Expected fetch URL:', `${window.location.pathname}?${queryString}`);
-		
-		// Navigate to the current route with new query parameters
-		navigate(`/?${queryString}`);
-  };
-
+function Sidebar({ selectedCheckboxes, searchTexts, onCheckboxChange, onSearchTextChange, onSelectionChange }: SidebarProps) {
 	return (
 		<section className="top-navbar shadow-inner-top-left translate-x-0 fixed left-0 h-full w-64 p-4 bg-gray-100 transform transition-transform duration-300">
-			{/* Input and selection components here, triggering handleSelectionChange on change */}
-			{/* Search Filters */}
-			<SidebarPanel onSelectionChange={handleSelectionChange} />
+			<SidebarPanel 
+				selectedCheckboxes={selectedCheckboxes}
+				searchTexts={searchTexts}
+				onCheckboxChange={onCheckboxChange}
+				onSearchTextChange={onSearchTextChange}
+				onSelectionChange={onSelectionChange} 
+			/>
     </section>
 	);
 }
@@ -98,7 +96,33 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 function Index() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, boolean>>({});
+	const [searchTexts, setSearchTexts] = useState<Record<string, string>>({});	
+
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
+	const navigate = useNavigate();
+
+	const handleSelectionChange = (dbQuery: SearchCriteria) => {
+		const criteriaString = JSON.stringify(dbQuery);
+    console.log('Index handleSelectionChange: navigate(/?$(queryString));', criteriaString);
+    
+		// Convert the criteria to a query string
+		const queryString = new URLSearchParams({ criteria: criteriaString }).toString();
+		//console.log('Index handleSelectionChange: Expected fetch URL:', `${window.location.pathname}?${queryString}`);
+		
+		// Navigate to the current route with new query parameters
+		navigate(`/?${queryString}`);
+  };
+
+	// Handlers for updating the sidebar states, which will be passed down
+  const handleCheckboxChange = (checkboxState: Record<string, boolean>) => {
+    setSelectedCheckboxes(checkboxState);
+  };
+
+  const handleSearchTextChange = (searchTextState: Record<string, string>) => {
+    setSearchTexts(searchTextState);
+  };
 
 	const data = useLoaderData<typeof loader>();
 	// If there's an error key in the data, it means something went wrong.
@@ -119,11 +143,20 @@ function Index() {
   }
 
   console.log("******************* const poets: Poet[] = data.poets; "); // Check the structure of 'data'
-  const poets: Poet[] = data.poets; // Assuming 'poets' is expected to be a key in the object returned by the loader
+	// poets is a in the object returned by the loader
+  const poets: Poet[] = data.poets || []; // Fallback to empty array if data.poets is undefined
 
   return (
 		<div className="flex">
-			{sidebarOpen && <Sidebar />}
+			{sidebarOpen && (
+        <Sidebar
+          selectedCheckboxes={selectedCheckboxes}
+          searchTexts={searchTexts}
+          onCheckboxChange={handleCheckboxChange}
+          onSearchTextChange={handleSearchTextChange}
+					onSelectionChange={handleSelectionChange} 
+        />
+      )}
 			<div className="flex flex-col w-full">
 				<Navbar toggleSidebar={toggleSidebar} />
 				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>

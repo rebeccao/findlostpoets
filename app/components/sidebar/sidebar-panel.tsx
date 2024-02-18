@@ -1,20 +1,15 @@
 import { sidebarItems } from "~/components/sidebar/sidebar-data";
-import type { SearchCriteria } from "~/routes/_index";
+//import type { SearchCriteria } from "~/routes/_index";
 import React, { useState } from "react";
 import { BiSearch, BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 import { GrFormClose } from "react-icons/gr";
 import type { SidebarItemExpanded } from "~/components/sidebar/sidebar-data";
+import type { SidebarProps } from "~/routes/_index";
 
-interface SidebarPanelProps {
-  onSelectionChange: (dbQuery: SearchCriteria) => void;
-}
-
-const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
+const SidebarPanel: React.FC<SidebarProps> = ({ selectedCheckboxes, searchTexts, onCheckboxChange, onSearchTextChange, onSelectionChange }) => {
   console.log("SidebarPanel start");
 
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null); // State to store the title of the currently expanded row, null if none
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, boolean>>({});
-  const [searchTexts, setSearchTexts] = useState<Record<string, string>>({});
 
   const expandCollapseRow = (sidebarItemTitle: string) => {
     if (expandedRowId === sidebarItemTitle) {
@@ -29,7 +24,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
     const updatedSelections = { ...selectedCheckboxes, [dbField]: isChecked };
 
     // Update the selected checkboxes state
-    setSelectedCheckboxes(updatedSelections);
+    onCheckboxChange(updatedSelections);
 
     const selectedFields = Object.entries(updatedSelections)
       .filter(([_, value]) => value)
@@ -65,7 +60,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
     if (value.trim().length > 0 || dbField === '') {
       const trimmedValue = value.trim();
       const newSearchTexts = { ...searchTexts, [dbField]: trimmedValue };
-      setSearchTexts(newSearchTexts);
+      onSearchTextChange(newSearchTexts);
   
       // Explicitly type the accumulator in the reduce function
       /*const whereConditions = Object.entries(newSearchTexts).reduce<{ [key: string]: { equals: string; mode: 'insensitive' } }[]>((acc, [key, value]) => {
@@ -103,7 +98,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
   const clearInput = (dbField: string) => {
     const newSearchTexts = { ...searchTexts };
     delete newSearchTexts[dbField]; // Remove the specific field from searchTexts
-    setSearchTexts(newSearchTexts);
+    onSearchTextChange(newSearchTexts);
   
     // Trigger a default search if all text inputs are cleared
     // Check if searchTexts is empty to decide whether to revert to default search
@@ -193,7 +188,7 @@ const SidebarPanel: React.FC<SidebarPanelProps> = ({ onSelectionChange }) => {
                           type="text"
                           id={index.toString()}
                           value={searchTexts[expandedSidebarItem.dbField] || ''} // Bind input value to state
-                          onChange={(e) => setSearchTexts({ ...searchTexts, [expandedSidebarItem.dbField]: e.target.value })} // Update state on change
+                          onChange={(e) => onSearchTextChange({ ...searchTexts, [expandedSidebarItem.dbField]: e.target.value })} // Update state on change
                           placeholder="Search"
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
