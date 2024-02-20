@@ -18,8 +18,10 @@ export type SearchCriteria =
 export interface SidebarProps {
 	selectedCheckboxes: Record<string, boolean>;
 	searchTexts: Record<string, string>;
+	selectedRanges: Record<string, { min?: number; max?: number }>;
 	onCheckboxChange: (checkboxState: Record<string, boolean>) => void;
 	onSearchTextChange: (searchTextState: Record<string, string>) => void;
+	onRangeChange: (rangeState: Record<string, { min: number; max: number }>) => void;
 	onSelectionChange: (dbQuery: SearchCriteria) => void;
 }
 
@@ -44,14 +46,24 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 	);
 }
 
-function Sidebar({ selectedCheckboxes, searchTexts, onCheckboxChange, onSearchTextChange, onSelectionChange }: SidebarProps) {
+function Sidebar({ 
+	selectedCheckboxes, 
+	searchTexts, 
+	selectedRanges,
+	onCheckboxChange, 
+	onSearchTextChange, 
+	onRangeChange,
+	onSelectionChange }: SidebarProps) 
+	{
 	return (
 		<section className="top-navbar shadow-inner-top-left translate-x-0 fixed left-0 h-full w-64 p-4 bg-gray-100 transform transition-transform duration-300">
 			<SidebarPanel 
 				selectedCheckboxes={selectedCheckboxes}
 				searchTexts={searchTexts}
+				selectedRanges={selectedRanges}
 				onCheckboxChange={onCheckboxChange}
 				onSearchTextChange={onSearchTextChange}
+				onRangeChange={onRangeChange}
 				onSelectionChange={onSelectionChange} 
 			/>
     </section>
@@ -98,6 +110,7 @@ function Index() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, boolean>>({});
 	const [searchTexts, setSearchTexts] = useState<Record<string, string>>({});	
+	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number }>>({});
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -122,6 +135,12 @@ function Index() {
 
   const handleSearchTextChange = (searchTextState: Record<string, string>) => {
     setSearchTexts(searchTextState);
+  };
+
+	const handleRangeChange = (newRange: Record<string, { min: number; max: number }>) => {
+		console.log("******Index: handleRangeChange newRange = ", newRange);
+    setRangeSelections(prev => ({ ...prev, ...newRange }));
+		console.log("******Index: handleRangeChange rangeSelections = ", rangeSelections);
   };
 
 	const data = useLoaderData<typeof loader>();
@@ -152,8 +171,10 @@ function Index() {
         <Sidebar
           selectedCheckboxes={selectedCheckboxes}
           searchTexts={searchTexts}
+					selectedRanges={rangeSelections}
           onCheckboxChange={handleCheckboxChange}
           onSearchTextChange={handleSearchTextChange}
+					onRangeChange={handleRangeChange}
 					onSelectionChange={handleSelectionChange} 
         />
       )}

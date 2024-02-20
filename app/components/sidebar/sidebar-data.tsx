@@ -1,8 +1,8 @@
 export type ExpandedSidebarItem = {
   title?: string;  
   dbField: string;
-  min?: number;
-  max?: number;
+  min?: string;
+  max?: string;
 }
 
 export type SidebarItem = {
@@ -49,8 +49,8 @@ export const sidebarItems: SidebarItem[] = [
     type: 'range', 
     expandedSidebarItems: [
       { dbField: 'prim',     // Mongodb field name for Word Count
-        min: 2,
-        max: 835399
+        min: "2",
+        max: "835399"
       }
     ]
   },
@@ -59,8 +59,8 @@ export const sidebarItems: SidebarItem[] = [
     type: 'range', 
     expandedSidebarItems: [
       { dbField: 'wrdCnt',   // Mongodb field name for Word Count
-        min: 2,
-        max: 255
+        min: "2",
+        max: "255"
       }
     ]
   },
@@ -69,8 +69,8 @@ export const sidebarItems: SidebarItem[] = [
     type: 'range', 
     expandedSidebarItems: [
       { dbField: 'lexCnt',   // Mongodb field name for Word Count
-        min: 1,
-        max: 255
+        min: "1",
+        max: "255"
       } 
     ]
   },
@@ -79,8 +79,8 @@ export const sidebarItems: SidebarItem[] = [
     type: 'range', 
     expandedSidebarItems: [
       { dbField: 'rewrCnt',   // Mongodb field name for Word Count
-        min: 1,
-        max: 89
+        min: "1",
+        max: "89"
       }
     ]
   }

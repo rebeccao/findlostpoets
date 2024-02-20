@@ -4,7 +4,15 @@ import { BiSearch, BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 import { GrFormClose } from "react-icons/gr";
 import type { SidebarProps } from "~/routes/_index";
 
-const SidebarPanel: React.FC<SidebarProps> = ({ selectedCheckboxes, searchTexts, onCheckboxChange, onSearchTextChange, onSelectionChange }) => {
+const SidebarPanel: React.FC<SidebarProps> = ({ 
+  selectedCheckboxes, 
+  searchTexts,
+  selectedRanges, 
+  onCheckboxChange, 
+  onSearchTextChange, 
+  onRangeChange,
+  onSelectionChange 
+}) => {
   console.log("SidebarPanel start");
 
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null); // State to store the title of the currently expanded row, null if none
@@ -59,14 +67,6 @@ const SidebarPanel: React.FC<SidebarProps> = ({ selectedCheckboxes, searchTexts,
       const trimmedValue = value.trim();
       const newSearchTexts = { ...searchTexts, [dbField]: trimmedValue };
       onSearchTextChange(newSearchTexts);
-  
-      // Explicitly type the accumulator in the reduce function
-      /*const whereConditions = Object.entries(newSearchTexts).reduce<{ [key: string]: { equals: string; mode: 'insensitive' } }[]>((acc, [key, value]) => {
-        if (value.trim()) {
-          acc.push({ [key]: { equals: value, mode: "insensitive" } });
-        }
-        return acc;
-      }, []);  */
       
       const whereConditions = Object.entries(newSearchTexts).reduce<{ [key: string]: { equals: string; mode: 'insensitive' } }[]>((acc, [key, val]) => {
         if (val.trim()) {
@@ -108,21 +108,85 @@ const SidebarPanel: React.FC<SidebarProps> = ({ selectedCheckboxes, searchTexts,
     }
   };
 
-  const handleRange = (
-    //expandedSidebarItems: ExpandedSidebarItems,
-    gteValue: number,
-    lteValue: number
-  ) => {
-    // { where: { WordCount: { gte: minNumber, lte: maxNumber } } }
-    const searchCriteria = {
-      where: {
-        //[expandedSidebarItems.dbField]: { gte: gteValue, lte: lteValue }, // Use dynamic field name
-      },
-    };
-    console.log("SidebarPanel: Range onSelectionChange:", searchCriteria);
-    //onSelectionChange(dbQuery, urlSegment); // Call the callback passed from the parent
+  const [localRangeValues, setLocalRangeValues] = useState<Record<string, { min: string; max: string }>>({});
+
+  const handleRangeInputChange = (dbField: string, rangeType: 'min' | 'max', value: string) => {
+    setLocalRangeValues(prev => ({
+        ...prev,
+        [dbField]: { ...prev[dbField], [rangeType]: value },
+    }));
+    console.log("handleRangeInputChange: localRangeValues = ", localRangeValues)
   };
 
+  // Intermediary function to validate and handle cases where the input is empty by resetting it to a default value
+  function handleInputChange(dbField: string, rangeType: 'min' | 'max', value: string, defaultValue: string) {
+    if (value.trim() !== '') {
+      handleRangeInputChange(dbField, rangeType, value);
+    } else {
+      // Reset to the provided default value (e.g., rangeItem.min) if the input is empty
+      handleRangeInputChange(dbField, rangeType, defaultValue);
+    }
+  }
+
+  interface QueryStructure {
+    [key: string]: { gte: number | undefined; lte: number | undefined };
+  }
+  
+  const submitRange = () => {
+    const dbQuery: QueryStructure = Object.keys(localRangeValues).reduce((acc, key) => {
+      const { min, max } = localRangeValues[key];
+      acc[key] = {
+        gte: min ? parseFloat(min) : undefined, // Convert to float or use undefined
+        lte: max ? parseFloat(max) : undefined, // Convert to float or use undefined
+      };
+      return acc;
+    }, {} as QueryStructure); // Type assertion here
+    onSelectionChange(dbQuery);
+  };
+/*
+  const submitRange = (dbField: string) => {
+    // Get the current values for min and max from local state
+    const currentRange = localRangeValues[dbField];
+    if (!currentRange) return;
+
+    // Convert string values to numbers or fallback to undefined if conversion fails or if the string is empty
+    const min = currentRange.min ? parseFloat(currentRange.min) : undefined;
+    const max = currentRange.max ? parseFloat(currentRange.max) : undefined;
+
+    // Update the local state in the Index component to reflect the new range selection
+    onRangeChange({
+        ...rangeSelections, // Previous state
+        [dbField]: { min, max }, // Update specific range
+    });
+
+    const dbQuery = Object.keys(localRangeValues).reduce((acc, key) => {
+      const { min, max } = localRangeValues[key];
+      // Directly parse min and max to float without fallback to undefined
+      acc[key] = {
+          gte: parseFloat(min), // Assuming min and max are always provided as strings
+          lte: parseFloat(max),
+      };
+      return acc;
+  }, {});
+
+  // Now dbQuery should correctly reflect the structured criteria for the database query
+  onRangeChange(dbQuery); // Assuming this is the correct handler to update state or trigger actions
+
+    // Assuming you need to fetch data based on this range
+    // Construct a query object to be used for fetching data
+    const dbQuery = {
+        where: {
+            AND: [{ [dbField]: { gte: min, lte: max } }],
+        },
+        orderBy: {
+            [dbField]: 'desc',
+        },
+    };
+
+    // Trigger data fetching with the constructed query
+    onSelectionChange(dbQuery);
+};
+ */ 
   return (
     <div> 
       {sidebarItems.map((sidebarItem, index) => {
@@ -205,25 +269,54 @@ const SidebarPanel: React.FC<SidebarProps> = ({ selectedCheckboxes, searchTexts,
                       </div>
                     )} 
                     {sidebarItem.type === "range" && (
-                      <div className="flex flex-col items-start">
-                        <label
-                          htmlFor={expandedSidebarItemIndex.toString()}
-                          className="mb-1"
-                        >
-                          {expandedSidebarItem.title}
-                        </label>
-                        <input
-                          id={expandedSidebarItemIndex.toString()}
-                          type="range"
-                          //min={subItem.min}
-                          //max={subItem.max}
-                          //step={subItem.step}
-                          className="..."
-                        />
-                        <span className="text-sm mt-1">
-                          Value: {/* Dynamic value display logic */}
-                        </span>
-                      </div>
+                      sidebarItem.expandedSidebarItems.map((rangeItem) => (
+                        <div key={rangeItem.dbField} className="space-y-2">
+                          {/* Min Input */}
+                          <label htmlFor={`min-${rangeItem.dbField}`}>Minimum:</label>
+                          <input
+                            type="text" // Consider using "text" instead of "number" to easily handle empty strings
+                            id={`min-${rangeItem.dbField}`}
+                            value={localRangeValues[rangeItem.dbField]?.min || ''}
+                            onChange={(e) => {
+                              // Just handle the input change here, without resetting to default immediately
+                              handleRangeInputChange(rangeItem.dbField, 'min', e.target.value);
+                            }}
+                            onBlur={(e) => {
+                              // When input loses focus, check if it's empty and reset to defaultValue if needed
+                              if (e.target.value.trim() === '') {
+                                handleRangeInputChange(rangeItem.dbField, 'min', rangeItem.min!);
+                              }
+                            }}
+                            aria-label={`Minimum ${rangeItem.dbField}`}
+                            className="form-input block text-xs py-2 pl-4 w-32 leading-tight rounded-lg focus:outline-none border-gray-200 focus:border-gray-200 focus:ring-1 focus:ring-gray-200"
+                          />
+                          {/* Max Input */}
+                          <label htmlFor={`max-${rangeItem.dbField}`}>Maximum:</label>
+                          <input
+                            type="text" // Consider using "text" instead of "number" to easily handle empty strings
+                            id={`max-${rangeItem.dbField}`}
+                            value={localRangeValues[rangeItem.dbField]?.max || ''}
+                            onChange={(e) => {
+                              // Just handle the input change here, without resetting to default immediately
+                              handleRangeInputChange(rangeItem.dbField, 'max', e.target.value);
+                            }}
+                            //onBlur={(e) => {
+                              // When input loses focus, check if it's empty and reset to defaultValue if needed
+                              //if (e.target.value.trim() === '') {
+                                //handleRangeInputChange(rangeItem.dbField, 'max', rangeItem.min!);
+                              //}
+                           // }}
+                            aria-label={`Maximum ${rangeItem.dbField}`}
+                            className="form-input block text-xs py-2 pl-4 w-28 leading-tight rounded-lg focus:outline-none border-gray-200 focus:border-gray-200 focus:ring-1 focus:ring-gray-200"
+                          />
+                          {/* Apply Button */}
+                          <button onClick={() => submitRange()}
+                          className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                      ))
                     )}
                   </div>
                 )
