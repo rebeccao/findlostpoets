@@ -16,12 +16,12 @@ export type SearchCriteria =
 	{ orderBy?: { [key:string]: 'asc' | 'desc'; }; skip?: number; take?: number; };
 
 export interface SidebarProps {
-	selectedCheckboxes: Record<string, boolean>;
+	selectedRareTraitCheckboxes: Record<string, boolean>;
 	searchTexts: Record<string, string>;
-	selectedRanges: Record<string, { min?: number; max?: number }>;
-	onCheckboxChange: (checkboxState: Record<string, boolean>) => void;
+	selectedRanges: Record<string, { min?: number; max?: number; isSelected: boolean }>;
+	onRareTraitCheckboxChange: (checkboxState: Record<string, boolean>) => void;
 	onSearchTextChange: (searchTextState: Record<string, string>) => void;
-	onRangeChange: (rangeState: Record<string, { min: number; max: number }>) => void;
+	onRangeChange: (rangeState: Record<string, { min: number; max: number; isSelected: boolean }>) => void;
 	onSelectionChange: (dbQuery: SearchCriteria) => void;
 }
 
@@ -47,21 +47,21 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 }
 
 function Sidebar({ 
-	selectedCheckboxes, 
+	selectedRareTraitCheckboxes, 
 	searchTexts, 
 	selectedRanges,
-	onCheckboxChange, 
+	onRareTraitCheckboxChange, 
 	onSearchTextChange, 
 	onRangeChange,
 	onSelectionChange }: SidebarProps) 
 	{
 	return (
-		<section className="top-navbar shadow-inner-top-left translate-x-0 fixed left-0 h-full w-64 p-4 bg-gray-100 transform transition-transform duration-300">
+		<section className="top-navbar shadow-inner-top-left translate-x-0 fixed left-0 h-full w-96 bg-gray-100 transform transition-transform duration-300">
 			<SidebarPanel 
-				selectedCheckboxes={selectedCheckboxes}
+				selectedRareTraitCheckboxes={selectedRareTraitCheckboxes}
 				searchTexts={searchTexts}
 				selectedRanges={selectedRanges}
-				onCheckboxChange={onCheckboxChange}
+				onRareTraitCheckboxChange={onRareTraitCheckboxChange}
 				onSearchTextChange={onSearchTextChange}
 				onRangeChange={onRangeChange}
 				onSelectionChange={onSelectionChange} 
@@ -108,9 +108,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 function Index() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, boolean>>({});
+	const [selectedRareTraitCheckboxes, setSelectedRareTraitCheckboxes] = useState<Record<string, boolean>>({});
 	const [searchTexts, setSearchTexts] = useState<Record<string, string>>({});	
-	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number }>>({});
+	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number; isSelected: boolean }>>({});
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -129,17 +129,27 @@ function Index() {
   };
 
 	// Handlers for updating the sidebar states, which will be passed down
-  const handleCheckboxChange = (checkboxState: Record<string, boolean>) => {
-    setSelectedCheckboxes(checkboxState);
+  const handleRareTraitCheckboxChange = (checkboxState: Record<string, boolean>) => {
+    setSelectedRareTraitCheckboxes(checkboxState);
   };
 
   const handleSearchTextChange = (searchTextState: Record<string, string>) => {
     setSearchTexts(searchTextState);
   };
 
-	const handleRangeChange = (newRange: Record<string, { min: number; max: number }>) => {
+	const handleRangeChange = (newRange: Record<string, { min: number; max: number; isSelected: boolean }>) => {
 		console.log("******Index: handleRangeChange newRange = ", newRange);
-    setRangeSelections(prev => ({ ...prev, ...newRange }));
+    setRangeSelections(prev => {
+			// Map over the keys in newRange to correctly merge the new values with the existing ones
+			const updatedRanges = { ...prev };
+			Object.keys(newRange).forEach(key => {
+					updatedRanges[key] = { 
+							...prev[key], 
+							...newRange[key],
+					};
+			});
+			return updatedRanges;
+		});
 		console.log("******Index: handleRangeChange rangeSelections = ", rangeSelections);
   };
 
@@ -169,10 +179,10 @@ function Index() {
 		<div className="flex">
 			{sidebarOpen && (
         <Sidebar
-          selectedCheckboxes={selectedCheckboxes}
+          selectedRareTraitCheckboxes={selectedRareTraitCheckboxes}
           searchTexts={searchTexts}
 					selectedRanges={rangeSelections}
-          onCheckboxChange={handleCheckboxChange}
+          onRareTraitCheckboxChange={handleRareTraitCheckboxChange}
           onSearchTextChange={handleSearchTextChange}
 					onRangeChange={handleRangeChange}
 					onSelectionChange={handleSelectionChange} 
@@ -180,7 +190,7 @@ function Index() {
       )}
 			<div className="flex flex-col w-full">
 				<Navbar toggleSidebar={toggleSidebar} />
-				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
+				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-96' : 'ml-0'}`}>
 					<div className="mt-4 px-4">
 						<div className="grid grid-cols-3 gap-4">
 							{poets && poets.map(poet => (
