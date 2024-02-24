@@ -7,6 +7,7 @@ import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import ImageCard from '~/components/image-card';
 import {HiMenuAlt3} from 'react-icons/hi';
 import type { Poet } from '@prisma/client'
+import '~/tailwind.css';
 
 export type SearchCriteria =
 	{ [field: string]: any } 
@@ -35,7 +36,7 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 			<div className="flex items-center">
 				<button 
 				  onClick={toggleSidebar} 
-					className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-gray-300 hover:bg-gray-400"
+					className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-gray-400 hover:bg-gray-500"
 					aria-label='Toggle Sidebar'
 				>
 					<HiMenuAlt3 size={26} className="cursor-pointer text-white" />
@@ -56,7 +57,9 @@ function Sidebar({
 	onSelectionChange }: SidebarProps) 
 	{
 	return (
-		<section className="top-navbar shadow-inner-top-left translate-x-0 fixed left-0 h-full w-96 bg-gray-100 transform transition-transform duration-300">
+		//<section className="fixed left-0 top-[height_of_navbar] bottom-0 w-80 bg-gray-100">
+	//<section className="fixed left-0 sidebar-top bottom-0 w-80 bg-gray-100">
+	<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
 			<SidebarPanel 
 				selectedRareTraitCheckboxes={selectedRareTraitCheckboxes}
 				searchTexts={searchTexts}
@@ -190,7 +193,7 @@ function Index() {
       )}
 			<div className="flex flex-col w-full">
 				<Navbar toggleSidebar={toggleSidebar} />
-				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-96' : 'ml-0'}`}>
+				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 					<div className="mt-4 px-4">
 						<div className="grid grid-cols-3 gap-4">
 							{poets && poets.map(poet => (

@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Styles */
+:root {
+  --navbar-height: 56px;
+}
+
+.sidebar {
+  padding-top: var(--navbar-height);
+}
+
+.placeholder-italic::placeholder {
+  font-style: italic;
+}

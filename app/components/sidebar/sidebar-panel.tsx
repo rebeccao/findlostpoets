@@ -185,152 +185,125 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     onSelectionChange(dbQuery);
   };   */
 
+// Assuming states are managed at the SidebarPanel level or via context
+  function handleSearchClick() {
+    const dbQuery = {
+      // Composition of the query based on states
+      //traits: selectedTraits,
+      //rareTraits: selectedRareTraits,
+      ranges: selectedRanges,
+    };
+    
+    // Example function that would perform the search
+    //performSearch(dbQuery);
+  }
+
   return (
-    <div className="h-screen overflow-y-auto scrollbar scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-      <div className="py-4">
-        {sidebarItems.map((sidebarItem, index) => {
-          return (
-            <React.Fragment key={sidebarItem.title}>
-              <div
-                className="flex items-center px-1 py-1 list-none h-15 text-md sans text-base"
-              >
-                <span className="ml-4">{sidebarItem.title}</span>
-              </div>
-              {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, expandedSidebarItemIndex) => (
-                <div
-                  key={`${sidebarItem.title}-${expandedSidebarItemIndex}`}
-                  className="flex items-center p-2 pl-8 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full"
-                >
-                  {sidebarItem.type === "traitSearch" && (
-                    <div className="flex items-center space-x-2 w-full">
-                      <div className="flex items-center flex-1">
-                        <CustomCheckbox
-                          id={expandedSidebarItemIndex.toString()}
-                          checked={selectedRareTraitCheckboxes[expandedSidebarItem.dbField]}
-                          onChange={(e) => handleCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
-                          label={expandedSidebarItem.title!}
-                        />
-                      </div>
-                      <div className="flex items-center space-x-1"> {/* Text to search input */}
-                        <input
-                          type="text"
-                          id={`max-${expandedSidebarItem.dbField}`}
-                          value={localRangeValues[expandedSidebarItem.dbField]?.max || ''}
-                          onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
-                          aria-label={`Maximum ${expandedSidebarItem.dbField}`}
-                          className="form-input text-xs py-2 pl-4 w-40 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
-                        />
-                      </div>
-                    </div>
-                  )}
-                  {sidebarItem.type === "oldTraitSearch" && (
-                    <div className="flex items-center space-x-2 w-full">
-                      <div className="flex items-center flex-1">
-                        {expandedSidebarItem.title!}
-                      </div>
-                      {/* Inputs Container aligned to the left */}
-                      <div className="flex items-center space-x-1"> {/* This container holds the min input, dash, and max input */}
-                        {/* Min Input */}
-                        <input
-                          type="text"
-                          id={`min-${expandedSidebarItem.dbField}`}
-                          value={localRangeValues[expandedSidebarItem.dbField]?.min || ''}
-                          onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
-                          aria-label={`Minimum ${expandedSidebarItem.dbField}`}
-                          className="form-input text-xs py-2 pl-4 w-20 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
-                        />
-                      </div>
-                    </div>
-                  )}
-                  {sidebarItem.type === "sort" && (
-                    <label className="w-full flex items-center cursor-pointer" htmlFor={expandedSidebarItemIndex.toString()}>
-                    <input
-                      id={expandedSidebarItemIndex.toString()}
-                      type="checkbox"
-                      value={expandedSidebarItem.dbField}
-                      checked={selectedRareTraitCheckboxes[expandedSidebarItem.dbField] ?? false} 
-                      onChange={(e) => handleRareTraitCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
-                      className="opacity-0 absolute h-4 w-4"
-                    />
-                    <span className={`ml-1 w-4 h-4 rounded-sm shadow-sm flex justify-center items-center mr-2 ${selectedRareTraitCheckboxes[expandedSidebarItem.dbField] ? 'bg-gray-400 border-gray-700' : 'bg-white border border-gray-200'}`}>
-                      {selectedRareTraitCheckboxes[expandedSidebarItem.dbField] && (
-                        <svg className="w-3 h-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                    </span>
-                    {expandedSidebarItem.title}
-                  </label>
-                  )} 
-                  {sidebarItem.type === "oldsearch" && (
-                    <div className="relative rounded-md shadow-sm">
-                      <div
-                        className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
-                        onClick={() => handleSearchText(expandedSidebarItem.dbField, searchTexts[expandedSidebarItem.dbField] || '')}
-                      >
-                        {/*<BiSearch /> */}
-                      </div>
-                      <input
-                        type="text"
-                        id={expandedSidebarItemIndex.toString()}
-                        value={searchTexts[expandedSidebarItem.dbField] || ''} // Bind input value to state
-                        onChange={(e) => onSearchTextChange({ ...searchTexts, [expandedSidebarItem.dbField]: e.target.value })} // Update state on change
-                        placeholder="Search"
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleSearchText(expandedSidebarItem.dbField, e.currentTarget.value);
-                            e.currentTarget.blur(); // remove focus from the input
-                          }
-                        }}
-                        className="form-input block w-full text-xs py-2 pl-10 pr-8 leading-tight rounded-lg focus:outline-none border-gray-200 focus:border-gray-200 focus:ring-1 focus:ring-gray-200"
-                      />
-                      <div
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                        onClick={() => clearInput(expandedSidebarItem.dbField)} // Clear input for specific field
-                      >
-                        <GrFormClose />
-                      </div>
-                    </div>
-                  )} 
-                  {sidebarItem.type === "range" && (
-                    <div className="flex items-center space-x-2 w-full">
-                      <div className="flex items-center flex-1">
-                        <CustomCheckbox
-                          id={expandedSidebarItemIndex.toString()}
-                          checked={selectedRareTraitCheckboxes[expandedSidebarItem.dbField]}
-                          onChange={(e) => handleCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
-                          label={expandedSidebarItem.title!}
-                        />
-                      </div>
-                      {/* Inputs Container aligned to the left */}
-                      <div className="flex items-center space-x-1"> {/* This container holds the min input, dash, and max input */}
-                        {/* Min Input */}
-                        <input
-                          type="text"
-                          id={`min-${expandedSidebarItem.dbField}`}
-                          value={localRangeValues[expandedSidebarItem.dbField]?.min || ''}
-                          onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
-                          aria-label={`Minimum ${expandedSidebarItem.dbField}`}
-                          className="form-input text-xs py-2 pl-4 w-20 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
-                        />
-                        <span>-</span> {/* Dash */}
-                        {/* Max Input */}
-                        <input
-                          type="text"
-                          id={`max-${expandedSidebarItem.dbField}`}
-                          value={localRangeValues[expandedSidebarItem.dbField]?.max || ''}
-                          onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
-                          aria-label={`Maximum ${expandedSidebarItem.dbField}`}
-                          className="form-input text-xs py-2 pl-4 w-20 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
-                        />
-                      </div>
-                    </div>
-                  )}
+    <div className="flex flex-col h-screen">
+      <div className="h-screen pb-14 overflow-y-auto scrollbar scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <div className="py-4 pt-navbar">
+          {sidebarItems.map((sidebarItem, index) => {
+            return (
+              <React.Fragment key={sidebarItem.title}>
+                <div className="flex items-center px-1 pt-4 pb-1 list-none h-15 text-md sans text-base">
+                  <span className="ml-4">{sidebarItem.title}</span>
                 </div>
-              ))}
-            </React.Fragment>
-          );
-        })}
+                {/* Conditional rendering for "Search By Trait" section */}
+                {sidebarItem.type === "traitSearch" && (
+                  <div className="flex items-center p-2 pl-8 w-full">
+                    {/* Dropdown for selecting traits */}
+                    <select
+                      className="form-select block w-2/5 mb-0 mr-2 text-xs py-2 px-4 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 flex-grow" 
+                      onChange={(e) => {
+                        // Assuming handleTraitChange updates the state for the selected trait
+                        handleTraitChange(e.target.value);
+                      }}
+                      aria-label="Select a trait"
+                    >
+                      {sidebarItem.expandedSidebarItems.map((item, idx) => (
+                        <option key={idx} value={item.dbField}>{item.title}</option>
+                      ))}
+                    </select>
+                    {/* Single search box */}
+                    <input
+                      type="text"
+                      placeholder="Enter search term..."
+                      className="form-input block placeholder-italic flex-grow w-3/5 text-xs py-2 px-4 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                      onChange={(e) => {
+                        // Assuming handleSearchTermChange updates the state for the search term
+                        handleSearchTermChange(e.target.value);
+                      }}
+                    />
+                  </div>
+                )}  
+                {sidebarItem.type === "sort" && (
+                  <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-8 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
+                    <div className="grid grid-cols-2 gap-4 w-full">
+                      {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, expandedSidebarItemIndex) => (
+                        <div key={`${sidebarItem.title}-${expandedSidebarItemIndex}`} className="flex items-center cursor-pointer">
+                          <CustomCheckbox
+                            id={`${expandedSidebarItem.dbField}-${expandedSidebarItemIndex}`}
+                            checked={selectedRareTraitCheckboxes[expandedSidebarItem.dbField] ?? false}
+                            onChange={(e) => handleRareTraitCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
+                            label={expandedSidebarItem.title!}
+                          />
+                        </div>
+                      ))} 
+                    </div>
+                  </div>
+                )}
+                {sidebarItem.type === "range" && (
+                  <div className="flex flex-col p-2 pl-8 pr-3 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
+                    {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => (
+                      <div key={index} className="flex items-center space-x-1 mb-2 w-full">
+                        <div className="flex items-center flex-1">
+                          <CustomCheckbox
+                            id={`range-checkbox-${expandedSidebarItem.dbField}`}
+                            checked={selectedRareTraitCheckboxes[expandedSidebarItem.dbField]}
+                            onChange={(e) => handleCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
+                            label={expandedSidebarItem.title!}
+                          />
+                        </div>
+                        {/* Inputs Container aligned to the left */}
+                        <div className="flex items-center space-x-1"> {/* This container holds the min input, dash, and max input */}
+                          {/* Min Input */}
+                          <input
+                            type="text"
+                            id={`min-${expandedSidebarItem.dbField}`}
+                            value={localRangeValues[expandedSidebarItem.dbField]?.min || ''}
+                            onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
+                            aria-label={`Minimum ${expandedSidebarItem.dbField}`}
+                            placeholder={expandedSidebarItem.min}
+                            className="form-input text-xs py-2 pl-4 text-right w-[72px] rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                          />
+                          <span>-</span> {/* Dash */}
+                          {/* Max Input */}
+                          <input
+                            type="text"
+                            id={`max-${expandedSidebarItem.dbField}`}
+                            value={localRangeValues[expandedSidebarItem.dbField]?.max || ''}
+                            onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
+                            aria-label={`Maximum ${expandedSidebarItem.dbField}`}
+                            placeholder={expandedSidebarItem.max}
+                            className="form-input text-xs py-2 pl-4 text-right w-[72px] rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 p-4 flex justify-center">
+        <button
+          className="w-1/2 bg-gray-400 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-500"
+          onClick={handleSearchClick}
+        >
+          Search
+        </button>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 export type ExpandedSidebarItem = {
-  title?: string;  
+  title: string;  
   dbField: string;
   min?: string;
   max?: string;
@@ -22,7 +22,7 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Breed', dbField: 'brd' },   // Mongodb field name for Breed
       { title: 'Age', dbField: 'age' },
       { title: 'Genre', dbField: 'gen' },
-      { title: 'Polarity', dbField: 'pol' },
+     // { title: 'Polarity', dbField: 'pol' },
       { title: 'Ego', dbField: 'ego' }
     ]
   },
@@ -33,7 +33,7 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Breed', dbField: 'brdCnt' },   // Mongodb field name for Breed
       { title: 'Age', dbField: 'ageCnt' },
       { title: 'Genre', dbField: 'genCnt' },
-      { title: 'Polarity', dbField: 'polCnt' },
+      //{ title: 'Polarity', dbField: 'polCnt' },
       { title: 'Ego', dbField: 'egoCnt' }
     ]
   },
