@@ -7,6 +7,7 @@ export type ExpandedSidebarItem = {
 
 export type SidebarItem = {
   title: string;
+  details: string;
   type: 'traitSearch' | 'sort' | 'range' | 'oldTraitSearch' | 'oldsearch';
   expandedSidebarItems: ExpandedSidebarItem[];
 }
@@ -14,12 +15,13 @@ export type SidebarItem = {
 export const sidebarItems: SidebarItem[] = [
   {
     title: 'Search By Trait',
+    details: 'Dropdown provides the trait to search.',
     type: 'traitSearch',
     expandedSidebarItems: [
-      { title: 'Poet Name', dbField: 'pNam' },
+      { title: 'Poet Name', dbField: 'pNam' },   // Mongodb field name for Poet Name
       { title: 'Origin', dbField: 'ori' },
       { title: 'Latent', dbField: 'lat' },
-      { title: 'Breed', dbField: 'brd' },   // Mongodb field name for Breed
+      { title: 'Breed', dbField: 'brd' },   
       { title: 'Age', dbField: 'age' },
       { title: 'Genre', dbField: 'gen' },
      // { title: 'Polarity', dbField: 'pol' },
@@ -28,6 +30,7 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     title: 'Sort By Rare Traits',
+    details: 'Returns Poets sorted by the rarest inascending order.',
     type: 'sort',
     expandedSidebarItems: [
       { title: 'Breed', dbField: 'brdCnt' },   // Mongodb field name for Breed
@@ -39,12 +42,13 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     title: 'Search By Ranges',
+    details: 'Search by range.',
     type: 'range',
-    expandedSidebarItems: [
-      { title: 'Prime Number', dbField: 'prim', min: "2", max: "835399" },   // Mongodb field name for Prime Number
+    expandedSidebarItems: [     
+      { title: 'Lexicon', dbField: 'lexCnt', min: "1", max: "255" },        // Mongodb field name for Lexicon
       { title: 'Word Count', dbField: 'wrdCnt', min: "2", max: "255" }, 
-      { title: 'Lexicon', dbField: 'lexCnt', min: "1", max: "255" }, 
       { title: 'Rewrites', dbField: 'rewrCnt', min: "1", max: "89" }, 
+      { title: 'Prime Number', dbField: 'prim', min: "2", max: "835399" }, 
     ]
   },
    /* {

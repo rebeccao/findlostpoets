@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import type { SidebarProps } from "~/routes/_index";
 import CustomCheckbox from "~/components/custom-checkbox";
+import Tooltip from "~/components/tooltip";
 
 const SidebarPanel: React.FC<SidebarProps> = ({ 
   selectedRareTraitCheckboxes, 
@@ -15,6 +16,8 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   onSelectionChange 
 }) => {
   console.log("SidebarPanel start");
+
+  const [localSearchTraitValues, setLocalSearchTraitValues] = useState<Record<string, { min: string; max: string }>>({});
 
   const handleCheckboxChange = (dbField: string, isChecked: boolean) => {
     const updatedSelections = { ...selectedRareTraitCheckboxes, [dbField]: isChecked };
@@ -206,14 +209,16 @@ const SidebarPanel: React.FC<SidebarProps> = ({
             return (
               <React.Fragment key={sidebarItem.title}>
                 <div className="flex items-center px-1 pt-4 pb-1 list-none h-15 text-md sans text-base">
-                  <span className="ml-4">{sidebarItem.title}</span>
+                  <Tooltip content={sidebarItem.details}>
+                    <span>{sidebarItem.title}</span>
+                  </Tooltip>
                 </div>
                 {/* Conditional rendering for "Search By Trait" section */}
                 {sidebarItem.type === "traitSearch" && (
-                  <div className="flex items-center p-2 pl-8 w-full">
+                  <div className="flex items-center py-2 pr-3 pl-6 w-full">
                     {/* Dropdown for selecting traits */}
                     <select
-                      className="form-select block w-2/5 mb-0 mr-2 text-xs py-2 px-4 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 flex-grow" 
+                      className="form-select block w-2/5 mb-0 mr-2 text-sm py-2 px-3 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 flex-grow" 
                       onChange={(e) => {
                         // Assuming handleTraitChange updates the state for the selected trait
                         handleTraitChange(e.target.value);
@@ -237,7 +242,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                   </div>
                 )}  
                 {sidebarItem.type === "sort" && (
-                  <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-8 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
+                  <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
                     <div className="grid grid-cols-2 gap-4 w-full">
                       {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, expandedSidebarItemIndex) => (
                         <div key={`${sidebarItem.title}-${expandedSidebarItemIndex}`} className="flex items-center cursor-pointer">
@@ -253,7 +258,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                   </div>
                 )}
                 {sidebarItem.type === "range" && (
-                  <div className="flex flex-col p-2 pl-8 pr-3 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
+                  <div className="flex flex-col p-2 pl-6 pr-3 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
                     {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => (
                       <div key={index} className="flex items-center space-x-1 mb-2 w-full">
                         <div className="flex items-center flex-1">
@@ -274,7 +279,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
                             aria-label={`Minimum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.min}
-                            className="form-input text-xs py-2 pl-4 text-right w-[72px] rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                           />
                           <span>-</span> {/* Dash */}
                           {/* Max Input */}
@@ -285,7 +290,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
                             aria-label={`Maximum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.max}
-                            className="form-input text-xs py-2 pl-4 text-right w-[72px] rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                           />
                         </div>
                       </div>
