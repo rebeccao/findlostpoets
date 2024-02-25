@@ -6,7 +6,8 @@ import React, { useState } from 'react';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import ImageCard from '~/components/image-card';
 import {HiMenuAlt3} from 'react-icons/hi';
-import type { Poet } from '@prisma/client'
+import type { Poet } from '@prisma/client';
+import { sidebarItems } from "~/components/sidebar/sidebar-data";
 import '~/tailwind.css';
 
 export type SearchCriteria =
@@ -18,10 +19,10 @@ export type SearchCriteria =
 
 export interface SidebarProps {
 	selectedRareTraitCheckboxes: Record<string, boolean>;
-	searchTexts: Record<string, string>;
+	searchTrait: Record<string, string>;
 	selectedRanges: Record<string, { min?: number; max?: number; isSelected: boolean }>;
 	onRareTraitCheckboxChange: (checkboxState: Record<string, boolean>) => void;
-	onSearchTextChange: (searchTextState: Record<string, string>) => void;
+	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => void;
 	onRangeChange: (rangeState: Record<string, { min: number; max: number; isSelected: boolean }>) => void;
 	onSelectionChange: (dbQuery: SearchCriteria) => void;
 }
@@ -49,10 +50,10 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 
 function Sidebar({ 
 	selectedRareTraitCheckboxes, 
-	searchTexts, 
+	searchTrait, 
 	selectedRanges,
 	onRareTraitCheckboxChange, 
-	onSearchTextChange, 
+	onSearchTraitChange, 
 	onRangeChange,
 	onSelectionChange }: SidebarProps) 
 	{
@@ -62,10 +63,10 @@ function Sidebar({
 	<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
 			<SidebarPanel 
 				selectedRareTraitCheckboxes={selectedRareTraitCheckboxes}
-				searchTexts={searchTexts}
+				searchTrait={searchTrait}
 				selectedRanges={selectedRanges}
 				onRareTraitCheckboxChange={onRareTraitCheckboxChange}
-				onSearchTextChange={onSearchTextChange}
+				onSearchTraitChange={onSearchTraitChange}
 				onRangeChange={onRangeChange}
 				onSelectionChange={onSelectionChange} 
 			/>
@@ -97,7 +98,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		}
 
 		const poets = await prisma.poet.findMany({
-			...searchCriteria,
+			//...searchCriteria,
 			skip: 0, 
 			take: 21,
 		});
@@ -112,7 +113,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 function Index() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [selectedRareTraitCheckboxes, setSelectedRareTraitCheckboxes] = useState<Record<string, boolean>>({});
-	const [searchTexts, setSearchTexts] = useState<Record<string, string>>({});	
+	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
+	const [searchTrait, setSearchTrait] = useState({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
+	//const [searchTexts, setSearchTexts] = useState<Record<string, string>>({});	
 	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number; isSelected: boolean }>>({});
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -136,8 +139,9 @@ function Index() {
     setSelectedRareTraitCheckboxes(checkboxState);
   };
 
-  const handleSearchTextChange = (searchTextState: Record<string, string>) => {
-    setSearchTexts(searchTextState);
+  const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => {
+    setSearchTrait(searchTraitState);
+		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
   };
 
 	const handleRangeChange = (newRange: Record<string, { min: number; max: number; isSelected: boolean }>) => {
@@ -183,10 +187,10 @@ function Index() {
 			{sidebarOpen && (
         <Sidebar
           selectedRareTraitCheckboxes={selectedRareTraitCheckboxes}
-          searchTexts={searchTexts}
+          searchTrait={searchTrait}
 					selectedRanges={rangeSelections}
           onRareTraitCheckboxChange={handleRareTraitCheckboxChange}
-          onSearchTextChange={handleSearchTextChange}
+          onSearchTraitChange={handleSearchTraitChange}
 					onRangeChange={handleRangeChange}
 					onSelectionChange={handleSelectionChange} 
         />
