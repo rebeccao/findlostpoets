@@ -98,7 +98,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		}
 
 		const poets = await prisma.poet.findMany({
-			//...searchCriteria,
+			...searchCriteria,
 			skip: 0, 
 			take: 21,
 		});
