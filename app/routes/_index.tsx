@@ -18,11 +18,11 @@ export type SearchCriteria = {
 };
 
 export interface SidebarProps {
-	selectedRareTraitCheckboxes: Record<string, boolean>;
 	searchTrait: Record<string, string>;
+	selectedRareTraits: Record<string, boolean>;
 	selectedRanges: Record<string, { min?: number; max?: number; isSelected: boolean }>;
-	onRareTraitCheckboxChange: (checkboxState: Record<string, boolean>) => void;
 	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => void;
+	onRareTraitChange: (checkboxState: Record<string, boolean>) => void;
 	onRangeChange: (rangeState: Record<string, { min: number; max: number; isSelected: boolean }>) => void;
 	onSelectionChange: (dbQuery: SearchCriteria) => void;
 }
@@ -49,22 +49,22 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 }
 
 function Sidebar({ 
-	selectedRareTraitCheckboxes, 
-	searchTrait, 
+	searchTrait,
+	selectedRareTraits,  
 	selectedRanges,
-	onRareTraitCheckboxChange, 
 	onSearchTraitChange, 
+	onRareTraitChange, 
 	onRangeChange,
 	onSelectionChange }: SidebarProps) 
 	{
 	return (
 	<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
 			<SidebarPanel 
-				selectedRareTraitCheckboxes={selectedRareTraitCheckboxes}
 				searchTrait={searchTrait}
+				selectedRareTraits={selectedRareTraits}
 				selectedRanges={selectedRanges}
-				onRareTraitCheckboxChange={onRareTraitCheckboxChange}
 				onSearchTraitChange={onSearchTraitChange}
+				onRareTraitChange={onRareTraitChange}
 				onRangeChange={onRangeChange}
 				onSelectionChange={onSelectionChange} 
 			/>
@@ -119,7 +119,7 @@ function Index() {
 	console.log("******************* const poets: Poet[] = data.poets, initialData ", initialData); 
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const [selectedRareTraitCheckboxes, setSelectedRareTraitCheckboxes] = useState<Record<string, boolean>>({});
+	const [selectedRareTraits, setSelectedRareTraits] = useState<Record<string, boolean>>({});
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
 	const [searchTrait, setSearchTrait] = useState({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
 	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number; isSelected: boolean }>>({});
@@ -138,8 +138,8 @@ function Index() {
   };
 
 	// Handlers for updating the sidebar states, which will be passed down
-  const handleRareTraitCheckboxChange = (checkboxState: Record<string, boolean>) => {
-    setSelectedRareTraitCheckboxes(checkboxState);
+  const handleRareTraitChange = (checkboxState: Record<string, boolean>) => {
+    setSelectedRareTraits(checkboxState);
   };
 
   const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => {
@@ -167,10 +167,10 @@ function Index() {
 		<div className="flex">
 			{sidebarOpen && (
         <Sidebar
-          selectedRareTraitCheckboxes={selectedRareTraitCheckboxes}
+          selectedRareTraits={selectedRareTraits}
           searchTrait={searchTrait}
 					selectedRanges={rangeSelections}
-          onRareTraitCheckboxChange={handleRareTraitCheckboxChange}
+          onRareTraitChange={handleRareTraitChange}
           onSearchTraitChange={handleSearchTraitChange}
 					onRangeChange={handleRangeChange}
 					onSelectionChange={handleSelectionChange} 

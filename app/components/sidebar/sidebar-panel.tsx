@@ -1,25 +1,20 @@
 import { sidebarItems } from "~/components/sidebar/sidebar-data";
 import React, { useState } from "react";
-//import { BiSearch, BiSolidChevronDown, BiSolidChevronUp } from "react-icons/bi";
 import { GrFormClose } from "react-icons/gr";
-import type { SidebarProps } from "~/routes/_index";
 import CustomCheckbox from "~/components/custom-checkbox";
 import Tooltip from "~/components/tooltip";
+import type { SidebarProps, SearchCriteria } from "~/routes/_index";
 
 const SidebarPanel: React.FC<SidebarProps> = ({ 
-  selectedRareTraitCheckboxes, 
   searchTrait,
+  selectedRareTraits, 
   selectedRanges, 
-  onRareTraitCheckboxChange, 
   onSearchTraitChange, 
+  onRareTraitChange, 
   onRangeChange,
   onSelectionChange 
 }) => {
   console.log("SidebarPanel start");
-
-  // Initialize initialTraitDbField with what is displayed in the select dropdown, i.e., the first item
-  //const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
-  //const [searchCriteria, setSearchCriteria] = useState({ searchTrait: initialTraitDbField, searchTraitValue: '' });
 
   // Handler for changing the searchTrait
   const handleSearchTraitChange = (newSearchTraitKey: string) => {
@@ -41,7 +36,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     onSearchTraitChange(updatedSearchTrait);
   };
 
-  const clearInput = () => {
+  const clearSearchTraitInput = () => {
     // Set searchTraitValue  to empty string while keeping the current searchTraitKey
     const updatedSearchTrait = {
       searchTraitKey: searchTrait.searchTraitKey,
@@ -50,19 +45,31 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     onSearchTraitChange(updatedSearchTrait);
   };
 
+  const resetSearch = () => {
+    // Set searchTraitValue  to empty string while keeping the current searchTraitKey
+    const updatedSearchTrait = {
+      searchTraitKey: searchTrait.searchTraitKey,
+      searchTraitValue: '',
+    };
+    onSearchTraitChange(updatedSearchTrait);
+
+  };
+
   // Handler for the search button click
   const handleSearchClick = () => {
-    // Perform the search only if the term is not empty
-    if (searchTrait.searchTraitValue.trim() !== '') {
-      const dbQuery = {
+    const trimmedSearchValue = searchTrait.searchTraitValue.trim();
+    let dbQuery: SearchCriteria;
+    if (trimmedSearchValue !== '') {
+      dbQuery = {
         where: {
-          [searchTrait.searchTraitKey]: { equals: searchTrait.searchTraitValue.trim(), mode: "insensitive" } 
-        },
+          [searchTrait.searchTraitKey]: { equals: trimmedSearchValue, mode: "insensitive" }
+        }
       };
-  
-      console.log("SidebarPanel: handleSearchText dbQuery: ", dbQuery);
-      onSelectionChange(dbQuery);
+    } else {
+      dbQuery = {  orderBy: { pid: 'asc' }  };
     }
+    console.log("SidebarPanel: handleSearchText dbQuery: ", dbQuery);
+    onSelectionChange(dbQuery);
   };
 
   const [localRangeValues, setLocalRangeValues] = useState<Record<string, { min: string; max: string }>>({});
@@ -76,17 +83,17 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   };
 
   const handleCheckboxChange = (dbField: string, isChecked: boolean) => {
-    const updatedSelections = { ...selectedRareTraitCheckboxes, [dbField]: isChecked };
+    const updatedSelections = { ...selectedRareTraits, [dbField]: isChecked };
 
     // Update the selected checkboxes state
-    onRareTraitCheckboxChange(updatedSelections);
+    onRareTraitChange(updatedSelections);
   };
 
-  const handleRareTraitCheckboxChange = (dbField: string, isChecked: boolean) => {
-    const updatedSelections = { ...selectedRareTraitCheckboxes, [dbField]: isChecked };
+  const handleRareTraitChange = (dbField: string, isChecked: boolean) => {
+    const updatedSelections = { ...selectedRareTraits, [dbField]: isChecked };
 
     // Update the selected checkboxes state
-    onRareTraitCheckboxChange(updatedSelections);
+    onRareTraitChange(updatedSelections);
   };
 
   return (
@@ -125,7 +132,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                       {searchTrait.searchTraitValue && (
                         <GrFormClose
                           className="absolute right-3 cursor-pointer"
-                          onClick={clearInput}
+                          onClick={clearSearchTraitInput}
                         />
                       )}
                     </div>
@@ -137,9 +144,9 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                       {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, expandedSidebarItemIndex) => (
                         <div key={`${sidebarItem.title}-${expandedSidebarItemIndex}`} className="flex items-center cursor-pointer">
                           <CustomCheckbox
-                            id={`${expandedSidebarItem.dbField}-${expandedSidebarItemIndex}`}
-                            checked={selectedRareTraitCheckboxes[expandedSidebarItem.dbField] ?? false}
-                            onChange={(e) => handleRareTraitCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
+                            id={`sort-${expandedSidebarItem.dbField}-${expandedSidebarItemIndex}`}
+                            checked={selectedRareTraits[expandedSidebarItem.dbField] ?? false}
+                            onChange={(e) => handleRareTraitChange(expandedSidebarItem.dbField, e.target.checked)}
                             label={expandedSidebarItem.title!}
                           />
                         </div>
@@ -153,8 +160,8 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                       <div key={index} className="flex items-center space-x-1 mb-2 w-full">
                         <div className="flex items-center flex-1">
                           <CustomCheckbox
-                            id={`range-checkbox-${expandedSidebarItem.dbField}`}
-                            checked={selectedRareTraitCheckboxes[expandedSidebarItem.dbField]}
+                            id={`range-${expandedSidebarItem.dbField}-${index}`}
+                            checked={selectedRareTraits[expandedSidebarItem.dbField]}
                             onChange={(e) => handleCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
                             label={expandedSidebarItem.title!}
                           />
@@ -164,7 +171,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                           {/* Min Input */}
                           <input
                             type="text"
-                            id={`min-${expandedSidebarItem.dbField}`}
+                            id={`min-${expandedSidebarItem.dbField}-${index}`}
                             value={localRangeValues[expandedSidebarItem.dbField]?.min || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
                             aria-label={`Minimum ${expandedSidebarItem.dbField}`}
@@ -175,7 +182,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                           {/* Max Input */}
                           <input
                             type="text"
-                            id={`max-${expandedSidebarItem.dbField}`}
+                            id={`max-${expandedSidebarItem.dbField}-${index}`}
                             value={localRangeValues[expandedSidebarItem.dbField]?.max || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
                             aria-label={`Maximum ${expandedSidebarItem.dbField}`}
@@ -192,12 +199,18 @@ const SidebarPanel: React.FC<SidebarProps> = ({
           })}
         </div>
       </div>
-      <div className="absolute inset-x-0 bottom-0 p-4 flex justify-center">
+      <div className="absolute inset-x-0 bottom-0 p-4 flex justify-center space-x-2">
         <button
-          className="w-1/2 bg-gray-400 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-500"
+          className="w-1/4 bg-gray-400 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-500"
           onClick={handleSearchClick}
         >
           Search
+        </button>
+        <button
+          className="w-1/4 bg-red-400 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-red-500"
+          onClick={resetSearch} // Assuming this resets all search inputs
+        >
+          Clear
         </button>
       </div>
     </div>
