@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate } from '@remix-run/react'
+import { useLoaderData, useFetcher } from '@remix-run/react'
 import { json } from '@remix-run/node'
 import type { LoaderFunction } from '@remix-run/node'
 import { prisma } from '~/utils/prisma.server'
@@ -10,12 +10,12 @@ import type { Poet } from '@prisma/client';
 import { sidebarItems } from "~/components/sidebar/sidebar-data";
 import '~/tailwind.css';
 
-export type SearchCriteria =
-	{ [field: string]: any } 
-  | 
-  { [condition: string]: { [field: string]: any } }
-	|
-	{ orderBy?: { [key:string]: 'asc' | 'desc'; }; skip?: number; take?: number; };
+export type SearchCriteria = {
+  where?: { [key: string]: any };
+  skip?: number;
+  take?: number;
+  orderBy?: { [key: string]: 'asc' | 'desc' };
+};
 
 export interface SidebarProps {
 	selectedRareTraitCheckboxes: Record<string, boolean>;
@@ -58,8 +58,6 @@ function Sidebar({
 	onSelectionChange }: SidebarProps) 
 	{
 	return (
-		//<section className="fixed left-0 top-[height_of_navbar] bottom-0 w-80 bg-gray-100">
-	//<section className="fixed left-0 sidebar-top bottom-0 w-80 bg-gray-100">
 	<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
 			<SidebarPanel 
 				selectedRareTraitCheckboxes={selectedRareTraitCheckboxes}
@@ -111,27 +109,32 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 function Index() {
+	const fetcher = useFetcher();
+  //const isFetching = fetcher.state === 'submitting';
+	const initialData = useLoaderData<typeof loader>();
+
+  // Determine the current state: data from fetcher if present, otherwise from the initial load
+  const { poets, error } = fetcher.data || initialData;
+	console.log("******************* const poets: Poet[] = data.poets, fetcher.data ", fetcher.data); // Check the structure of 'data'
+	console.log("******************* const poets: Poet[] = data.poets, initialData ", initialData); 
+
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [selectedRareTraitCheckboxes, setSelectedRareTraitCheckboxes] = useState<Record<string, boolean>>({});
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
 	const [searchTrait, setSearchTrait] = useState({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
-	//const [searchTexts, setSearchTexts] = useState<Record<string, string>>({});	
 	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number; isSelected: boolean }>>({});
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-	const navigate = useNavigate();
-
 	const handleSelectionChange = (dbQuery: SearchCriteria) => {
-		const criteriaString = JSON.stringify(dbQuery);
-    console.log('Index handleSelectionChange: navigate(/?$(queryString));', criteriaString);
+		const searchCriteriaString = JSON.stringify(dbQuery);
+    console.log('Index handleSelectionChange: searchCriteriaString));', searchCriteriaString);
     
 		// Convert the criteria to a query string
-		const queryString = new URLSearchParams({ criteria: criteriaString }).toString();
-		//console.log('Index handleSelectionChange: Expected fetch URL:', `${window.location.pathname}?${queryString}`);
+		const queryString = new URLSearchParams({ criteria: searchCriteriaString }).toString();
 		
-		// Navigate to the current route with new query parameters
-		navigate(`/?${queryString}`);
+		// Use fetcher.load to initiate the request
+		fetcher.load(`?index&${queryString}`);              // Note: this does not work: fetcher.load(`/?${queryString}`);
   };
 
 	// Handlers for updating the sidebar states, which will be passed down
@@ -160,28 +163,6 @@ function Index() {
 		console.log("******Index: handleRangeChange rangeSelections = ", rangeSelections);
   };
 
-	const data = useLoaderData<typeof loader>();
-	// If there's an error key in the data, it means something went wrong.
-  if (data.error) {
-    // Splitting the error message into lines for styling
-    const errorMessageLines = data.error.split(". ");
-    return (
-      <div className="flex items-start justify-center h-screen">
-        <div className="text-center pt-32 space-y-2">
-          {errorMessageLines.map((line: string, index: number) => (
-            <p key={index} className={`${index === 0 ? 'text-lg font-semibold' : 'text-md'}`}>
-              {line}{index < errorMessageLines.length - 1 ? '.' : ''}
-            </p>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  console.log("******************* const poets: Poet[] = data.poets; "); // Check the structure of 'data'
-	// poets is a in the object returned by the loader
-  const poets: Poet[] = data.poets || []; // Fallback to empty array if data.poets is undefined
-
   return (
 		<div className="flex">
 			{sidebarOpen && (
@@ -199,10 +180,16 @@ function Index() {
 				<Navbar toggleSidebar={toggleSidebar} />
 				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 					<div className="mt-4 px-4">
+						{/* Display loading state */}
+						{fetcher.state === 'loading' && <div>Loading...</div>}
+
+						{/* Display error state */}
+						{error && <div className="error">Error: {error}</div>}
+
 						<div className="grid grid-cols-3 gap-4">
-							{poets && poets.map(poet => (
-								<ImageCard key={poet.pid} poet={poet} />
-							))}
+						{poets?.map((poet: Poet) => (
+							<ImageCard key={poet.pid} poet={poet} />
+						))}
 						</div>
 					</div>
 				</div>
