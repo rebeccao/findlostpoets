@@ -24,12 +24,12 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Breed', dbField: 'brd' },   
       { title: 'Age', dbField: 'age' },
       { title: 'Genre', dbField: 'gen' },
-     // { title: 'Polarity', dbField: 'pol' },
-      { title: 'Ego', dbField: 'ego' }
+      { title: 'Ego', dbField: 'ego' },
+      { title: 'Polarity', dbField: 'pol' },
     ]
   },
   {
-    title: 'Sort By Rare Traits',
+    title: 'Sort By Rare Trait',
     details: 'Returns Poets sorted by the rarest inascending order.',
     type: 'sort',
     expandedSidebarItems: [
@@ -51,65 +51,4 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Prime Number', dbField: 'prim', min: "2", max: "835399" }, 
     ]
   },
-   /* {
-    title: 'Poet Name',
-    type: 'search',
-    expandedSidebarItems: [
-      { dbField: 'pNam' },   // Mongodb field name for Poet Name
-    ]
-  },
-  {
-    title: 'Origin',
-    type: 'search',
-    expandedSidebarItems: [
-      { dbField: 'ori' }   // Mongodb field name for Origin
-    ]
-  },
-  {
-    title: 'Latent',
-    type: 'search',
-    expandedSidebarItems: [
-      { dbField: 'lat' }   // Mongodb field name for Latent
-    ]
-  },*/
-  /*{
-    title: 'Prime Number',
-    type: 'range', 
-    expandedSidebarItems: [
-      { dbField: 'prim',     // Mongodb field name for Prime Number
-        min: "2",
-        max: "835399"
-      }
-    ]
-  },
-  {
-    title: 'Word Count',
-    type: 'range', 
-    expandedSidebarItems: [
-      { dbField: 'wrdCnt',   // Mongodb field name for Word Count
-        min: "2",
-        max: "255"
-      }
-    ]
-  },
-  {
-    title: 'Lexicon',
-    type: 'range', 
-    expandedSidebarItems: [
-      { dbField: 'lexCnt',   // Mongodb field name for Lexicon
-        min: "1",
-        max: "255"
-      } 
-    ]
-  },
-  {
-    title: 'Rewrites',
-    type: 'range', 
-    expandedSidebarItems: [
-      { dbField: 'rewrCnt',   // Mongodb field name for Rewrites
-        min: "1",
-        max: "89"
-      }
-    ]
-  }*/
 ];

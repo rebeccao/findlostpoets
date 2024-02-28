@@ -45,10 +45,9 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     onSearchTraitChange(updatedSearchTrait);
   };
 
-  const handleRareTraitChange = (dbField: string, isChecked: boolean) => {
-    const updatedSelections = { ...selectedRareTrait, [dbField]: isChecked };
-
-    onRareTraitChange(updatedSelections);   // Update the selected checkboxes state
+  const handleRareTraitChange = (dbField: string) => {
+    // Directly call the onRareTraitChange prop with the dbField of the clicked checkbox
+    onRareTraitChange(dbField); // This function now expects a single string or null
   };
 
   const resetSearch = () => {
@@ -72,6 +71,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     let whereConditions: any[] = [];
     let orderByConditions: SearchCriteria['orderBy'] = [];
   
+    // Search By Trait
     if (searchTrait.searchTraitValue) {
       const trimmedSearchValue = searchTrait.searchTraitValue.trim();
   
@@ -81,15 +81,14 @@ const SidebarPanel: React.FC<SidebarProps> = ({
         });
       }
     }
-    const selectedFields = Object.entries(selectedRareTrait)
-      .filter(([_, value]) => value)
-      .map(([key]) => key);
-  
-    if (selectedFields.length > 0) {
-      selectedFields.forEach(field => {
-        whereConditions.push({ [field]: { gt: 0 } });
-        orderByConditions.push({ [field]: 'asc' });
-      });
+
+    // Sort By Rare Trait
+    if(selectedRareTrait) {
+      const trait = selectedRareTrait.slice(0, -3);
+
+      whereConditions.push({ [selectedRareTrait]: { gt: 0 } });
+      orderByConditions.push({ [selectedRareTrait]: 'asc' })
+      orderByConditions.push({ [trait]: 'asc' })                // sort the actual trait after sorting the trait count
     }
   
     if (whereConditions.length > 0) {
@@ -118,9 +117,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   };
 
   const handleRangeCheckboxChange = (dbField: string, isChecked: boolean) => {
-    const updatedSelections = { ...selectedRareTrait, [dbField]: isChecked };
-
-    onRareTraitChange(updatedSelections);   // Update the selected checkboxes state
+    
   };
 
   return (
@@ -172,8 +169,8 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         <div key={`${sidebarItem.title}-${expandedSidebarItemIndex}`} className="flex items-center cursor-pointer">
                           <CustomCheckbox
                             id={`sort-${expandedSidebarItem.dbField}-${expandedSidebarItemIndex}`}
-                            checked={selectedRareTrait[expandedSidebarItem.dbField] ?? false}
-                            onChange={(e) => handleRareTraitChange(expandedSidebarItem.dbField, e.target.checked)}
+                            checked={selectedRareTrait === expandedSidebarItem.dbField}
+                            onChange={() => handleRareTraitChange(expandedSidebarItem.dbField)}
                             label={expandedSidebarItem.title!}
                           />
                         </div>
@@ -188,7 +185,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         <div className="flex items-center flex-1">
                           <CustomCheckbox
                             id={`range-${expandedSidebarItem.dbField}-${index}`}
-                            checked={selectedRareTrait[expandedSidebarItem.dbField]}
+                            checked={selectedRareTrait === expandedSidebarItem.dbField}
                             onChange={(e) => handleRangeCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
                             label={expandedSidebarItem.title!}
                           />

@@ -19,10 +19,10 @@ export type SearchCriteria = {
 
 export interface SidebarProps {
 	searchTrait: Record<string, string>;
-	selectedRareTrait: Record<string, boolean>;
+	selectedRareTrait: string | null; 
 	selectedRanges: Record<string, { min?: number; max?: number; isSelected: boolean }>;
 	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => void;
-	onRareTraitChange: (checkboxState: Record<string, boolean>) => void;
+	onRareTraitChange: (selectedDbField: string) => void;
 	onRangeChange: (rangeState: Record<string, { min: number; max: number; isSelected: boolean }>) => void;
 	performSearch: (dbQuery: SearchCriteria) => void;
 }
@@ -122,7 +122,7 @@ function Index() {
 
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
 	const [searchTrait, setSearchTrait] = useState({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
-	const [selectedRareTrait, setSelectedRareTrait] = useState<Record<string, boolean>>({});
+	const [selectedRareTrait, setSelectedRareTrait] = useState<string | null>(null);
 	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number; isSelected: boolean }>>({});
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -143,9 +143,10 @@ function Index() {
 		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
   };
 
-  const handleRareTraitChange = (checkboxState: Record<string, boolean>) => {
-    setSelectedRareTrait(checkboxState);
-  };
+  const handleRareTraitChange = (selectedDbField: string) => {
+		// Toggle selection: if the same trait is selected again, deselect it; otherwise, update the selection
+		setSelectedRareTrait(prev => (prev === selectedDbField ? null : selectedDbField));
+	};
 
 	const handleRangeChange = (newRange: Record<string, { min: number; max: number; isSelected: boolean }>) => {
 		console.log("******Index: handleRangeChange newRange = ", newRange);
