@@ -14,7 +14,7 @@ export type SearchCriteria = {
   where?: { [key: string]: any };
   skip?: number;
   take?: number;
-  orderBy?: { [key: string]: 'asc' | 'desc' };
+  orderBy?: { [key: string]: 'asc' | 'desc' }[];
 };
 
 export interface SidebarProps {
@@ -24,7 +24,7 @@ export interface SidebarProps {
 	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => void;
 	onRareTraitChange: (checkboxState: Record<string, boolean>) => void;
 	onRangeChange: (rangeState: Record<string, { min: number; max: number; isSelected: boolean }>) => void;
-	onSelectionChange: (dbQuery: SearchCriteria) => void;
+	performSearch: (dbQuery: SearchCriteria) => void;
 }
 
 interface NavbarProps {
@@ -55,7 +55,7 @@ function Sidebar({
 	onSearchTraitChange, 
 	onRareTraitChange, 
 	onRangeChange,
-	onSelectionChange }: SidebarProps) 
+	performSearch }: SidebarProps) 
 	{
 	return (
 	<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
@@ -66,7 +66,7 @@ function Sidebar({
 				onSearchTraitChange={onSearchTraitChange}
 				onRareTraitChange={onRareTraitChange}
 				onRangeChange={onRangeChange}
-				onSelectionChange={onSelectionChange} 
+				performSearch={performSearch} 
 			/>
     </section>
 	);
@@ -77,7 +77,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const url = new URL(request.url);
 
-		let searchCriteria: SearchCriteria = { orderBy: { pid: 'asc' } }; // Default criteria
+		let searchCriteria: SearchCriteria = { orderBy: [{ pid: 'asc' }] }; // Default criteria
 		
 		const criteriaParam = url.searchParams.get("criteria");
 		console.log('Index loader: Received criteriaParam:', criteriaParam);
@@ -119,14 +119,15 @@ function Index() {
 	console.log("******************* const poets: Poet[] = data.poets, initialData ", initialData); 
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const [selectedRareTraits, setSelectedRareTraits] = useState<Record<string, boolean>>({});
+
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
 	const [searchTrait, setSearchTrait] = useState({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
+	const [selectedRareTraits, setSelectedRareTraits] = useState<Record<string, boolean>>({});
 	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number; isSelected: boolean }>>({});
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-	const handleSelectionChange = (dbQuery: SearchCriteria) => {
+	const initiateSearch = (dbQuery: SearchCriteria) => {
 		const searchCriteriaString = JSON.stringify(dbQuery);
     console.log('Index handleSelectionChange: searchCriteriaString));', searchCriteriaString);
     
@@ -137,14 +138,13 @@ function Index() {
 		fetcher.load(`?index&${queryString}`);              // Note: this does not work: fetcher.load(`/?${queryString}`);
   };
 
-	// Handlers for updating the sidebar states, which will be passed down
-  const handleRareTraitChange = (checkboxState: Record<string, boolean>) => {
-    setSelectedRareTraits(checkboxState);
-  };
-
-  const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => {
+	const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => {
     setSearchTrait(searchTraitState);
 		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
+  };
+
+  const handleRareTraitChange = (checkboxState: Record<string, boolean>) => {
+    setSelectedRareTraits(checkboxState);
   };
 
 	const handleRangeChange = (newRange: Record<string, { min: number; max: number; isSelected: boolean }>) => {
@@ -173,7 +173,7 @@ function Index() {
           onRareTraitChange={handleRareTraitChange}
           onSearchTraitChange={handleSearchTraitChange}
 					onRangeChange={handleRangeChange}
-					onSelectionChange={handleSelectionChange} 
+					performSearch={initiateSearch} 
         />
       )}
 			<div className="flex flex-col w-full">

@@ -12,7 +12,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   onSearchTraitChange, 
   onRareTraitChange, 
   onRangeChange,
-  onSelectionChange 
+  performSearch 
 }) => {
   console.log("SidebarPanel start");
 
@@ -45,31 +45,66 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     onSearchTraitChange(updatedSearchTrait);
   };
 
+  const handleRareTraitChange = (dbField: string, isChecked: boolean) => {
+    const updatedSelections = { ...selectedRareTraits, [dbField]: isChecked };
+
+    onRareTraitChange(updatedSelections);   // Update the selected checkboxes state
+  };
+
   const resetSearch = () => {
     // Set searchTraitValue  to empty string while keeping the current searchTraitKey
-    const updatedSearchTrait = {
-      searchTraitKey: searchTrait.searchTraitKey,
-      searchTraitValue: '',
-    };
-    onSearchTraitChange(updatedSearchTrait);
+    if (searchTrait.searchTraitValue !== '') {
+      const updatedSearchTrait = {
+        searchTraitKey: searchTrait.searchTraitKey,
+        searchTraitValue: '',
+      };
+      onSearchTraitChange(updatedSearchTrait);
+    }
 
+    const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }] };
+    console.log("SidebarPanel: resetSearch dbQuery: ", dbQuery);
+    performSearch(dbQuery);
   };
 
   // Handler for the search button click
   const handleSearchClick = () => {
-    const trimmedSearchValue = searchTrait.searchTraitValue.trim();
-    let dbQuery: SearchCriteria;
-    if (trimmedSearchValue !== '') {
-      dbQuery = {
-        where: {
+    let dbQuery: SearchCriteria = {};
+    let whereConditions: any[] = [];
+    let orderByConditions: SearchCriteria['orderBy'] = [];
+  
+    if (searchTrait.searchTraitValue) {
+      const trimmedSearchValue = searchTrait.searchTraitValue.trim();
+  
+      if (trimmedSearchValue !== '') {
+        whereConditions.push({
           [searchTrait.searchTraitKey]: { equals: trimmedSearchValue, mode: "insensitive" }
-        }
-      };
-    } else {
-      dbQuery = {  orderBy: { pid: 'asc' }  };
+        });
+      }
     }
-    console.log("SidebarPanel: handleSearchText dbQuery: ", dbQuery);
-    onSelectionChange(dbQuery);
+    const selectedFields = Object.entries(selectedRareTraits)
+      .filter(([_, value]) => value)
+      .map(([key]) => key);
+  
+    if (selectedFields.length > 0) {
+      selectedFields.forEach(field => {
+        whereConditions.push({ [field]: { gt: 0 } });
+        orderByConditions.push({ [field]: 'asc' });
+      });
+    }
+  
+    if (whereConditions.length > 0) {
+      dbQuery.where = { AND: whereConditions };
+    }
+  
+    if (orderByConditions.length > 0) {
+      dbQuery.orderBy = orderByConditions;
+    } else {
+      // Apply default orderBy if no other orderBy conditions are specified
+      dbQuery.orderBy = [{ pid: 'asc' }];
+    }
+  
+    console.log("SidebarPanel: handleSearchClick dbQuery: ", dbQuery);
+    performSearch(dbQuery);
   };
 
   const [localRangeValues, setLocalRangeValues] = useState<Record<string, { min: string; max: string }>>({});
@@ -82,18 +117,10 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     console.log("handleRangeInputChange: localRangeValues = ", localRangeValues)
   };
 
-  const handleCheckboxChange = (dbField: string, isChecked: boolean) => {
+  const handleRangeCheckboxChange = (dbField: string, isChecked: boolean) => {
     const updatedSelections = { ...selectedRareTraits, [dbField]: isChecked };
 
-    // Update the selected checkboxes state
-    onRareTraitChange(updatedSelections);
-  };
-
-  const handleRareTraitChange = (dbField: string, isChecked: boolean) => {
-    const updatedSelections = { ...selectedRareTraits, [dbField]: isChecked };
-
-    // Update the selected checkboxes state
-    onRareTraitChange(updatedSelections);
+    onRareTraitChange(updatedSelections);   // Update the selected checkboxes state
   };
 
   return (
@@ -162,7 +189,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                           <CustomCheckbox
                             id={`range-${expandedSidebarItem.dbField}-${index}`}
                             checked={selectedRareTraits[expandedSidebarItem.dbField]}
-                            onChange={(e) => handleCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
+                            onChange={(e) => handleRangeCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
                             label={expandedSidebarItem.title!}
                           />
                         </div>
@@ -201,13 +228,13 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       </div>
       <div className="absolute inset-x-0 bottom-0 p-4 flex justify-center space-x-2">
         <button
-          className="w-1/4 bg-gray-400 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-500"
+          className="w-1/4 bg-gray-600 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-700" // Darker for primary action
           onClick={handleSearchClick}
         >
           Search
         </button>
         <button
-          className="w-1/4 bg-red-400 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-red-500"
+          className="w-1/4 bg-gray-400 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-500" // Lighter for secondary clear action
           onClick={resetSearch} // Assuming this resets all search inputs
         >
           Clear
