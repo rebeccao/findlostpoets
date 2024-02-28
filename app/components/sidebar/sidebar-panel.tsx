@@ -7,7 +7,7 @@ import type { SidebarProps, SearchCriteria } from "~/routes/_index";
 
 const SidebarPanel: React.FC<SidebarProps> = ({ 
   searchTrait,
-  selectedRareTraits, 
+  selectedRareTrait, 
   selectedRanges, 
   onSearchTraitChange, 
   onRareTraitChange, 
@@ -46,7 +46,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   };
 
   const handleRareTraitChange = (dbField: string, isChecked: boolean) => {
-    const updatedSelections = { ...selectedRareTraits, [dbField]: isChecked };
+    const updatedSelections = { ...selectedRareTrait, [dbField]: isChecked };
 
     onRareTraitChange(updatedSelections);   // Update the selected checkboxes state
   };
@@ -81,7 +81,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
         });
       }
     }
-    const selectedFields = Object.entries(selectedRareTraits)
+    const selectedFields = Object.entries(selectedRareTrait)
       .filter(([_, value]) => value)
       .map(([key]) => key);
   
@@ -118,7 +118,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   };
 
   const handleRangeCheckboxChange = (dbField: string, isChecked: boolean) => {
-    const updatedSelections = { ...selectedRareTraits, [dbField]: isChecked };
+    const updatedSelections = { ...selectedRareTrait, [dbField]: isChecked };
 
     onRareTraitChange(updatedSelections);   // Update the selected checkboxes state
   };
@@ -172,7 +172,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         <div key={`${sidebarItem.title}-${expandedSidebarItemIndex}`} className="flex items-center cursor-pointer">
                           <CustomCheckbox
                             id={`sort-${expandedSidebarItem.dbField}-${expandedSidebarItemIndex}`}
-                            checked={selectedRareTraits[expandedSidebarItem.dbField] ?? false}
+                            checked={selectedRareTrait[expandedSidebarItem.dbField] ?? false}
                             onChange={(e) => handleRareTraitChange(expandedSidebarItem.dbField, e.target.checked)}
                             label={expandedSidebarItem.title!}
                           />
@@ -188,7 +188,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         <div className="flex items-center flex-1">
                           <CustomCheckbox
                             id={`range-${expandedSidebarItem.dbField}-${index}`}
-                            checked={selectedRareTraits[expandedSidebarItem.dbField]}
+                            checked={selectedRareTrait[expandedSidebarItem.dbField]}
                             onChange={(e) => handleRangeCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
                             label={expandedSidebarItem.title!}
                           />

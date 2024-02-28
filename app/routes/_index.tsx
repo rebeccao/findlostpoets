@@ -19,7 +19,7 @@ export type SearchCriteria = {
 
 export interface SidebarProps {
 	searchTrait: Record<string, string>;
-	selectedRareTraits: Record<string, boolean>;
+	selectedRareTrait: Record<string, boolean>;
 	selectedRanges: Record<string, { min?: number; max?: number; isSelected: boolean }>;
 	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => void;
 	onRareTraitChange: (checkboxState: Record<string, boolean>) => void;
@@ -50,7 +50,7 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 
 function Sidebar({ 
 	searchTrait,
-	selectedRareTraits,  
+	selectedRareTrait,  
 	selectedRanges,
 	onSearchTraitChange, 
 	onRareTraitChange, 
@@ -61,7 +61,7 @@ function Sidebar({
 	<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
 			<SidebarPanel 
 				searchTrait={searchTrait}
-				selectedRareTraits={selectedRareTraits}
+				selectedRareTrait={selectedRareTrait}
 				selectedRanges={selectedRanges}
 				onSearchTraitChange={onSearchTraitChange}
 				onRareTraitChange={onRareTraitChange}
@@ -122,7 +122,7 @@ function Index() {
 
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
 	const [searchTrait, setSearchTrait] = useState({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
-	const [selectedRareTraits, setSelectedRareTraits] = useState<Record<string, boolean>>({});
+	const [selectedRareTrait, setSelectedRareTrait] = useState<Record<string, boolean>>({});
 	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number; isSelected: boolean }>>({});
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -144,7 +144,7 @@ function Index() {
   };
 
   const handleRareTraitChange = (checkboxState: Record<string, boolean>) => {
-    setSelectedRareTraits(checkboxState);
+    setSelectedRareTrait(checkboxState);
   };
 
 	const handleRangeChange = (newRange: Record<string, { min: number; max: number; isSelected: boolean }>) => {
@@ -167,7 +167,7 @@ function Index() {
 		<div className="flex">
 			{sidebarOpen && (
         <Sidebar
-          selectedRareTraits={selectedRareTraits}
+          selectedRareTrait={selectedRareTrait}
           searchTrait={searchTrait}
 					selectedRanges={rangeSelections}
           onRareTraitChange={handleRareTraitChange}
