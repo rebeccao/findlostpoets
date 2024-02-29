@@ -14,3 +14,15 @@
 .placeholder-italic::placeholder {
   font-style: italic;
 }
+
+@layer utilities {
+  /* Styles to remove number input spinners */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    @apply appearance-none; /* Use Tailwind's apply for consistency */
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield; /* There's no Tailwind class for this, so we use regular CSS */
+  }
+}

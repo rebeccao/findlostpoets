@@ -20,10 +20,12 @@ export type SearchCriteria = {
 export interface SidebarProps {
 	searchTrait: Record<string, string>;
 	selectedRareTrait: string | null; 
-	selectedRanges: Record<string, { min?: number; max?: number; isSelected: boolean }>;
+	selectedRangeTrait: string | null; 
+	rangeValues: Record<string, { min?: number; max?: number }>;
 	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => void;
-	onRareTraitChange: (selectedDbField: string) => void;
-	onRangeChange: (rangeState: Record<string, { min: number; max: number; isSelected: boolean }>) => void;
+	onRareTraitChange: (selectedDbField: string | null) => void;
+	onRangeTraitSelect: (selectedDbField: string | null) => void; 
+	onRangeChange: (selectedDbField: string | null, min?: number, max?: number) => void;
 	performSearch: (dbQuery: SearchCriteria) => void;
 }
 
@@ -50,10 +52,12 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 
 function Sidebar({ 
 	searchTrait,
-	selectedRareTrait,  
-	selectedRanges,
+	selectedRareTrait,
+	selectedRangeTrait,  
+	rangeValues,
 	onSearchTraitChange, 
-	onRareTraitChange, 
+	onRareTraitChange,
+	onRangeTraitSelect,
 	onRangeChange,
 	performSearch }: SidebarProps) 
 	{
@@ -62,9 +66,11 @@ function Sidebar({
 			<SidebarPanel 
 				searchTrait={searchTrait}
 				selectedRareTrait={selectedRareTrait}
-				selectedRanges={selectedRanges}
+				selectedRangeTrait={selectedRangeTrait}
+				rangeValues={rangeValues}
 				onSearchTraitChange={onSearchTraitChange}
 				onRareTraitChange={onRareTraitChange}
+				onRangeTraitSelect={onRangeTraitSelect}
 				onRangeChange={onRangeChange}
 				performSearch={performSearch} 
 			/>
@@ -123,7 +129,8 @@ function Index() {
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
 	const [searchTrait, setSearchTrait] = useState({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
 	const [selectedRareTrait, setSelectedRareTrait] = useState<string | null>(null);
-	const [rangeSelections, setRangeSelections] = useState<Record<string, { min: number; max: number; isSelected: boolean }>>({});
+	const [selectedRangeTrait, setSelectedRangeTrait] = useState<string | null>(null);
+	const [rangeValues, setRangeValues] = useState<Record<string, { min?: number; max?: number }>>({});
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -143,36 +150,40 @@ function Index() {
 		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
   };
 
-  const handleRareTraitChange = (selectedDbField: string) => {
+  const handleRareTraitChange = (selectedDbField: string | null) => {
 		// Toggle selection: if the same trait is selected again, deselect it; otherwise, update the selection
 		setSelectedRareTrait(prev => (prev === selectedDbField ? null : selectedDbField));
 	};
 
-	const handleRangeChange = (newRange: Record<string, { min: number; max: number; isSelected: boolean }>) => {
-		console.log("******Index: handleRangeChange newRange = ", newRange);
-    setRangeSelections(prev => {
-			// Map over the keys in newRange to correctly merge the new values with the existing ones
-			const updatedRanges = { ...prev };
-			Object.keys(newRange).forEach(key => {
-					updatedRanges[key] = { 
-							...prev[key], 
-							...newRange[key],
-					};
-			});
-			return updatedRanges;
-		});
-		console.log("******Index: handleRangeChange rangeSelections = ", rangeSelections);
-  };
+	const handleRangeTraitSelect = (selectedDbField: string | null) => {
+		setSelectedRangeTrait(selectedDbField);
+	};
+
+	const handleRangeChange = (selectedDbField: string | null, min?: number, max?: number) => {
+		if (selectedDbField !== null) {
+			// Update min/max for the specified range trait
+			setRangeValues(prev => ({
+				...prev,
+				[selectedDbField]: { min, max }
+			}));
+		} else {
+			// Reset selected range trait and clear min/max for all traits
+			setSelectedRangeTrait(null);
+			setRangeValues({});
+		}
+	};
 
   return (
 		<div className="flex">
 			{sidebarOpen && (
         <Sidebar
-          selectedRareTrait={selectedRareTrait}
           searchTrait={searchTrait}
-					selectedRanges={rangeSelections}
+					selectedRareTrait={selectedRareTrait}
+					selectedRangeTrait={selectedRangeTrait}
+					rangeValues={rangeValues}
+					onSearchTraitChange={handleSearchTraitChange}
           onRareTraitChange={handleRareTraitChange}
-          onSearchTraitChange={handleSearchTraitChange}
+					onRangeTraitSelect={handleRangeTraitSelect}
 					onRangeChange={handleRangeChange}
 					performSearch={initiateSearch} 
         />

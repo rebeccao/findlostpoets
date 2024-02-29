@@ -1,5 +1,5 @@
 import { sidebarItems } from "~/components/sidebar/sidebar-data";
-import React, { useState } from "react";
+import React from "react";
 import { GrFormClose } from "react-icons/gr";
 import CustomCheckbox from "~/components/custom-checkbox";
 import Tooltip from "~/components/tooltip";
@@ -8,9 +8,11 @@ import type { SidebarProps, SearchCriteria } from "~/routes/_index";
 const SidebarPanel: React.FC<SidebarProps> = ({ 
   searchTrait,
   selectedRareTrait, 
-  selectedRanges, 
+  selectedRangeTrait,
+  rangeValues, 
   onSearchTraitChange, 
   onRareTraitChange, 
+  onRangeTraitSelect,
   onRangeChange,
   performSearch 
 }) => {
@@ -45,19 +47,43 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     onSearchTraitChange(updatedSearchTrait);
   };
 
-  const handleRareTraitChange = (dbField: string) => {
+  const handleRareTraitChange = (selectedDbField: string) => {
     // Directly call the onRareTraitChange prop with the dbField of the clicked checkbox
-    onRareTraitChange(dbField); // This function now expects a single string or null
+    onRareTraitChange(selectedDbField); // This function now expects a single string or null
+  };
+
+  // Update for checkbox change to also clear or set active trait
+  const handleRangeCheckboxChange = (selectedDbField: string) => {
+    if (selectedRangeTrait === selectedDbField) {
+      onRangeTraitSelect(null); // Deselect if the same trait is clicked again
+    } else {
+      onRangeTraitSelect(selectedDbField);
+    }
+  };
+
+  const handleRangeInputChange = (selectedDbField: string, rangeType: 'min' | 'max', value: string) => {
+    const numericValue = value === '' ? undefined : Number(value);
+    if (rangeType === 'min') {
+      onRangeChange(selectedDbField, numericValue, rangeValues[selectedDbField]?.max);
+    } else {
+      onRangeChange(selectedDbField, rangeValues[selectedDbField]?.min, numericValue);
+    }
   };
 
   const resetSearch = () => {
     // Set searchTraitValue  to empty string while keeping the current searchTraitKey
     if (searchTrait.searchTraitValue !== '') {
-      const updatedSearchTrait = {
-        searchTraitKey: searchTrait.searchTraitKey,
-        searchTraitValue: '',
-      };
-      onSearchTraitChange(updatedSearchTrait);
+      clearSearchTraitInput();
+    }
+
+    // Deselect the selected rare trait, if any
+    if (selectedRareTrait) {
+      onRareTraitChange(null);
+    }
+
+    // Reset the selected range trait and clear min/max values
+    if (selectedRangeTrait) {
+      onRangeChange(null, undefined, undefined);
     }
 
     const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }] };
@@ -90,6 +116,26 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       orderByConditions.push({ [selectedRareTrait]: 'asc' })
       orderByConditions.push({ [trait]: 'asc' })                // sort the actual trait after sorting the trait count
     }
+
+    // Sort By Range Trait
+    if (selectedRangeTrait && rangeValues[selectedRangeTrait]) {
+      interface RangeCondition {
+        gte?: number;
+        lte?: number;
+      }
+
+      const rangeCondition: RangeCondition = {};
+      if (rangeValues[selectedRangeTrait].min !== undefined) {
+          rangeCondition['gte'] = rangeValues[selectedRangeTrait].min;
+      }
+      if (rangeValues[selectedRangeTrait].max !== undefined) {
+          rangeCondition['lte'] = rangeValues[selectedRangeTrait].max;
+      }
+      if (Object.keys(rangeCondition).length > 0) {
+          whereConditions.push({ [selectedRangeTrait]: rangeCondition });
+          orderByConditions.push({ [selectedRangeTrait]: 'desc' }) 
+      }
+  }
   
     if (whereConditions.length > 0) {
       dbQuery.where = { AND: whereConditions };
@@ -104,20 +150,6 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   
     console.log("SidebarPanel: handleSearchClick dbQuery: ", dbQuery);
     performSearch(dbQuery);
-  };
-
-  const [localRangeValues, setLocalRangeValues] = useState<Record<string, { min: string; max: string }>>({});
-
-  const handleRangeInputChange = (dbField: string, rangeType: 'min' | 'max', value: string) => {
-    setLocalRangeValues(prev => ({
-        ...prev,
-        [dbField]: { ...prev[dbField], [rangeType]: value },
-    }));
-    console.log("handleRangeInputChange: localRangeValues = ", localRangeValues)
-  };
-
-  const handleRangeCheckboxChange = (dbField: string, isChecked: boolean) => {
-    
   };
 
   return (
@@ -185,8 +217,8 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         <div className="flex items-center flex-1">
                           <CustomCheckbox
                             id={`range-${expandedSidebarItem.dbField}-${index}`}
-                            checked={selectedRareTrait === expandedSidebarItem.dbField}
-                            onChange={(e) => handleRangeCheckboxChange(expandedSidebarItem.dbField, e.target.checked)}
+                            checked={selectedRangeTrait === expandedSidebarItem.dbField}
+                            onChange={() => handleRangeCheckboxChange(expandedSidebarItem.dbField)}
                             label={expandedSidebarItem.title!}
                           />
                         </div>
@@ -194,9 +226,9 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         <div className="flex items-center space-x-1"> {/* This container holds the min input, dash, and max input */}
                           {/* Min Input */}
                           <input
-                            type="text"
+                            type="number"
                             id={`min-${expandedSidebarItem.dbField}-${index}`}
-                            value={localRangeValues[expandedSidebarItem.dbField]?.min || ''}
+                            value={rangeValues[expandedSidebarItem.dbField]?.min || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
                             aria-label={`Minimum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.min}
@@ -205,9 +237,9 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                           <span>-</span> {/* Dash */}
                           {/* Max Input */}
                           <input
-                            type="text"
+                            type="number"
                             id={`max-${expandedSidebarItem.dbField}-${index}`}
-                            value={localRangeValues[expandedSidebarItem.dbField]?.max || ''}
+                            value={rangeValues[expandedSidebarItem.dbField]?.max || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
                             aria-label={`Maximum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.max}
