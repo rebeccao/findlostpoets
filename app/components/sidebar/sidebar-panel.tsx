@@ -49,7 +49,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
 
   const handleRareTraitChange = (selectedDbField: string) => {
     // Directly call the onRareTraitChange prop with the dbField of the clicked checkbox
-    onRareTraitChange(selectedDbField); // This function now expects a single string or null
+    onRareTraitChange(selectedDbField); // This function expects a single string or null
   };
 
   // Update for checkbox change to also clear or set active trait

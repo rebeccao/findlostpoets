@@ -1,10 +1,10 @@
 import type { Poet } from '@prisma/client'
 
-const ImageCard = ({ poet }: { poet: Poet }) => {
+const ImageCard = ({ poet, rarityTraitLabel, rarityCount }: { poet: Poet, rarityTraitLabel?: string, rarityCount?: number }) => {
   return (
     <div className="max-w-xl rounded overflow-hidden shadow-lg sans">
-      <img src={poet.g1Url} alt={`${poet.pNam + ' Gen1'}`} loading="lazy" className="w-full mb-2" />
-      <img src={poet.g0Url} alt={`${poet.pNam + ' Gen0'}`} loading="lazy" className="w-full" />
+      {/*<img src={poet.g1Url} alt={`${poet.pNam + ' Gen1'}`} loading="lazy" className="w-full mb-2" />
+      <img src={poet.g0Url} alt={`${poet.pNam + ' Gen0'}`} loading="lazy" className="w-full" />*/}
 			<div className="px-6 py-4">
 			<div className="font-bold text-xl mb-4">{poet.pNam}</div>
         <div className="mb-2">
@@ -35,14 +35,17 @@ const ImageCard = ({ poet }: { poet: Poet }) => {
             <div>{poet.lexCnt}</div>
           </div>
         </div>
+        {/* Adjust grid template columns based on rarityCount presence */}
         <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 text-sm">
-          <div className="col-span-1"></div> {/* Empty column for alignment */}
+          {/* Conditionally render "Rarity Count" label or an empty div for alignment */}
+          <div>{rarityCount !== undefined && rarityTraitLabel ? rarityTraitLabel : ""}</div>
           <div>Genre:</div>
           <div>Influence:</div>
           <div>Rewrites:</div>
         </div>
         <div className="font-bold grid grid-cols-[2fr_1fr_1fr_1fr] gap-4">
-          <div className="col-span-1"></div> {/* Empty column for alignment */}
+          {/* Conditionally render rarityCount value or an empty div for alignment */}
+          <div>{rarityCount !== undefined ? rarityCount : ""}</div>
           <div>{poet.gen}</div>
           <div>{poet.infl}</div>
           <div>{poet.rewrCnt}</div>

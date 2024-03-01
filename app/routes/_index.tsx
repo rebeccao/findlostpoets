@@ -132,17 +132,22 @@ function Index() {
 	const [selectedRangeTrait, setSelectedRangeTrait] = useState<string | null>(null);
 	const [rangeValues, setRangeValues] = useState<Record<string, { min?: number; max?: number }>>({});
 
+	const [searchInitiated, setSearchInitiated] = useState(false);
+
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
 	const initiateSearch = (dbQuery: SearchCriteria) => {
 		const searchCriteriaString = JSON.stringify(dbQuery);
     console.log('Index handleSelectionChange: searchCriteriaString));', searchCriteriaString);
+
+		// Signal that a search has been initiated
+		setSearchInitiated(true);
     
 		// Convert the criteria to a query string
 		const queryString = new URLSearchParams({ criteria: searchCriteriaString }).toString();
 		
 		// Use fetcher.load to initiate the request
-		fetcher.load(`?index&${queryString}`);              // Note: this does not work: fetcher.load(`/?${queryString}`);
+		fetcher.load(`?index&${queryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
   };
 
 	const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => {
@@ -153,6 +158,8 @@ function Index() {
   const handleRareTraitChange = (selectedDbField: string | null) => {
 		// Toggle selection: if the same trait is selected again, deselect it; otherwise, update the selection
 		setSelectedRareTrait(prev => (prev === selectedDbField ? null : selectedDbField));
+		// Reset searchInitiated to false to clear rarityTraitLabel and rarityCount until next search
+		setSearchInitiated(false);
 	};
 
 	const handleRangeTraitSelect = (selectedDbField: string | null) => {
@@ -172,6 +179,11 @@ function Index() {
 			setRangeValues({});
 		}
 	};
+
+	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
+	//const selectedRareTraitLabel = sidebarItems.find(item => item.type === 'sort')?.expandedSidebarItems.find(item => item.dbField === selectedRareTrait)?.title;
+	// Example logic to convert 'brdCnt' into 'brd', etc.
+	const selectedRareTraitLabel = selectedRareTrait ? selectedRareTrait.replace("Cnt", "") : undefined;
 
   return (
 		<div className="flex">
@@ -200,7 +212,14 @@ function Index() {
 
 						<div className="grid grid-cols-3 gap-4">
 						{poets?.map((poet: Poet) => (
-							<ImageCard key={poet.pid} poet={poet} />
+							<ImageCard 
+								key={poet.pid} 
+								poet={poet} 
+								// Dynamically access the Poet property
+								rarityTraitLabel={searchInitiated ? poet[selectedRareTraitLabel as keyof Poet] as string : undefined}
+								// Dynamically access the rarity count
+    						rarityCount={searchInitiated && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
+								/>
 						))}
 						</div>
 					</div>
