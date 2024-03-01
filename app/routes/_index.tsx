@@ -216,7 +216,7 @@ function Index() {
 								key={poet.pid} 
 								poet={poet} 
 								// Dynamically access the Poet property
-								rarityTraitLabel={searchInitiated ? poet[selectedRareTraitLabel as keyof Poet] as string : undefined}
+								rarityTraitLabel={searchInitiated ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
 								// Dynamically access the rarity count
     						rarityCount={searchInitiated && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
 								/>
