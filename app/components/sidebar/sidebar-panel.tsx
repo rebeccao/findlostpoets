@@ -168,7 +168,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                   <div className="flex items-center py-2 pr-3 pl-6 w-full">
                     {/* Dropdown for selecting traits */}
                     <select
-                      className="form-select block w-2/5 mb-0 mr-2 text-sm py-2 px-3 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 flex-grow" 
+                      className="form-select block w-2/5 mb-0 mr-2 text-xs py-2 px-3 rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 flex-grow" 
                       onChange={(e) => handleSearchTraitChange(e.target.value)}
                       aria-label="Select a trait"
                     >
@@ -183,7 +183,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         placeholder="Enter search term..."
                         value={searchTrait.searchTraitValue}
                         onChange={(e) => handleSearchTraitValueChange(e.target.value)}
-                        className="form-input block placeholder-italic flex-grow w-3/5 text-xs py-2 px-4 rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                        className="form-input block placeholder-italic flex-grow w-3/5 text-xs py-2 px-4 rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                       />
                       {searchTrait.searchTraitValue && (
                         <GrFormClose
@@ -232,7 +232,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
                             aria-label={`Minimum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.min}
-                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                           />
                           <span>-</span> {/* Dash */}
                           {/* Max Input */}
@@ -243,7 +243,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
                             aria-label={`Maximum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.max}
-                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                           />
                         </div>
                       </div>
@@ -257,13 +257,13 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       </div>
       <div className="absolute inset-x-0 bottom-0 p-4 flex justify-center space-x-2">
         <button
-          className="w-1/4 bg-gray-600 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-700" // Darker for primary action
+          className="w-1/4 bg-gray-600 border-gray-300 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-700" // Darker for primary action
           onClick={handleSearchClick}
         >
           Search
         </button>
         <button
-          className="w-1/4 bg-gray-400 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-500" // Lighter for secondary clear action
+          className="w-1/4 bg-gray-400 border-gray-300 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-500" // Lighter for secondary clear action
           onClick={resetSearch} // Assuming this resets all search inputs
         >
           Clear

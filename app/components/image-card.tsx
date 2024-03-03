@@ -3,52 +3,34 @@ import type { Poet } from '@prisma/client'
 const ImageCard = ({ poet, rarityTraitLabel, rarityCount }: { poet: Poet, rarityTraitLabel?: string, rarityCount?: number }) => {
   return (
     <div className="max-w-xl rounded overflow-hidden shadow-lg sans">
-      {/*<img src={poet.g1Url} alt={`${poet.pNam + ' Gen1'}`} loading="lazy" className="w-full mb-2" />
-      <img src={poet.g0Url} alt={`${poet.pNam + ' Gen0'}`} loading="lazy" className="w-full" />*/}
-			<div className="px-6 py-4">
-			<div className="font-bold text-xl mb-4">{poet.pNam}</div>
+      <img src={poet.g1Url} alt={`${poet.pNam + ' Gen1'}`} loading="lazy" className="w-full mb-2" />
+      <img src={poet.g0Url} alt={`${poet.pNam + ' Gen0'}`} loading="lazy" className="w-full" /> 
+			<div className="px-4 py-4">
+			<div className="font-bold text-md mb-2">{poet.pNam}</div>
+      {/* Responsive grid layout for traits */}
         <div className="mb-2">
-          <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 text-sm">
-            <div>Origin:</div>
-            <div>Breed:</div>
-            <div>Polarity:</div>
-            <div>WordCount:</div>
-          </div>
-          <div className="font-bold grid grid-cols-[2fr_1fr_1fr_1fr] gap-4">
-						<div className="flex-1 min-w-0 overflow-hidden whitespace-nowrap text-ellipsis">{poet.ori}</div>
-            <div>{poet.brd}</div>
-            <div>{poet.pol}</div>
-            <div>{poet.wrdCnt}</div>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 text-xs">
+            <div>Origin: <span className="font-bold">{poet.ori}</span></div>
+              <div>Breed: <span className="font-bold">{poet.brd}</span></div>
+              <div>Polarity: <span className="font-bold">{poet.pol}</span></div>
+              <div>Words: <span className="font-bold">{poet.wrdCnt}</span></div>
+            </div>
         </div>
         <div className="mb-2">
-          <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 text-sm">
-            <div>Latent:</div>
-            <div>Age:</div>
-            <div>Ego:</div>
-            <div>Lexicon:</div>
-          </div>
-          <div className="font-bold grid grid-cols-[2fr_1fr_1fr_1fr] gap-4">
-            <div>{poet.lat}</div>
-            <div>{poet.age}</div>
-            <div>{poet.ego}</div>
-            <div>{poet.lexCnt}</div>
+          <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 text-xs">
+            {/* Adjusting for responsive layout */}
+            <div>Latent: <span className="font-bold">{poet.lat}</span></div>
+            <div>Genre: <span className="font-bold">{poet.gen}</span></div>
+            <div>Ego: <span className="font-bold">{poet.ego}</span></div>
+            <div>Lexicon: <span className="font-bold">{poet.lexCnt}</span></div>
           </div>
         </div>
-        {/* Adjust grid template columns based on rarityCount presence */}
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 text-sm">
-          {/* Conditionally render "Rarity Count" label or an empty div for alignment */}
-          <div>{rarityCount !== undefined && rarityTraitLabel ? rarityTraitLabel : ""}</div>
-          <div>Genre:</div>
-          <div>Influence:</div>
-          <div>Rewrites:</div>
-        </div>
-        <div className="font-bold grid grid-cols-[2fr_1fr_1fr_1fr] gap-4">
-          {/* Conditionally render rarityCount value or an empty div for alignment */}
-          <div>{rarityCount !== undefined ? rarityCount : ""}</div>
-          <div>{poet.gen}</div>
-          <div>{poet.infl}</div>
-          <div>{poet.rewrCnt}</div>
+        {/* Adjusted grid for rarity traits */}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 text-xs">
+          <div>{rarityCount !== undefined && rarityTraitLabel ? rarityTraitLabel : ""} <span className="font-bold">{rarityCount !== undefined ? rarityCount : ""}</span></div>
+          <div>Age: <span className="font-bold">{poet.age}</span></div>
+          <div>Influ: <span className="font-bold">{poet.infl}</span></div>
+          <div>Rewrites: <span className="font-bold">{poet.rewrCnt}</span></div>
         </div>
 				{(poet.poem || poet.wrdCnt > 0) && (
         <div className="mt-2">

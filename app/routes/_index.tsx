@@ -35,7 +35,7 @@ interface NavbarProps {
 
 function Navbar({ toggleSidebar }: NavbarProps) {
 	return(
-		<header className="sticky top-0 z-[1] h-navbar mx-auto bg-gray-100 border-b border-gray-200 p-2 shadow-md flex w-full justify-between items-center  font-sans font-bold uppercase text-white dark:border-gray-800 dark:bg-d-background dark:text-d-text-primary">
+		<header className="sticky top-0 z-[1] h-navbar mx-auto bg-gray-100 border-gray-300 p-2 shadow-md flex w-full justify-between items-center  font-sans font-bold uppercase text-white dark:border-gray-800 dark:bg-d-background dark:text-d-text-primary">
 			<div className="flex items-center">
 				<button 
 				  onClick={toggleSidebar} 
@@ -83,28 +83,45 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const url = new URL(request.url);
 
-		let searchCriteria: SearchCriteria = { orderBy: [{ pid: 'asc' }] }; // Default criteria
+		let dbQuery: SearchCriteria = { orderBy: [{ pid: 'asc' }] }; // query on first load
 		
-		const criteriaParam = url.searchParams.get("criteria");
-		console.log('Index loader: Received criteriaParam:', criteriaParam);
+		const searchQuery = url.searchParams.get("query");
+		console.log('Index loader: Received searchQuery:', searchQuery);
 
-		if (criteriaParam) {
-			try {
-				const criteria = JSON.parse(decodeURIComponent(criteriaParam!));
-				console.log('Index loader: Parsed criteria:', criteria);
-				if (Object.keys(criteria).length > 0) {
-					searchCriteria = { ...searchCriteria, ...criteria };
+		let skip = 0; // Default value
+		let take = 20; // Default value
+
+		if (searchQuery) {
+				try {
+						const dbSearchQuery = JSON.parse(decodeURIComponent(searchQuery));
+						console.log('Index loader: Parsed dbSearchQuery:', dbSearchQuery);
+
+						// Now extract skip and take directly from the parsed Prisma query, if they exist
+						if (dbSearchQuery.skip !== undefined) {
+								skip = dbSearchQuery.skip;
+						}
+
+						if (dbSearchQuery.take !== undefined) {
+								take = dbSearchQuery.take;
+						}
+
+						// Ensure the rest of the dbSearchQuery is applied to dbQuery excluding skip and take
+						const { skip: _, take: __, ...restQuery } = dbSearchQuery;
+						if (Object.keys(restQuery).length > 0) {
+								dbQuery = { ...dbQuery, ...restQuery };
+						}
+				} catch (error) {
+						console.error('Index loader: Error parsing criteriaParam:', error);
+						// Consider returning an error response or handling the error gracefully
 				}
-			} catch (error) {
-					console.error('Index loader: Error parsing criteriaParam:', error);
-					// Consider returning an error response or handling the error gracefully
-			}
-		}
+		}		
+
+		console.log('Index skip = ', skip);
 
 		const poets = await prisma.poet.findMany({
-			...searchCriteria,
-			skip: 0, 
-			take: 21,
+			...dbQuery,
+			skip, 
+			take,
 		});
 		return json({ poets });
 	} catch (error) {
@@ -116,7 +133,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 function Index() {
 	const fetcher = useFetcher();
-  //const isFetching = fetcher.state === 'submitting';
 	const initialData = useLoaderData<typeof loader>();
 
   // Determine the current state: data from fetcher if present, otherwise from the initial load
@@ -132,40 +148,47 @@ function Index() {
 	const [selectedRangeTrait, setSelectedRangeTrait] = useState<string | null>(null);
 	const [rangeValues, setRangeValues] = useState<Record<string, { min?: number; max?: number }>>({});
 
-	const [searchInitiated, setSearchInitiated] = useState(false);
+	// searchButtonPressed is used to conditionally control displaying the Rare Trait count on the ImageCard 
+	const [searchButtonPressed, setSearchButtonPressed] = useState(false);
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-	const initiateSearch = (dbQuery: SearchCriteria) => {
-		const searchCriteriaString = JSON.stringify(dbQuery);
-    console.log('Index handleSelectionChange: searchCriteriaString));', searchCriteriaString);
+	// Callback from SidebarPanel when the user clicks the Search button
+	const performSearch = (query: SearchCriteria) => {
+		query.where !== undefined ? query.skip = 0 : query.skip = (Math.floor(Math.random() * 28149) + 1);
+		
+		const queryString = JSON.stringify(query);
+    console.log('Index performSearch: queryString));', queryString);
 
-		// Signal that a search has been initiated
-		setSearchInitiated(true);
+		// Signal that a search has been initiated. This state conditionally controls displaying the Rare Trait count on the ImageCard 
+		setSearchButtonPressed(true);
     
-		// Convert the criteria to a query string
-		const queryString = new URLSearchParams({ criteria: searchCriteriaString }).toString();
+		const dbQueryString = new URLSearchParams({ query: queryString }).toString();
 		
 		// Use fetcher.load to initiate the request
-		fetcher.load(`?index&${queryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
+		fetcher.load(`?index&${dbQueryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
   };
 
+	// Callback from SidebarPanel when the user selects a searchTrait and sets its value
 	const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => {
     setSearchTrait(searchTraitState);
 		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
   };
 
+	// Callback from SidebarPanel when the user selects the rare trait checkbox
   const handleRareTraitChange = (selectedDbField: string | null) => {
 		// Toggle selection: if the same trait is selected again, deselect it; otherwise, update the selection
 		setSelectedRareTrait(prev => (prev === selectedDbField ? null : selectedDbField));
-		// Reset searchInitiated to false to clear rarityTraitLabel and rarityCount until next search
-		setSearchInitiated(false);
+		// Reset searchButtonPressed to false to clear rarityTraitLabel and rarityCount until next search
+		setSearchButtonPressed(false);
 	};
 
+	// Callback from SidebarPanel when the user selects the range checkbox
 	const handleRangeTraitSelect = (selectedDbField: string | null) => {
 		setSelectedRangeTrait(selectedDbField);
 	};
 
+	// Callback from SidebarPanel when the user sets the min and max range values 
 	const handleRangeChange = (selectedDbField: string | null, min?: number, max?: number) => {
 		if (selectedDbField !== null) {
 			// Update min/max for the specified range trait
@@ -197,7 +220,7 @@ function Index() {
           onRareTraitChange={handleRareTraitChange}
 					onRangeTraitSelect={handleRangeTraitSelect}
 					onRangeChange={handleRangeChange}
-					performSearch={initiateSearch} 
+					performSearch={performSearch} 
         />
       )}
 			<div className="flex flex-col w-full">
@@ -210,15 +233,15 @@ function Index() {
 						{/* Display error state */}
 						{error && <div className="error">Error: {error}</div>}
 
-						<div className="grid grid-cols-3 gap-4">
+						<div className="grid grid-cols-4 gap-4">
 						{poets?.map((poet: Poet) => (
 							<ImageCard 
 								key={poet.pid} 
 								poet={poet} 
 								// Dynamically access the Poet property
-								rarityTraitLabel={searchInitiated ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
+								rarityTraitLabel={searchButtonPressed ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
 								// Dynamically access the rarity count
-    						rarityCount={searchInitiated && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
+    						rarityCount={searchButtonPressed && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
 								/>
 						))}
 						</div>
