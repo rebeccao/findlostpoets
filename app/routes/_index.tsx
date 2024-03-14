@@ -288,11 +288,11 @@ function Index() {
 		// Signal that a search has been initiated. This state conditionally controls displaying the Rare Trait count on the ImageCard 
 		setSearchButtonPressed(true);
 
-		// Reset all the states
+		// Reset all the states and kick start setupObserver
 		setPage(1);
 		setFetcherData(null);
-		setSentinelIndex(0);
 		setPoets([]);
+		setSentinelIndex(0);		// sentinelIndex must not equal the index in setupObserver
 		setupObserver(`#poet-${poets[19]?.pid}`);
 
 		query.where !== undefined ? query.skip = 0 : query.skip = (Math.floor(Math.random() * 28149) + 1);
