@@ -192,7 +192,7 @@ function Index() {
 
 	// setupObserver callback
 	const setupObserver = useCallback((sentinelSelector: string) => {
-		console.log("setupObserver");
+		console.log("setupObserver sentinelSelector = ", sentinelSelector);
 
 		// Disconnect the current observer if it exists
 		if (globalObserver.current) {
@@ -254,10 +254,10 @@ function Index() {
 	
 	// newSentinelIndex useEffect
 	useEffect(() => {
-		console.log("sentinelIndex useEffect --- poets.length = ", poets.length);
-		const newSentinelIndex = poets.length - 1;
-		console.log("sentinelIndex useEffect --- (poets.length - 1) = ", newSentinelIndex, "sentinelIndex = ", sentinelIndex);
 		if (poets && poets.length > 0) {
+			console.log("sentinelIndex useEffect --- poets.length = ", poets.length);
+			const newSentinelIndex = poets.length - 1;
+			console.log("sentinelIndex useEffect --- (poets.length - 1) = ", newSentinelIndex, "sentinelIndex = ", sentinelIndex);
 			// Make sure that new poets have been fetched and appended to poets buffer
 			if ((poets.length - 1) !== sentinelIndex) {
 				setSentinelIndex(newSentinelIndex);
@@ -282,24 +282,32 @@ function Index() {
 
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-	// Callback from SidebarPanel when the user clicks the Search button
+	// Callback from SidebarPanel when the user clicks the Search button or Clear button
 	const performSearch = (query: SearchCriteria) => {
 
 		// Signal that a search has been initiated. This state conditionally controls displaying the Rare Trait count on the ImageCard 
 		setSearchButtonPressed(true);
 
-		// Reset all the states and kick start setupObserver
-		setPage(1);
+		// Reset all the states and fetch the new query
+		query.take = 20;
+
+		if (query.where !== undefined) {			// All new searches include where:, start at the beginning
+			query.skip = 0
+			setPage(1);
+			console.log("performSearch query.skip = ", query.skip, "page = ", page);
+		} else {															// User pressed Clear button, skip to a random place in the DB 
+			const newPage = (Math.floor(Math.random() * (28170-100)/20));
+			setPage(newPage);
+			query.skip = (newPage - 1) * 20;
+			console.log("performSearch query.skip = ", query.skip, "page = ", page, "newPage = ", newPage);
+		}
+
 		setFetcherData(null);
 		setPoets([]);
 		setSentinelIndex(0);		// sentinelIndex must not equal the index in setupObserver
-		setupObserver(`#poet-${poets[19]?.pid}`);
-
-		query.where !== undefined ? query.skip = 0 : query.skip = (Math.floor(Math.random() * 28149) + 1);
-		query.take = 20;
 
 		setCurrentDbQuery(query);
-		console.log('Index performSearch: query));', query);
+		console.log('performSearch: query));', query);
 		
 		const queryString = JSON.stringify(query);
   	const dbQueryString = new URLSearchParams({ query: queryString }).toString();
