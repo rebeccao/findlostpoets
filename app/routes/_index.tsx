@@ -104,6 +104,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 			}
 		}		
 
+		console.log("Index loader: dbQuery = ", dbQuery);
 		const poets = await prisma.poet.findMany({ ...dbQuery });
 		return json({ poets });
 
@@ -257,6 +258,7 @@ function Index() {
 		const newSentinelIndex = poets.length - 1;
 		console.log("sentinelIndex useEffect --- (poets.length - 1) = ", newSentinelIndex, "sentinelIndex = ", sentinelIndex);
 		if (poets && poets.length > 0) {
+			// Make sure that new poets have been fetched and appended to poets buffer
 			if ((poets.length - 1) !== sentinelIndex) {
 				setSentinelIndex(newSentinelIndex);
 				console.log("sentinelIndex useEffect #poet-$poets[sentinelIndex]?.pid sentinelIndex = ", newSentinelIndex);
@@ -286,16 +288,24 @@ function Index() {
 		// Signal that a search has been initiated. This state conditionally controls displaying the Rare Trait count on the ImageCard 
 		setSearchButtonPressed(true);
 
+		// Reset all the states
+		setPage(1);
+		setFetcherData(null);
+		setSentinelIndex(0);
+		setPoets([]);
+		setupObserver(`#poet-${poets[19]?.pid}`);
+
 		query.where !== undefined ? query.skip = 0 : query.skip = (Math.floor(Math.random() * 28149) + 1);
+		query.take = 20;
 
 		setCurrentDbQuery(query);
 		console.log('Index performSearch: query));', query);
 		
-		//const queryString = JSON.stringify(query);
-  	//const dbQueryString = new URLSearchParams({ query: queryString }).toString();
+		const queryString = JSON.stringify(query);
+  	const dbQueryString = new URLSearchParams({ query: queryString }).toString();
 		
 		// Serialize and encode the query
-		const dbQueryString = encodeURIComponent(JSON.stringify(query));
+		//const dbQueryString = encodeURIComponent(JSON.stringify(query));
 		
 		// Use fetcher.load to initiate the request
 		fetcher.load(`?index&${dbQueryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
