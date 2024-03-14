@@ -7,8 +7,9 @@ import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import ImageCard from '~/components/image-card';
 import {HiMenuAlt3} from 'react-icons/hi';
 import type { Poet } from '@prisma/client';
-import { sidebarItems } from "~/components/sidebar/sidebar-data";
+import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import '~/tailwind.css';
+import ErrorBoundary from '~/components/error-boundary';
 
 export type SearchCriteria = {
   where?: { [key: string]: any };
@@ -16,6 +17,11 @@ export type SearchCriteria = {
   take?: number;
   orderBy?: { [key: string]: 'asc' | 'desc' }[];
 };
+
+interface LoaderData {
+  poets: Poet[];
+  error?: string; // Assuming error is a string. Adjust according to your actual structure.
+}
 
 export interface SidebarProps {
 	searchTrait: Record<string, string>;
@@ -86,7 +92,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		let dbQuery: SearchCriteria = { orderBy: [{ pid: 'asc' }], skip: 0, take: 20 }; // query on first load
 		
 		const searchQuery = url.searchParams.get("query");
-		console.log('Index loader: Received searchQuery:', searchQuery);
+		console.log('++++++++  Index loader: Received searchQuery:', searchQuery);
 
 		if (searchQuery) {
 			try {
@@ -114,6 +120,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 				errorDetail = {
 						message: 'An unknown error occurred',
 				};
+				console.error('An unknown error occurred', error);
 		}
 		return json({ 
 			error: "Server Error. Index route, loader: LoadFunction. Please contact Support.", 
@@ -126,97 +133,137 @@ function Index() {
 	const fetcher = useFetcher();
 	const initialData = useLoaderData<typeof loader>();
 
-  // Determine the current state: data from fetcher if present, otherwise from the initial load
-  const { poets, error } = fetcher.data || initialData;
-	console.log("******************* const poets: Poet[] = data.poets, fetcher.data ", fetcher.data); // Check the structure of 'data'
-	console.log("******************* const poets: Poet[] = data.poets, initialData ", initialData); 
+  console.log("******************* const poets: Poet[] = data.poets, fetcher.data ", fetcher.data); 
+	console.log("******************* const poets: Poet[] = data.poets, initialData.poets.length", initialData.poets.length); 
 
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
   const [currentDbQuery, setCurrentDbQuery] = useState<SearchCriteria>({ orderBy: [{ pid: 'asc' }], take: 20, skip: 0 });
-
-  interface PaginationState {
-    skip: number;
-    take: number;
-    hasMore: boolean;
-  }
-
-  const [pagination, setPagination] = useState<PaginationState>({
-    skip: 0,
-    take: 20, // Adjust according to your initial page size
-    hasMore: true,
-  });
+	const [poets, setPoets] = useState<Poet[]>(initialData.poets || []);
+	const [page, setPage] = useState(1); // Pagination state
+	const [fetcherData, setFetcherData] = useState<LoaderData | null>(null);
+	const [fetchError, setFetchError] = useState<string | null>(null);
+	const [sentinelIndex, setSentinelIndex] = useState<number>(19);
+	
+	const globalObserver = useRef<IntersectionObserver | null>(null);
 
 	/*************** Infinite scroll logic ****************/
 
-	const fetchMorePoets = useCallback(() => {
-		if (fetcher.state !== 'idle' || !pagination.hasMore) return;
-	
-		console.log("fetchMorePoets pagination.skip = ", pagination.skip);
-		const nextSkip = pagination.skip + pagination.take;
-		console.log("fetchMorePoets nextSkip = ", nextSkip);
-		
-		const updatedQuery = { ...currentDbQuery, skip: nextSkip };
-		const queryString = encodeURIComponent(JSON.stringify(updatedQuery));
-		fetcher.load(`?index&query=${queryString}`);
-	}, [fetcher, pagination, currentDbQuery]);
-
-	// Set up the IntersectionObserver to fetchMorePoets when the sentinel element
-	// becomes fully visible and there are additional poets are available to fetch
+	// fetcher.data useEffect
+	// In the useFetcher hook, the fetcher.data property is automatically managed
+	// by Remix based on the lifecycle of the fetch operation and it can not directly
+	// be set to null. It's controlled internally by Remix based on the network requests it makes.
   useEffect(() => {
-		console.log("IntersectionObserver --- useEffect");
-		console.log("IntersectionObserver --- pagination.hasMore = ", pagination.hasMore);
-		console.log("IntersectionObserver --- fetcher.state = ", fetcher.state);
-
-		// Only create the observer if we have more items to fetch
-		if (!pagination.hasMore) return;
-	
-		const observer = new IntersectionObserver((entries) => {
-			console.log("IntersectionObserver --- entries[0].isIntersecting = ", entries[0].isIntersecting);
-			// Check if the sentinel is visible
-			if (entries[0].isIntersecting && fetcher.state === 'idle') {
-				fetchMorePoets();
+		const data = fetcher.data as LoaderData;
+		try {
+			if (data && data.poets.length > 0) {
+				console.log("fetcher.data useEffect fetcher.data.poets.length = ", data.poets.length)
+				setFetcherData(data);
+				setFetchError(null);
 			}
-		}, { 
-			threshold: 0.1, // Slightly above 0 to require a bit more of the element to be visible
-			rootMargin: '100px' // Trigger before the sentinel is actually reached
-		});
-	
-		const currentSentinel = sentinelRef.current;
-
-    // Attach the observer if the fetcher is idle
-    if (currentSentinel && fetcher.state === 'idle') {
-      observer.observe(currentSentinel);
-			console.log("IntersectionObserver --- observer.observe(currentSentinel)")
-    }
-
-    return () => {
-      // Detach the observer when the component unmounts or if fetcher starts loading
-      if (currentSentinel) {
-        observer.unobserve(currentSentinel);
-				console.log("IntersectionObserver --- observer.observe(currentSentinel)")
-      }
-    };
-  }, [pagination.hasMore, fetcher.state, fetchMorePoets]);
-
-	// handle the response from the fetch operation to update pagination.
-	useEffect(() => {
-		console.log("pagination --- useEffect");
-		//console.log("fetcher.data length = ", fetcher.data.length);
-		console.log("pagination --- fetcher.state = ", fetcher.state);
-		// Check if there's a recent fetch operation and it's completed with data
-		if (fetcher.data && fetcher.state === 'idle') {
-			// Assuming fetcher.data includes the fetched poets and possibly an indication of whether more poets are available
-			// const hasMore = fetcher.data.length === pagination.take; // Simple check; adjust based on actual logic needed
-			const hasMore = true; // Add hasMore logic once the inifinite scrolling is working  
-	
-			setPagination((prevPagination) => ({
-				...prevPagination,
-				skip: prevPagination.skip + prevPagination.take, // Update skip to the next set of items
-				hasMore, // Update based on actual condition to determine if more items are available
-			}));
-			console.log("pagination --- pagination.skip = ", pagination.skip);
+		} catch (error) {
+			console.error(error);
+    	setFetchError('A fetcher error occurred.');
 		}
-	}, [fetcher.data, fetcher.state]);
+  }, [fetcher.data]);
+
+	// fetchMorePoets
+	const fetchMorePoets = useCallback((nextPage: boolean = false) => {
+		if (!nextPage) return; 
+
+		const newSkip = nextPage ? (page) * 20 : 0;
+		const newQuery: SearchCriteria = { ...currentDbQuery, skip: newSkip, take: 20 };
+		console.log("<--------> fetchMorePoets newQuery = ", newQuery);
+
+		if (globalObserver.current && nextPage) {
+			globalObserver.current.disconnect(); // Temporarily disconnect
+			console.log("fetchMorePoets --- globalObserver.current.disconnect");
+		}
+		
+		setCurrentDbQuery(newQuery);		// Update current query skip
+
+		const queryString = JSON.stringify(newQuery);
+		const dbQueryString = new URLSearchParams({ query: queryString }).toString();
+		fetcher.load(`?index&${dbQueryString}`);
+
+		setPage(prev => prev + 1);
+		console.log("fetchMorePoets --- page = ", page);
+
+	}, [page, currentDbQuery, fetcher]);
+
+	// setupObserver callback
+	const setupObserver = useCallback((sentinelSelector: string) => {
+		console.log("setupObserver");
+
+		// Disconnect the current observer if it exists
+		if (globalObserver.current) {
+			globalObserver.current.disconnect();
+			console.log("setupObserver globalObserver.current.disconnect() = ", globalObserver.current);
+		}
+		
+		const observerCallback = (entries: IntersectionObserverEntry[]) => {
+			if (entries[0].isIntersecting) {
+				fetchMorePoets(true);
+			}
+		};
+
+		const observerOptions = { threshold: 0.1 };
+		const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+		const sentinel = document.querySelector(sentinelSelector);
+		if (sentinel) {
+			observer.observe(sentinel);
+			console.log("setupObserver observer.observe(sentinel) sentinelSelector = ", sentinelSelector);
+		}
+
+		// Assigning observer to globalObserver for later access
+		globalObserver.current = observer;
+		console.log("setupObserver globalObserver.current = sentinelSelector = ", sentinelSelector);
+	}, [fetchMorePoets]);
+
+	// InitialData useEffect
+	useEffect(() => {
+		console.log("InitialData useEffect --- initialData.poets.length = ", initialData.poets.length, "poets.length = ", poets.length);
+		if (initialData.poets.length > 0) {
+      // This ensures observer is setup only after initial data is loaded
+      // and if globalObserver is initialized 
+      if (!globalObserver.current) {
+				console.log("InitialData useEffect setupObserver #poet-$initialData.poets[19].pid");
+        setupObserver(`#poet-${initialData.poets[19].pid}`);
+      }
+    }
+	}, [poets, initialData.poets, setupObserver]); // Depends on the initial poets list.
+
+	// Merge fetcherData useEffect
+	useEffect(() => {
+		console.log("---- Merge fetcherData useEffect ----");
+		if (fetcherData) {
+			if (!fetcherData.error) {
+				if (fetcherData.poets && fetcherData.poets.length > 0) {
+					setPoets((prevPoets: Poet[]) => [...prevPoets, ...fetcherData.poets]);
+					setFetcherData(null);
+					console.log("Merge fetcherData useEffect --- setPoets append new poets");
+				} 
+				setFetchError(null);
+			} else { 
+				console.log("Merge fetcherData useEffect --- data.error");
+				console.error(fetcherData.error);
+				setFetchError(fetcherData.error);
+			}
+		}
+	}, [fetcherData]);
+	
+	// newSentinelIndex useEffect
+	useEffect(() => {
+		console.log("sentinelIndex useEffect --- poets.length = ", poets.length);
+		const newSentinelIndex = poets.length - 1;
+		console.log("sentinelIndex useEffect --- (poets.length - 1) = ", newSentinelIndex, "sentinelIndex = ", sentinelIndex);
+		if (poets && poets.length > 0) {
+			if ((poets.length - 1) !== sentinelIndex) {
+				setSentinelIndex(newSentinelIndex);
+				console.log("sentinelIndex useEffect #poet-$poets[sentinelIndex]?.pid sentinelIndex = ", newSentinelIndex);
+				setupObserver(`#poet-${poets[newSentinelIndex]?.pid}`);
+			}
+		}
+	}, [poets, sentinelIndex, setupObserver]);
 
 	/*************** SidebarPanel callback logic ****************/
 
@@ -294,6 +341,7 @@ function Index() {
 	const selectedRareTraitLabel = selectedRareTrait ? selectedRareTrait.replace("Cnt", "") : undefined;
 
   return (
+		<ErrorBoundary>
 		<div className="flex">
 			{sidebarOpen && (
         <Sidebar
@@ -316,25 +364,32 @@ function Index() {
 						{fetcher.state === 'loading' && <div>Loading...</div>}
 
 						{/* Display error state */}
-						{error && <div className="error">Error: {error}</div>}
+						{fetchError && (
+							<div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+								<p className="font-bold">Error</p>
+								<p>{fetchError}</p>
+							</div>
+						)}
 
 						<div className="grid grid-cols-4 gap-4">
-						{poets?.map((poet: Poet, index: number) => (
-							<ImageCard 
-								key={poet.pid} 
-								poet={poet}
-								ref={index === poets.length - 1 ? sentinelRef : undefined} // Assign ref to last poet
-								// Dynamically access the Poet property
-								rarityTraitLabel={searchButtonPressed ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
-								// Dynamically access the rarity count
-								rarityCount={searchButtonPressed && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
-							/>
-						))}
+							{poets?.map((poet: Poet, index: number) => (
+								<div key={poet.id} id={`poet-${poet.pid}`}>
+									<ImageCard 
+										key={poet.pid} 
+										poet={poet}
+										// Dynamically access the Poet property
+										rarityTraitLabel={searchButtonPressed ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
+										// Dynamically access the rarity count
+										rarityCount={searchButtonPressed && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
+									/>
+								</div>
+							))}
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		</ErrorBoundary>
   );
 }
 
