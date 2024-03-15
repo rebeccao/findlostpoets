@@ -23,6 +23,9 @@ interface LoaderData {
   error?: string; // Assuming error is a string. Adjust according to your actual structure.
 }
 
+const PAGE_SIZE = 20;
+const DATABASE_SIZE = 28170;
+
 export interface SidebarProps {
 	searchTrait: Record<string, string>;
 	selectedRareTrait: string | null; 
@@ -89,7 +92,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const url = new URL(request.url);
 
-		let dbQuery: SearchCriteria = { orderBy: [{ pid: 'asc' }], skip: 0, take: 20 }; // query on first load
+		let dbQuery: SearchCriteria = { orderBy: [{ pid: 'asc' }], skip: 0, take:PAGE_SIZE }; // query on first load
 		
 		const searchQuery = url.searchParams.get("query");
 		console.log('++++++++  Index loader: Received searchQuery:', searchQuery);
@@ -137,10 +140,11 @@ function Index() {
   console.log("******************* const poets: Poet[] = data.poets, fetcher.data ", fetcher.data); 
 	console.log("******************* const poets: Poet[] = data.poets, initialData.poets.length", initialData.poets.length); 
 
-  const [currentDbQuery, setCurrentDbQuery] = useState<SearchCriteria>({ orderBy: [{ pid: 'asc' }], take: 20, skip: 0 });
+  const [currentDbQuery, setCurrentDbQuery] = useState<SearchCriteria>({ orderBy: [{ pid: 'asc' }], take: PAGE_SIZE, skip: 0 });
 	const [poets, setPoets] = useState<Poet[]>(initialData.poets || []);
 	const [page, setPage] = useState(1); // Pagination state
 	const [fetcherData, setFetcherData] = useState<LoaderData | null>(null);
+	const [hasMore, setHasMore] = useState<boolean>(true);
 	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [sentinelIndex, setSentinelIndex] = useState<number>(19);
 	
@@ -151,14 +155,16 @@ function Index() {
 	// fetcher.data useEffect
 	// In the useFetcher hook, the fetcher.data property is automatically managed
 	// by Remix based on the lifecycle of the fetch operation and it can not directly
-	// be set to null. It's controlled internally by Remix based on the network requests it makes.
+	// be set to null. Copy it to a fetcherData state and use that state to control
+	// the infinite scrolling
   useEffect(() => {
 		const data = fetcher.data as LoaderData;
 		try {
 			if (data && data.poets.length > 0) {
-				console.log("fetcher.data useEffect fetcher.data.poets.length = ", data.poets.length)
 				setFetcherData(data);
+				if (data.poets.length < PAGE_SIZE) { setHasMore(false) }
 				setFetchError(null);
+				console.log("fetcher.data useEffect fetcher.data.poets.length = ", data.poets.length);
 			}
 		} catch (error) {
 			console.error(error);
@@ -170,8 +176,8 @@ function Index() {
 	const fetchMorePoets = useCallback((nextPage: boolean = false) => {
 		if (!nextPage) return; 
 
-		const newSkip = nextPage ? (page) * 20 : 0;
-		const newQuery: SearchCriteria = { ...currentDbQuery, skip: newSkip, take: 20 };
+		const newSkip = nextPage ? (page) * PAGE_SIZE : 0;
+		const newQuery: SearchCriteria = { ...currentDbQuery, skip: newSkip, take: PAGE_SIZE };
 		console.log("<--------> fetchMorePoets newQuery = ", newQuery);
 
 		if (globalObserver.current && nextPage) {
@@ -226,7 +232,7 @@ function Index() {
 		if (initialData.poets.length > 0) {
       // This ensures observer is setup only after initial data is loaded
       // and if globalObserver is initialized 
-      if (!globalObserver.current) {
+      if (!globalObserver.current && initialData.poets.length === PAGE_SIZE) {
 				console.log("InitialData useEffect setupObserver #poet-$initialData.poets[19].pid");
         setupObserver(`#poet-${initialData.poets[19].pid}`);
       }
@@ -255,17 +261,17 @@ function Index() {
 	// newSentinelIndex useEffect
 	useEffect(() => {
 		if (poets && poets.length > 0) {
-			console.log("sentinelIndex useEffect --- poets.length = ", poets.length);
+			console.log("sentinelIndex useEffect --- poets.length = ", poets.length, "hasMore = ", hasMore);
 			const newSentinelIndex = poets.length - 1;
 			console.log("sentinelIndex useEffect --- (poets.length - 1) = ", newSentinelIndex, "sentinelIndex = ", sentinelIndex);
 			// Make sure that new poets have been fetched and appended to poets buffer
-			if ((poets.length - 1) !== sentinelIndex) {
+			if ((poets.length - 1) !== sentinelIndex && hasMore) {
 				setSentinelIndex(newSentinelIndex);
 				console.log("sentinelIndex useEffect #poet-$poets[sentinelIndex]?.pid sentinelIndex = ", newSentinelIndex);
 				setupObserver(`#poet-${poets[newSentinelIndex]?.pid}`);
 			}
 		}
-	}, [poets, sentinelIndex, setupObserver]);
+	}, [poets, sentinelIndex, hasMore, setupObserver]);
 
 	/*************** SidebarPanel callback logic ****************/
 
@@ -289,19 +295,20 @@ function Index() {
 		setSearchButtonPressed(true);
 
 		// Reset all the states and fetch the new query
-		query.take = 20;
+		query.take = PAGE_SIZE;
 
 		if (query.where !== undefined) {			// All new searches include where:, start at the beginning
 			query.skip = 0
 			setPage(1);
 			console.log("performSearch query.skip = ", query.skip, "page = ", page);
 		} else {															// User pressed Clear button, skip to a random place in the DB 
-			const newPage = (Math.floor(Math.random() * (28170-100)/20));
+			const newPage = (Math.floor(Math.random() * (DATABASE_SIZE-100)/PAGE_SIZE));
 			setPage(newPage);
-			query.skip = (newPage - 1) * 20;
+			query.skip = (newPage - 1) * PAGE_SIZE;
 			console.log("performSearch query.skip = ", query.skip, "page = ", page, "newPage = ", newPage);
 		}
 
+		setHasMore(true);
 		setFetcherData(null);
 		setPoets([]);
 		setSentinelIndex(0);		// sentinelIndex must not equal the index in setupObserver
