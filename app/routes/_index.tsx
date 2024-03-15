@@ -146,7 +146,7 @@ function Index() {
 	const [fetcherData, setFetcherData] = useState<LoaderData | null>(null);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 	const [fetchError, setFetchError] = useState<string | null>(null);
-	const [sentinelIndex, setSentinelIndex] = useState<number>(19);
+	const [sentinelIndex, setSentinelIndex] = useState<number>(PAGE_SIZE - 1);
 	
 	const globalObserver = useRef<IntersectionObserver | null>(null);
 
@@ -262,13 +262,13 @@ function Index() {
 	useEffect(() => {
 		if (poets && poets.length > 0) {
 			console.log("sentinelIndex useEffect --- poets.length = ", poets.length, "hasMore = ", hasMore);
-			const newSentinelIndex = poets.length - 1;
-			console.log("sentinelIndex useEffect --- (poets.length - 1) = ", newSentinelIndex, "sentinelIndex = ", sentinelIndex);
-			// Make sure that new poets have been fetched and appended to poets buffer
-			if ((poets.length - 1) !== sentinelIndex && hasMore) {
-				setSentinelIndex(newSentinelIndex);
-				console.log("sentinelIndex useEffect #poet-$poets[sentinelIndex]?.pid sentinelIndex = ", newSentinelIndex);
-				setupObserver(`#poet-${poets[newSentinelIndex]?.pid}`);
+			const lastPoetIndex = poets.length - 1;
+			console.log("sentinelIndex useEffect --- lastPoetIndex = ", lastPoetIndex, "sentinelIndex = ", sentinelIndex);
+			// Make sure that new poets have been fetched and appended to poets buffer before setting up a new observer
+			if (lastPoetIndex !== sentinelIndex && hasMore) {
+				setSentinelIndex(lastPoetIndex);
+				console.log("sentinelIndex useEffect #poet-$poets[sentinelIndex]?.pid sentinelIndex = ", lastPoetIndex);
+				setupObserver(`#poet-${poets[lastPoetIndex]?.pid}`);
 			}
 		}
 	}, [poets, sentinelIndex, hasMore, setupObserver]);
@@ -318,9 +318,6 @@ function Index() {
 		
 		const queryString = JSON.stringify(query);
   	const dbQueryString = new URLSearchParams({ query: queryString }).toString();
-		
-		// Serialize and encode the query
-		//const dbQueryString = encodeURIComponent(JSON.stringify(query));
 		
 		// Use fetcher.load to initiate the request
 		fetcher.load(`?index&${dbQueryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
