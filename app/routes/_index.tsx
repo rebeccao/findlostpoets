@@ -23,7 +23,7 @@ interface LoaderData {
   error?: string; // Assuming error is a string. Adjust according to your actual structure.
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 24;
 const DATABASE_SIZE = 28170;
 
 export interface SidebarProps {
@@ -107,7 +107,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 			}
 		}		
 
-		console.log("Index loader: dbQuery = ", dbQuery);
+		console.log("++++++++  Index loader: dbQuery = ", dbQuery);
 		const poets = await prisma.poet.findMany({ ...dbQuery });
 		return json({ poets });
 
@@ -176,11 +176,11 @@ function Index() {
 	const fetchMorePoets = useCallback((nextPage: boolean = false) => {
 		if (!nextPage) return; 
 
-		const newSkip = nextPage ? (page) * PAGE_SIZE : 0;
+		const newSkip = (page) * PAGE_SIZE;
 		const newQuery: SearchCriteria = { ...currentDbQuery, skip: newSkip, take: PAGE_SIZE };
 		console.log("<--------> fetchMorePoets newQuery = ", newQuery);
 
-		if (globalObserver.current && nextPage) {
+		if (globalObserver.current) {
 			globalObserver.current.disconnect(); // Temporarily disconnect
 			console.log("fetchMorePoets --- globalObserver.current.disconnect");
 		}
@@ -233,8 +233,8 @@ function Index() {
       // This ensures observer is setup only after initial data is loaded
       // and if globalObserver is initialized 
       if (!globalObserver.current && initialData.poets.length === PAGE_SIZE) {
-				console.log("InitialData useEffect setupObserver #poet-$initialData.poets[19].pid");
-        setupObserver(`#poet-${initialData.poets[19].pid}`);
+				console.log("InitialData useEffect setupObserver #poet-$initialData.poets[PAGE_SIZE-1].pid");
+        setupObserver(`#poet-${initialData.poets[PAGE_SIZE-1].pid}`);
       }
     }
 	}, [poets, initialData.poets, setupObserver]); // Depends on the initial poets list.
