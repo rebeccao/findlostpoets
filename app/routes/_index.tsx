@@ -393,9 +393,9 @@ function Index() {
 							</div>
 						)}
 
-						<div className="grid grid-cols-4 gap-4">
+						<div className="grid grid-cols-6 gap-4">
 							{poets?.map((poet: Poet, index: number) => (
-								<div key={poet.id} id={`poet-${poet.pid}`}>
+								<div key={poet.id} id={`poet-${poet.pid}`} className="flex">
 									<ImageCard 
 										key={poet.pid} 
 										poet={poet}

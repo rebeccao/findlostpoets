@@ -38,7 +38,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabe
           {(poet.poem || poet.wrdCnt > 0) && (
           <div className="mt-2">
             Poem:
-            <p className="font-semibold">{poet.poem ? poet.poem.substring(0, 76) + (poet.poem.length > 76 ? "..." : '') : ''}</p>
+            <p className="font-semibold">{poet.poem ? poet.poem.substring(0, 40) + (poet.poem.length > 40 ? "..." : '') : ''}</p>
           </div>
           )}
         </div>
