@@ -30,7 +30,8 @@ const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabe
           </div>
           {/* Adjusted grid for rarity traits */}
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 text-xs">
-            <div>{rarityCount !== undefined && rarityTraitLabel ? rarityTraitLabel : ""} <span className="font-bold">{rarityCount !== undefined ? rarityCount : ""}</span></div>
+            {/*<div>{rarityCount !== undefined && rarityTraitLabel ? rarityTraitLabel : ""} <span className="font-bold">{rarityCount !== undefined ? rarityCount : ""}</span></div>*/}
+            <div>Poet ID: <span className="font-bold">{poet.pid}</span></div>
             <div>Age: <span className="font-bold">{poet.age}</span></div>
             <div>Influ: <span className="font-bold">{poet.infl}</span></div>
             <div>Rewrites: <span className="font-bold">{poet.rewrCnt}</span></div>

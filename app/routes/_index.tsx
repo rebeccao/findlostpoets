@@ -24,6 +24,7 @@ interface LoaderData {
 }
 
 const PAGE_SIZE = 24;
+const BUFFER_SIZE = PAGE_SIZE * 3;
 const DATABASE_SIZE = 28170;
 
 export interface SidebarProps {
@@ -137,16 +138,18 @@ function Index() {
 	const fetcher = useFetcher();
 	const initialData = useLoaderData<typeof loader>();
 
-  console.log("******************* const poets: Poet[] = data.poets, fetcher.data ", fetcher.data); 
-	console.log("******************* const poets: Poet[] = data.poets, initialData.poets.length", initialData.poets.length); 
+  //console.log("******************* const poets: Poet[] = data.poets, fetcher.data ", fetcher.data); 
+	//console.log("******************* const poets: Poet[] = data.poets, initialData.poets.length", initialData.poets.length); 
+
+	type Direction = 'forward' | 'backward';
 
   const [currentDbQuery, setCurrentDbQuery] = useState<SearchCriteria>({ orderBy: [{ pid: 'asc' }], take: PAGE_SIZE, skip: 0 });
-	const [poets, setPoets] = useState<Poet[]>(initialData.poets || []);
-	const [page, setPage] = useState(1); // Pagination state
+	const [poetSlidingWindow, setPoetSlidingWindow] = useState<Poet[]>(initialData.poets || []);
+	const [poetSlidingWindowUpdated, setPoetSlidingWindowUpdated] = useState<boolean>(false);
 	const [fetcherData, setFetcherData] = useState<LoaderData | null>(null);
-	const [hasMore, setHasMore] = useState<boolean>(true);
 	const [fetchError, setFetchError] = useState<string | null>(null);
-	const [sentinelIndex, setSentinelIndex] = useState<number>(PAGE_SIZE - 1);
+	const [fetchDirection, setFetchDirection] = useState<Direction>('forward');
+	const [hasMore, setHasMore] = useState<boolean>(true);
 	
 	const globalObserver = useRef<IntersectionObserver | null>(null);
 
@@ -173,32 +176,30 @@ function Index() {
   }, [fetcher.data]);
 
 	// fetchMorePoets
-	const fetchMorePoets = useCallback((nextPage: boolean = false) => {
-		if (!nextPage) return; 
+	const fetchMorePoets = useCallback((direction: Direction, nextSkip: number) => {
+		const newQuery: SearchCriteria = { ...currentDbQuery, skip: nextSkip, take: PAGE_SIZE };
 
-		const newSkip = (page) * PAGE_SIZE;
-		const newQuery: SearchCriteria = { ...currentDbQuery, skip: newSkip, take: PAGE_SIZE };
-		console.log("<--------> fetchMorePoets newQuery = ", newQuery);
+		setCurrentDbQuery(newQuery);
+		setFetchDirection(direction);
+		console.log("<--------> fetchMorePoets direction = ", direction, "newQuery = ", newQuery);
 
 		if (globalObserver.current) {
 			globalObserver.current.disconnect(); // Temporarily disconnect
 			console.log("fetchMorePoets --- globalObserver.current.disconnect");
 		}
-		
-		setCurrentDbQuery(newQuery);		// Update current query skip
-
+	
 		const queryString = JSON.stringify(newQuery);
 		const dbQueryString = new URLSearchParams({ query: queryString }).toString();
 		fetcher.load(`?index&${dbQueryString}`);
-
-		setPage(prev => prev + 1);
-		console.log("fetchMorePoets --- page = ", page);
-
-	}, [page, currentDbQuery, fetcher]);
+	}, [currentDbQuery, fetcher]);
 
 	// setupObserver callback
-	const setupObserver = useCallback((sentinelSelector: string) => {
-		console.log("setupObserver sentinelSelector = ", sentinelSelector);
+	const setupObserver = useCallback((direction: Direction, nextSkip: number) => {
+		console.log("setupObserver fetchDirection = ", fetchDirection, "nextSkip = ", nextSkip);
+
+		const forwardSentinel = document.querySelector("#forward-sentinel");
+    const backwardSentinel = document.querySelector("#backward-sentinel");
+		console.log("forwardSentinel = ", forwardSentinel, "backwardSentinel = ", backwardSentinel);
 
 		// Disconnect the current observer if it exists
 		if (globalObserver.current) {
@@ -207,71 +208,107 @@ function Index() {
 		}
 		
 		const observerCallback = (entries: IntersectionObserverEntry[]) => {
-			if (entries[0].isIntersecting) {
-				fetchMorePoets(true);
-			}
+			entries.forEach((entry) => {
+				if (entry.isIntersecting && entry.target.id === "forward-sentinel" && fetchDirection === 'forward') {
+						console.log("(entry.isIntersecting && entry.target.id ===", entry.target.id);
+						fetchMorePoets(direction, nextSkip); // Fetch next page
+				} else if (entry.isIntersecting && entry.target.id === "backward-sentinel" && fetchDirection === 'backward') {
+						console.log("(entry.isIntersecting && entry.target.id ===", entry.target.id);
+						fetchMorePoets(direction, nextSkip); // Fetch previous page
+				}
+			});
 		};
 
-		const observerOptions = { threshold: 0.1 };
-		const observer = new IntersectionObserver(observerCallback, observerOptions);
+		const observer = new IntersectionObserver(observerCallback, { threshold: 0.1 });
 
-		const sentinel = document.querySelector(sentinelSelector);
+		if (forwardSentinel) observer.observe(forwardSentinel);
+    if (backwardSentinel) observer.observe(backwardSentinel);
+
+		const sentinel = fetchDirection === 'forward' ? forwardSentinel : backwardSentinel;
+		console.log("setupObserver sentinel = ",  sentinel);
 		if (sentinel) {
 			observer.observe(sentinel);
-			console.log("setupObserver observer.observe(sentinel) sentinelSelector = ", sentinelSelector);
+			console.log("setupObserver observer.observe(sentinel) fetchDirection = ", fetchDirection);
 		}
 
 		// Assigning observer to globalObserver for later access
 		globalObserver.current = observer;
-		console.log("setupObserver globalObserver.current = sentinelSelector = ", sentinelSelector);
-	}, [fetchMorePoets]);
+		console.log("setupObserver globalObserver.current = observer = ", observer);
+
+	}, [fetchDirection, fetchMorePoets]);
 
 	// InitialData useEffect
 	useEffect(() => {
-		console.log("InitialData useEffect --- initialData.poets.length = ", initialData.poets.length, "poets.length = ", poets.length);
 		if (initialData.poets.length > 0) {
       // This ensures observer is setup only after initial data is loaded
       // and if globalObserver is initialized 
       if (!globalObserver.current && initialData.poets.length === PAGE_SIZE) {
-				console.log("InitialData useEffect setupObserver #poet-$initialData.poets[PAGE_SIZE-1].pid");
-        setupObserver(`#poet-${initialData.poets[PAGE_SIZE-1].pid}`);
+				const nextSkip: number = PAGE_SIZE;
+				setCurrentDbQuery({ ...currentDbQuery, skip: nextSkip, take: PAGE_SIZE });		// Update current query skip
+				const direction: Direction = ('forward');
+				console.log("InitialData useEffect setupObserver forward, currentDbQuery = ", currentDbQuery);
+				setupObserver(direction, nextSkip);
       }
     }
-	}, [poets, initialData.poets, setupObserver]); // Depends on the initial poets list.
+	}, [initialData.poets, currentDbQuery, setupObserver]); // Depends on the initial poets list.
 
-	// Merge fetcherData useEffect
+	// Append fetcherData useEffect
 	useEffect(() => {
-		console.log("---- Merge fetcherData useEffect ----");
 		if (fetcherData) {
 			if (!fetcherData.error) {
 				if (fetcherData.poets && fetcherData.poets.length > 0) {
-					setPoets((prevPoets: Poet[]) => [...prevPoets, ...fetcherData.poets]);
+					console.log("---- Append fetcherData useEffect -- fetchDirection = ", fetchDirection);
+					console.log("---- Append fetcherData useEffect -- poetSlidingWindow: ", poetSlidingWindow[0].pid, "-", poetSlidingWindow[poetSlidingWindow.length-1].pid);
+					let updatedPoets: Poet[] = [];
+					setPoetSlidingWindow((prevPoets) => {
+						if (fetchDirection === 'forward') {
+							updatedPoets = [...prevPoets, ...fetcherData.poets];
+							if (updatedPoets.length > BUFFER_SIZE) {
+									// Trim from the beginning when moving forward
+									console.log("---- Append fetcherData useEffect -- SLICE first page");
+									updatedPoets = updatedPoets.slice(-BUFFER_SIZE);
+							}
+            } else {						// fetchDirection === 'backward'
+							updatedPoets = [...fetcherData.poets, ...prevPoets];
+							if (updatedPoets.length > BUFFER_SIZE) {
+                // Trim from the end when moving backward
+								console.log("---- Append fetcherData useEffect -- SLICE last page");
+                updatedPoets = updatedPoets.slice(0, BUFFER_SIZE);
+							}
+            }
+            return updatedPoets;
+        	});
+					setPoetSlidingWindowUpdated(true);
 					setFetcherData(null);
-					console.log("Merge fetcherData useEffect --- setPoets append new poets");
 				} 
 				setFetchError(null);
 			} else { 
-				console.log("Merge fetcherData useEffect --- data.error");
+				console.log("Append fetcherData useEffect --- data.error");
 				console.error(fetcherData.error);
 				setFetchError(fetcherData.error);
 			}
 		}
-	}, [fetcherData]);
+	}, [fetcherData, fetchDirection, poetSlidingWindowUpdated, poetSlidingWindow]);
 	
-	// newSentinelIndex useEffect
+	// poetSlidingWindow updated useEffect
 	useEffect(() => {
-		if (poets && poets.length > 0) {
-			console.log("sentinelIndex useEffect --- poets.length = ", poets.length, "hasMore = ", hasMore);
-			const lastPoetIndex = poets.length - 1;
-			console.log("sentinelIndex useEffect --- lastPoetIndex = ", lastPoetIndex, "sentinelIndex = ", sentinelIndex);
-			// Make sure that new poets have been fetched and appended to poets buffer before setting up a new observer
-			if (lastPoetIndex !== sentinelIndex && hasMore) {
-				setSentinelIndex(lastPoetIndex);
-				console.log("sentinelIndex useEffect #poet-$poets[sentinelIndex]?.pid sentinelIndex = ", lastPoetIndex);
-				setupObserver(`#poet-${poets[lastPoetIndex]?.pid}`);
+		if (poetSlidingWindowUpdated && hasMore) {
+			setPoetSlidingWindowUpdated(false);
+			const currentSkip: number = currentDbQuery.skip!;
+			const lastPoetID: number = poetSlidingWindow[poetSlidingWindow.length - 1].pid;
+			let nextSkip: number = lastPoetID;
+			let direction: Direction = 'forward';
+			if (lastPoetID < currentSkip) {
+				console.log("---- poetSlidingWindow updated useEffect setupObserver -- SWITCH directions!!");
+				direction = 'backward';
+				nextSkip = 1; // ToDo: fix this...
 			}
+			console.log("---- poetSlidingWindow updated useEffect setupObserver -- poetSlidingWindow: ", poetSlidingWindow[0].pid, "-", poetSlidingWindow[poetSlidingWindow.length-1].pid);
+			console.log("---- poetSlidingWindow updated useEffect setupObserver -- direction = ", direction, "nextSkip = ", nextSkip);
+			setupObserver(direction, nextSkip);
 		}
-	}, [poets, sentinelIndex, hasMore, setupObserver]);
+	}, [poetSlidingWindow, poetSlidingWindowUpdated, hasMore, currentDbQuery, setupObserver]);
+	
 
 	/*************** SidebarPanel callback logic ****************/
 
@@ -299,19 +336,17 @@ function Index() {
 
 		if (query.where !== undefined) {			// All new searches include where:, start at the beginning
 			query.skip = 0
-			setPage(1);
-			console.log("performSearch query.skip = ", query.skip, "page = ", page);
+			console.log("performSearch query.skip = ", query.skip);
 		} else {															// User pressed Clear button, skip to a random place in the DB 
 			const newPage = (Math.floor(Math.random() * (DATABASE_SIZE-100)/PAGE_SIZE));
-			setPage(newPage);
 			query.skip = (newPage - 1) * PAGE_SIZE;
-			console.log("performSearch query.skip = ", query.skip, "page = ", page, "newPage = ", newPage);
+			console.log("performSearch query.skip = ", query.skip, "newPage = ", newPage);
 		}
 
 		setHasMore(true);
 		setFetcherData(null);
-		setPoets([]);
-		setSentinelIndex(0);		// sentinelIndex must not equal the index in setupObserver
+		setPoetSlidingWindow([]);
+		//setCurrentPoetIndex(0);		// currentPoetBufferIndex must not equal the index in the currentPoetBufferIndex useEffect
 
 		setCurrentDbQuery(query);
 		console.log('performSearch: query));', query);
@@ -393,19 +428,24 @@ function Index() {
 							</div>
 						)}
 
-						<div className="grid grid-cols-6 gap-4">
-							{poets?.map((poet: Poet, index: number) => (
-								<div key={poet.id} id={`poet-${poet.pid}`} className="flex">
-									<ImageCard 
-										key={poet.pid} 
-										poet={poet}
-										// Dynamically access the Poet property
-										rarityTraitLabel={searchButtonPressed ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
-										// Dynamically access the rarity count
-										rarityCount={searchButtonPressed && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
-									/>
-								</div>
-							))}
+						<div className="grid-container">
+							<div className="backward-sentinel" id="backward-sentinel"></div>
+							<div className="grid grid-cols-6 gap-4">
+								{/* Poets mapping */}
+								{poetSlidingWindow?.map((poet: Poet, index: number) => (
+									<div key={poet.id} id={`poet-${poet.pid}`} className="flex">
+										<ImageCard 
+											key={poet.pid} 
+											poet={poet}
+											// Dynamically access the Poet property
+											rarityTraitLabel={searchButtonPressed ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
+											// Dynamically access the rarity count
+											rarityCount={searchButtonPressed && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
+										/>
+									</div>
+								))}
+							</div>
+							<div className="forward-sentinel" id="forward-sentinel"></div>
 						</div>
 					</div>
 				</div>
