@@ -1,11 +1,10 @@
 import React from 'react'; 
 import type { Poet } from '@prisma/client'
 
-//const ImageCard = ({ poet, rarityTraitLabel, rarityCount }: { poet: Poet, rarityTraitLabel?: string, rarityCount?: number }) => {
 const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabel?: string, rarityCount?: number }>(
   ({ poet, rarityTraitLabel, rarityCount }, ref) => {
     return (
-      <div ref={ref} className="max-w-xl rounded overflow-hidden shadow-lg sans">
+      <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden shadow-lg sans">
         <img src={poet.g1Url} alt={`${poet.pNam + ' Gen1'}`} loading="lazy" className="w-full mb-2" />
         <img src={poet.g0Url} alt={`${poet.pNam + ' Gen0'}`} loading="lazy" className="w-full" /> 
         <div className="px-4 py-4">
@@ -30,6 +29,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabe
           </div>
           {/* Adjusted grid for rarity traits */}
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 text-xs">
+            {/* ToDo: For production - Uncomment following line and comment Poet ID line */}
             {/*<div>{rarityCount !== undefined && rarityTraitLabel ? rarityTraitLabel : ""} <span className="font-bold">{rarityCount !== undefined ? rarityCount : ""}</span></div>*/}
             <div>Poet ID: <span className="font-bold">{poet.pid}</span></div>
             <div>Age: <span className="font-bold">{poet.age}</span></div>

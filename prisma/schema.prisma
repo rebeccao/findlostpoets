@@ -37,4 +37,17 @@ model Poet {
   prim    Int
   rewrCnt Int
   wrdCnt  Int
+
+  @@index([brdCnt, brd])
+  @@index([egoCnt, ego])
+  @@index([ageCnt, age])
+  @@index([genCnt, gen])
+  @@index([ori, pid])
+  @@index([lat, pid])
+  @@index([brd, pid])
+  @@index([age, pid])
+  @@index([gen, pid])
+  @@index([ego, pid])
+  @@index([pol, pid])
+  @@index([pNam, pid])
 }

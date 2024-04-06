@@ -19,20 +19,6 @@
   position: relative;
 }
 
-.sentinel {
-  position: absolute;
-  width: 100%;
-  height: 1px;
-}
-
-.backward-sentinel {
-  top: 0;
-}
-
-.forward-sentinel {
-  bottom: 0;
-}
-
 
 @layer utilities {
   /* Styles to remove number input spinners */
