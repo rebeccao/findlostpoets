@@ -13,7 +13,7 @@ import ErrorBoundary from '~/components/error-boundary';
 
 export type SearchCriteria = {
   where?: { [key: string]: any };
-  skip?: number;
+  skip: number;
   take?: number;
   orderBy?: { [key: string]: 'asc' | 'desc' }[];
 };
@@ -168,10 +168,13 @@ function Index() {
 		const data = fetcher.data as LoaderData;
 		try {
 			if (data && data.poets.length > 0) {
+				console.log("fetcher.data useEffect data.poets.length = ", data.poets.length);
 				setFetcherData(data);
-				if (data.poets.length < PAGE_SIZE) { setHasMore(false) }
+				if (data.poets.length < PAGE_SIZE) { 
+					setHasMore(false); 
+					console.log("fetcher.data useEffect fetcher.data.poets.length = ", data.poets.length, "setHasMore(false)");
+				}
 				setFetchError(null);
-				//console.log("fetcher.data useEffect fetcher.data.poets.length = ", data.poets.length);
 			}
 		} catch (error) {
 			console.error(error);
@@ -189,7 +192,7 @@ function Index() {
 
 		setCurrentDbQuery(newQuery);
 		setFetchDirection(direction);
-		console.log("<--------> fetchMorePoets direction = ", direction, "newQuery = ", newQuery);
+		console.log("<--------> fetchMorePoets direction = ", direction, "newQuery = ", JSON.stringify(newQuery, null, 2));
 
 		if (forwardGlobalObserver.current) {
 			forwardGlobalObserver.current.disconnect(); // Temporarily disconnect
@@ -210,7 +213,7 @@ function Index() {
 	const setupObserver = useCallback(() => {
 		if (poetSlidingWindow.length > 0) {
 			console.log("********  setupObserver poetSlidingWindow indexes ");
-			console.log("********  setupObserver poetSlidingWindow indexes ", poetSlidingWindow[0].pid, " - ", poetSlidingWindow[poetSlidingWindow.length-1].pid, "currentDbQuery.skip = ", currentDbQuery.skip, "fetchDirection = ", fetchDirection, " ----------- Scroll position:", window.scrollY);
+			console.log("********  setupObserver poetSlidingWindow indexes ", poetSlidingWindow[0].pid, " - ", poetSlidingWindow[poetSlidingWindow.length-1].pid, "currentDbQuery.skip = ", currentDbQuery.skip, "fetchDirection = ", fetchDirection);
 
 			// Disconnect the current global observers if they exist
 			if (backwardGlobalObserver.current) {
@@ -224,26 +227,27 @@ function Index() {
 
 			const observerCallback = (entries: IntersectionObserverEntry[]) => {
 				entries.forEach((entry) => {
-					console.log("************************************************* entries.length = ", entries.length, "entry.target data-pid=", entry.target?.getAttribute('data-pid'));
-					console.log("observerCallback   -- entry.isIntersecting = ", entry.isIntersecting, "-- fetchDirection = ", fetchDirection, "   -- entry.target =data-pid=", entry.target?.getAttribute('data-pid'), "   backwardSentinelRef.current data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef.current data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
+					//console.log("************************************************* entries.length = ", entries.length, "entry.target data-pid=", entry.target?.getAttribute('data-pid'));
+					//console.log("observerCallback   -- entry.isIntersecting = ", entry.isIntersecting, "-- fetchDirection = ", fetchDirection, "   -- entry.target =data-pid=", entry.target?.getAttribute('data-pid'), "   backwardSentinelRef.current data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef.current data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
 					if (entry.isIntersecting && entry.target === forwardSentinelRef.current && poetSlidingWindow.length > 0) { 
-							console.log("                 poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
-							const lastPoetID = poetSlidingWindow[poetSlidingWindow.length - 1].pid;
-							const nextSkip = lastPoetID;
-							console.log("                 poetSlidingWindow currentDbQuery.skip = ", currentDbQuery.skip, "nextSkip = ", nextSkip);
-							fetchMorePoets('forward', nextSkip); // Fetch next page
+						console.log("observerCallback   -- entry.isIntersecting = ", entry.isIntersecting, "-- fetchDirection = ", fetchDirection, "   -- entry.target =data-pid=", entry.target?.getAttribute('data-pid'), "   backwardSentinelRef.current data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef.current data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
+						console.log("                 poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
+						//const lastPoetID = poetSlidingWindow[poetSlidingWindow.length - 1].pid;
+						//const nextSkip = lastPoetID;
+						const nextSkip = currentDbQuery.skip + PAGE_SIZE;
+						console.log("                 poetSlidingWindow currentDbQuery.skip = ", currentDbQuery.skip, "nextSkip = ", nextSkip);
+						fetchMorePoets('forward', nextSkip); // Fetch next page
 					} else if (entry.isIntersecting && entry.target === backwardSentinelRef.current && poetSlidingWindow[0].pid !== 1 && poetSlidingWindow.length > 0) {
 						console.log("observerCallback entry.isIntersecting true -- fetchDirection = ", fetchDirection, "entry.target =data-pid=", entry.target?.getAttribute('data-pid'));
-							console.log("                 poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
-							console.log("observerCallback  *** window.scrollY = ", window.scrollY);
-							const firstPoetIndex = poetSlidingWindow[0].pid; //parseInt(entry.target.getAttribute("data-poet-id") || "0", 10);
-							console.log("                 firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
-							const expectedPrevFirstPoetIndex = firstPoetIndex - PAGE_SIZE;
-							if (expectedPrevFirstPoetIndex > 0) {
-								const prevSkip = expectedPrevFirstPoetIndex - 1;
-								console.log("                 poetSlidingWindow prevSkip = ", prevSkip);
-								fetchMorePoets('backward', prevSkip); // Fetch previous page
-							}
+						console.log("                 poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
+						const firstPoetIndex = poetSlidingWindow[0].pid; //parseInt(entry.target.getAttribute("data-poet-id") || "0", 10);
+						console.log("                 firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
+						const expectedPrevFirstPoetIndex = firstPoetIndex - PAGE_SIZE;
+						if (expectedPrevFirstPoetIndex > 0) {
+							const prevSkip = expectedPrevFirstPoetIndex - 1;
+							console.log("                 poetSlidingWindow prevSkip = ", prevSkip);
+							fetchMorePoets('backward', prevSkip); // Fetch previous page
+						}
 					}
 				});
 			};
@@ -294,7 +298,7 @@ function Index() {
 							updatedPoets = [...prevPoets, ...fetcherData.poets];
 							if (updatedPoets.length > BUFFER_SIZE) {
 									// Trim from the beginning when moving forward
-									console.log("---- Append fetcherData useEffect -- SLICE first page");
+									console.log("---- Append fetcherData useEffect -- SLICE first page -- updatedPoets.length", updatedPoets.length);
 									updatedPoets = updatedPoets.slice(-BUFFER_SIZE);
 							}
             } else {						// fetchDirection === 'backward'
@@ -317,7 +321,7 @@ function Index() {
 				setFetchError(fetcherData.error);
 			}
 		}
-	}, [fetcherData, fetchDirection, poetSlidingWindowUpdated, poetSlidingWindow]);
+	}, [fetcherData, fetchDirection]);
 	
 	// poetSlidingWindow updated useEffect
 	useEffect(() => {
