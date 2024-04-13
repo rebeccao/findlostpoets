@@ -368,6 +368,7 @@ function Index() {
 
 		setHasMore(true);
 		setFetcherData(null);
+		setFetchDirection('forward');
 		setPoetSlidingWindow([]);
 
 		setCurrentDbQuery(query);

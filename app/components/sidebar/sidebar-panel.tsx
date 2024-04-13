@@ -86,14 +86,14 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       onRangeChange(null, undefined, undefined);
     }
 
-    const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }] };
+    const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }], skip: 0 };
     console.log("SidebarPanel: resetSearch dbQuery: ", dbQuery);
     performSearch(dbQuery);
   };
 
   // Handler for the search button click
   const handleSearchClick = () => {
-    let dbQuery: SearchCriteria = {};
+    let dbQuery: SearchCriteria = { skip: 0 };
     let whereConditions: any[] = [];
     let orderByConditions: SearchCriteria['orderBy'] = [];
   
