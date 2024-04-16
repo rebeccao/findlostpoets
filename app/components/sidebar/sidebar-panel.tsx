@@ -48,12 +48,14 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   };
 
   const handleRareTraitChange = (selectedDbField: string) => {
+    console.log("Changing rare trait to:", selectedDbField);
     // Directly call the onRareTraitChange prop with the dbField of the clicked checkbox
     onRareTraitChange(selectedDbField); // This function expects a single string or null
   };
 
   // Update for checkbox change to also clear or set active trait
   const handleRangeCheckboxChange = (selectedDbField: string) => {
+    console.log("Changing range trait to:", selectedDbField);
     if (selectedRangeTrait === selectedDbField) {
       onRangeTraitSelect(null); // Deselect if the same trait is clicked again
     } else {
@@ -86,14 +88,14 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       onRangeChange(null, undefined, undefined);
     }
 
-    const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }] };
+    const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }], skip: 0 };
     console.log("SidebarPanel: resetSearch dbQuery: ", dbQuery);
     performSearch(dbQuery);
   };
 
   // Handler for the search button click
   const handleSearchClick = () => {
-    let dbQuery: SearchCriteria = {};
+    let dbQuery: SearchCriteria = { skip: 0 };
     let whereConditions: any[] = [];
     let orderByConditions: SearchCriteria['orderBy'] = [];
   
@@ -197,10 +199,10 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                 {sidebarItem.type === "sort" && (
                   <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
                     <div className="grid grid-cols-2 gap-4 w-full">
-                      {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, expandedSidebarItemIndex) => (
-                        <div key={`${sidebarItem.title}-${expandedSidebarItemIndex}`} className="flex items-center cursor-pointer">
+                      {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => (
+                        <div key={`${sidebarItem.title}-${index}`} className="flex items-center cursor-pointer">
                           <CustomCheckbox
-                            id={`sort-${expandedSidebarItem.dbField}-${expandedSidebarItemIndex}`}
+                            id={`sort-${expandedSidebarItem.dbField}-${index}`}
                             checked={selectedRareTrait === expandedSidebarItem.dbField}
                             onChange={() => handleRareTraitChange(expandedSidebarItem.dbField)}
                             label={expandedSidebarItem.title!}
@@ -213,7 +215,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                 {sidebarItem.type === "range" && (
                   <div className="flex flex-col p-2 pl-6 pr-3 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
                     {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => (
-                      <div key={index} className="flex items-center space-x-1 mb-2 w-full">
+                      <div key={`${sidebarItem.title}-${index}`} className="flex items-center space-x-1 mb-2 w-full">
                         <div className="flex items-center flex-1">
                           <CustomCheckbox
                             id={`range-${expandedSidebarItem.dbField}-${index}`}
