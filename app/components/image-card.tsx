@@ -5,7 +5,14 @@ const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabe
   ({ poet, rarityTraitLabel, rarityCount }, ref) => {
     return (
       <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden shadow-lg sans">
-        <img src={poet.g1Url} alt={`${poet.pNam + ' Gen1'}`} loading="lazy" className="w-full mb-2" />
+        <img
+          src={`https://f6e56f29e6c106013b6589848faed170/cdn-cgi/image/width=1024,quality=80/${poet.g1Url}`}
+          srcSet={srcSet}
+          sizes={sizes}
+          alt={`${poet.pNam + ' Gen1'}`}
+          loading="lazy"
+          className="w-full mb-2"
+        />
         <img src={poet.g0Url} alt={`${poet.pNam + ' Gen0'}`} loading="lazy" className="w-full" /> 
         <div className="px-4 py-4">
         <div className="font-bold text-md mb-2">{poet.pNam}</div>
