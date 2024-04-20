@@ -14,7 +14,6 @@ const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabe
       ${baseUrl.replace('width=1024', 'width=320')} 320w
     `;*/
 
-    console.log("Base URL:", baseUrl);
     //console.log("SrcSet:", srcSet);
 
     // Define sizes for production

@@ -1,9 +1,10 @@
 import { sidebarItems } from "~/components/sidebar/sidebar-data";
-import React from "react";
+import React, { useState } from 'react';
 import { GrFormClose } from "react-icons/gr";
 import CustomCheckbox from "~/components/custom-checkbox";
 import Tooltip from "~/components/tooltip";
 import type { SidebarProps, SearchCriteria } from "~/routes/_index";
+import type { ExpandedSidebarItem } from "~/components/sidebar/sidebar-data";
 
 const SidebarPanel: React.FC<SidebarProps> = ({ 
   searchTrait,
@@ -17,6 +18,8 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   performSearch 
 }) => {
   console.log("SidebarPanel start");
+  
+  const [errorMessages, setErrorMessages] = useState<Record<string, string>>({});
 
   // Handler for changing the searchTrait
   const handleSearchTraitChange = (newSearchTraitKey: string) => {
@@ -29,21 +32,52 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   };
 
   // Handler for changing the searchTrait Value
-  const handleSearchTraitValueChange = (newSearchTraitValue: string) => {
-    // Update searchTraitValue while keeping the current searchTraitKey
-    const updatedSearchTrait = {
-      searchTraitKey: searchTrait.searchTraitKey,
-      searchTraitValue: newSearchTraitValue,
-    };
-    onSearchTraitChange(updatedSearchTrait);
+  const handleSearchTraitValueChange = (newSearchTraitValue: string, selectedTrait: ExpandedSidebarItem) => {
+    if (selectedTrait.validationType) {
+      const isValidInput = validateSearchTraitInput(selectedTrait.validationType, newSearchTraitValue, selectedTrait);
+      if (isValidInput) {
+        setErrorMessages(prev => ({ ...prev, [selectedTrait.dbField]: "" }));
+        onSearchTraitChange({
+          searchTraitKey: selectedTrait.dbField,
+          searchTraitValue: newSearchTraitValue,
+        });
+      } else {
+        setErrorMessages(prev => ({ ...prev, [selectedTrait.dbField]: "Invalid input for selected trait" }));
+      }
+    } else {
+      // If no validation type is specified, assume the input is valid
+      onSearchTraitChange({
+        searchTraitKey: selectedTrait.dbField,
+        searchTraitValue: newSearchTraitValue,
+      });
+    }
   };
 
+  function validateSearchTraitInput(type: string, value: string, trait: ExpandedSidebarItem): boolean {
+    switch (type) {
+      case 'alphanumeric':
+        return /^[a-z0-9]+$/i.test(value);
+      case 'alpha':
+        return /^[a-zA-Z]+$/.test(value);
+      case 'decimal':
+        let number = parseFloat(value);
+        return !isNaN(number) && number >= parseFloat(trait.min!) && number <= parseFloat(trait.max!);
+      case 'fixedLength':
+        return value.length === 3; // Assuming the length is 3 for 'Genre'
+      case 'enum':
+        return trait.enumValues!.includes(value);
+      default:
+        return true;
+    }
+  }
+  
   const clearSearchTraitInput = () => {
     // Set searchTraitValue  to empty string while keeping the current searchTraitKey
     const updatedSearchTrait = {
       searchTraitKey: searchTrait.searchTraitKey,
       searchTraitValue: '',
     };
+    setErrorMessages(prev => ({ ...prev, [searchTrait.searchTraitKey]: "" }));
     onSearchTraitChange(updatedSearchTrait);
   };
 
@@ -65,6 +99,12 @@ const SidebarPanel: React.FC<SidebarProps> = ({
 
   const handleRangeInputChange = (selectedDbField: string, rangeType: 'min' | 'max', value: string) => {
     const numericValue = value === '' ? undefined : Number(value);
+    // Check if numericValue is NaN and handle it, e.g., by not updating the state
+    if (numericValue !== undefined && isNaN(numericValue)) {
+      console.error('Invalid input: Not a number');
+      return; // Exit the function early if the input is not a valid number
+    }
+
     if (rangeType === 'min') {
       onRangeChange(selectedDbField, numericValue, rangeValues[selectedDbField]?.max);
     } else {
@@ -184,15 +224,26 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         type="text"
                         placeholder="Enter search term..."
                         value={searchTrait.searchTraitValue}
-                        onChange={(e) => handleSearchTraitValueChange(e.target.value)}
+                        onChange={(e) => {
+                          const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey);
+                          if (selectedTrait) {
+                            handleSearchTraitValueChange(e.target.value, selectedTrait);
+                          }
+                        }}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
-                            handleSearchClick(); // Call the search handler when Enter key is pressed
-                            handleSearchTraitValueChange(''); // Clear the input box by setting its value to an empty string
+                            const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey);
+                            if (selectedTrait) {
+                              handleSearchClick(); // Call the search handler when Enter key is pressed
+                              handleSearchTraitValueChange('', selectedTrait); // Clear the input box by setting its value to an empty string
+                            }
                           }
                         }}
                         className="form-input block placeholder-italic flex-grow w-3/5 text-xs py-2 px-4 rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                       />
+                      {errorMessages[searchTrait.searchTraitKey] && (
+                        <div className="absolute text-red-500 text-xs mt-2 left-0 pl-4">{errorMessages[searchTrait.searchTraitKey]}</div>
+                      )}
                       {searchTrait.searchTraitValue && (
                         <GrFormClose
                           className="absolute right-3 cursor-pointer"
@@ -235,9 +286,16 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                           {/* Min Input */}
                           <input
                             type="number"
+                            pattern="\d"
                             id={`min-${expandedSidebarItem.dbField}-${index}`}
                             value={rangeValues[expandedSidebarItem.dbField]?.min || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
+                            onKeyDown={(e) => {
+                              // Allow only digits and control keys
+                              if (!["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Backspace", "ArrowLeft", "ArrowRight", "Delete", "Tab", "Enter"].includes(e.key) && !e.ctrlKey) {
+                                e.preventDefault();
+                              }
+                            }}
                             aria-label={`Minimum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.min}
                             className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
@@ -246,9 +304,16 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                           {/* Max Input */}
                           <input
                             type="number"
+                            pattern="\d"
                             id={`max-${expandedSidebarItem.dbField}-${index}`}
                             value={rangeValues[expandedSidebarItem.dbField]?.max || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
+                            onKeyDown={(e) => {
+                              // Allow only digits and control keys
+                              if (!["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Backspace", "ArrowLeft", "ArrowRight", "Delete", "Tab", "Enter"].includes(e.key) && !e.ctrlKey) {
+                                e.preventDefault();
+                              }
+                            }}
                             aria-label={`Maximum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.max}
                             className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
