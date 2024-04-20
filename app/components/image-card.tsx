@@ -3,10 +3,24 @@ import type { Poet } from '@prisma/client'
 
 const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabel?: string, rarityCount?: number }>(
   ({ poet, rarityTraitLabel, rarityCount }, ref) => {
+    // Check environment to determine image source
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const baseUrl = isDevelopment ? poet.g1Url : `https://f6e56f29e6c106013b6589848faed170/cdn-cgi/image/width=1024,quality=80/${poet.g1Url}`;
+
+    // Define srcSet only for production
+    const srcSet = isDevelopment ? '' : `
+      ${baseUrl.replace('width=1024', 'width=1024')} 1024w,
+      ${baseUrl.replace('width=1024', 'width=768')} 768w,
+      ${baseUrl.replace('width=1024', 'width=320')} 320w
+    `;
+
+    // Define sizes for production
+    const sizes = isDevelopment ? undefined : "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw";
+
     return (
       <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden shadow-lg sans">
         <img
-          src={`https://f6e56f29e6c106013b6589848faed170/cdn-cgi/image/width=1024,quality=80/${poet.g1Url}`}
+          src={baseUrl}
           srcSet={srcSet}
           sizes={sizes}
           alt={`${poet.pNam + ' Gen1'}`}
