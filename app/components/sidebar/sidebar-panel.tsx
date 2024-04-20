@@ -114,9 +114,9 @@ const SidebarPanel: React.FC<SidebarProps> = ({
 
   const resetSearch = () => {
     // Set searchTraitValue  to empty string while keeping the current searchTraitKey
-    if (searchTrait.searchTraitValue !== '') {
+    //if (searchTrait.searchTraitValue !== '') {
       clearSearchTraitInput();
-    }
+    //}
 
     // Deselect the selected rare trait, if any
     if (selectedRareTrait) {
