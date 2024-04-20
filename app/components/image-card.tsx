@@ -5,7 +5,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabe
   ({ poet, rarityTraitLabel, rarityCount }, ref) => {
     // Check environment to determine image source
     const isDevelopment = process.env.NODE_ENV === 'development';
-    const baseUrl = isDevelopment ? poet.g1Url : `https://f6e56f29e6c106013b6589848faed170/cdn-cgi/image/width=1024,quality=80/${poet.g1Url}`;
+    const baseUrl = poet.g1Url;
 
     // Define srcSet only for production
    /* const srcSet = isDevelopment ? '' : `
