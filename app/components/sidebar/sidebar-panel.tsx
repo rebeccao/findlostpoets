@@ -232,17 +232,19 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         }}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
+                            e.preventDefault(); // Prevent default form submission if applicable
                             const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey);
                             if (selectedTrait) {
-                              handleSearchClick(); // Call the search handler when Enter key is pressed
                               handleSearchTraitValueChange('', selectedTrait); // Clear the input box by setting its value to an empty string
                             }
+                            handleSearchClick(); // Call the search handler when Enter key is pressed
+                            clearSearchTraitInput(); // Move this inside if you need to clear after search
                           }
                         }}
                         className="form-input block placeholder-italic flex-grow w-3/5 text-xs py-2 px-4 rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                       />
                       {errorMessages[searchTrait.searchTraitKey] && (
-                        <div className="absolute text-red-500 text-xs mt-2 left-0 pl-4">{errorMessages[searchTrait.searchTraitKey]}</div>
+                        <div className="text-red-500 text-xs mt-1 pl-4">{errorMessages[searchTrait.searchTraitKey]}</div>
                       )}
                       {searchTrait.searchTraitValue && (
                         <GrFormClose

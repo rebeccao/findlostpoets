@@ -25,7 +25,7 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Latent', dbField: 'lat', validationType: 'alphanumeric' },
       { title: 'Breed', dbField: 'brd', validationType: 'alpha' },
       { title: 'Age', dbField: 'age', validationType: 'decimal', min: '0.00', max: '1.00' },
-      { title: 'Genre', dbField: 'gen', validationType: 'fixedLength', enumValues: ['XXX'] },
+      { title: 'Genre', dbField: 'gen', validationType: 'alpha' },
       { title: 'Ego', dbField: 'ego', validationType: 'enum', enumValues: ['I', 'II', 'III', 'IV', 'V', '1', '2', '3', '4', '5'] },
       { title: 'Polarity', dbField: 'pol', validationType: 'enum', enumValues: ['ka', 'qu'] },
     ]
