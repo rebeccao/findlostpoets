@@ -15,7 +15,7 @@ export type SidebarItem = {
 export const sidebarItems: SidebarItem[] = [
   {
     title: 'Search By Trait',
-    details: 'Select the trait to search from the Dropdown.',
+    details: 'Select the Search Trait from the dropdown below.',
     type: 'traitSearch',
     expandedSidebarItems: [
       { title: 'Poet Name', dbField: 'pNam' },   // Mongodb field name for Poet Name
@@ -30,7 +30,7 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     title: 'Sort By Rare Trait',
-    details: 'Poets sorted by the rarest trait count.',
+    details: 'Sort Poets by Rarity starting with the lowest trait count.',
     type: 'sort',
     expandedSidebarItems: [
       { title: 'Breed', dbField: 'brdCnt' },   // Mongodb field name for Breed
@@ -42,7 +42,7 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     title: 'Search By Ranges',
-    details: 'Search by range.',
+    details: 'Search Poets by Range.',
     type: 'range',
     expandedSidebarItems: [     
       { title: 'Lexicon', dbField: 'lexCnt', min: "1", max: "255" },        // Mongodb field name for Lexicon

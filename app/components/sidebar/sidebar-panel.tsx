@@ -161,7 +161,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
           {sidebarItems.map((sidebarItem, index) => {
             return (
               <React.Fragment key={sidebarItem.title}>
-                <div className="flex items-center px-1 pt-4 pb-1 list-none h-15 text-md sans text-base">
+                <div className="flex items-center px-4 pt-4 pb-1 list-none h-15 text-md sans text-base">
                   <Tooltip content={sidebarItem.details}>
                     <span>{sidebarItem.title}</span>
                   </Tooltip>
@@ -188,6 +188,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
                             handleSearchClick(); // Call the search handler when Enter key is pressed
+                            handleSearchTraitValueChange(''); // Clear the input box by setting its value to an empty string
                           }
                         }}
                         className="form-input block placeholder-italic flex-grow w-3/5 text-xs py-2 px-4 rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
