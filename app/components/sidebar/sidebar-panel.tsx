@@ -210,6 +210,8 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                   <div className="flex items-center py-2 pr-3 pl-6 w-full">
                     {/* Dropdown for selecting traits */}
                     <select
+                      id="traitSelect"  
+                      name="traitSelect"
                       className="form-select block w-2/5 mb-0 mr-2 text-xs py-2 px-3 rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 flex-grow" 
                       onChange={(e) => handleSearchTraitChange(e.target.value)}
                       aria-label="Select a trait"
@@ -221,6 +223,8 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                     {/* Single search box */}
                     <div className="relative flex items-center">
                       <input
+                        id="searchTerm"  
+                        name="searchTerm"
                         type="text"
                         placeholder="Enter search term..."
                         value={searchTrait.searchTraitValue}
