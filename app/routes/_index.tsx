@@ -108,9 +108,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 			}
 		}		
 
-		console.log("++++++++  Index loader: dbQuery = ", dbQuery);
 		const poets = await prisma.poet.findMany({ ...dbQuery });
-		console.log("++++++++  Index loader: Fetched poets count = ", poets.length);
 		return json({ poets });
 
 	} catch (error: unknown) {

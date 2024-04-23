@@ -3,17 +3,14 @@
 import type { LinksFunction } from "@remix-run/node";
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
 
-import stylesheet from "~/tailwind.css";
-
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: stylesheet },
+  { rel: "stylesheet", href: "./app/tailwind.css" },
 ];
 
 export default function App() {
@@ -41,11 +38,6 @@ export default function App() {
         {/* Script tags go here */}
         {/* If you use a nonce-based content security policy for scripts, you must provide the `nonce` prop. Otherwise, omit the nonce prop as shown here. */}
         <Scripts />
-
-        {/* Sets up automatic reload when you change code */}
-        {/* and only does anything during development */}
-        {/* If you use a nonce-based content security policy for scripts, you must provide the `nonce` prop. Otherwise, omit the nonce prop as shown here. */}
-        <LiveReload />
       </body>
     </html>
   );
