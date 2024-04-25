@@ -10,7 +10,7 @@ import {
 } from "@remix-run/react";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: "./app/tailwind.css", precedence: 'high' },
+  { rel: "stylesheet", href: "/app/tailwind.css", precedence: 'high' },
 ];
 
 export default function App() {
