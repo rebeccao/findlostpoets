@@ -15,4 +15,12 @@ export default defineConfig({
     }),
     tsconfigPaths()
   ],
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      '@remix-run/react',
+      'react/jsx-dev-runtime'
+    ]
+  },
 });

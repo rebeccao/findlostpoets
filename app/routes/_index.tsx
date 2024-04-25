@@ -2,7 +2,7 @@ import { useLoaderData, useFetcher } from '@remix-run/react'
 import { json } from '@remix-run/node'
 import type { LoaderFunction } from '@remix-run/node'
 import { prisma } from '~/utils/prisma.server'
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import ImageCard from '~/components/image-card';
 import {HiMenuAlt3} from 'react-icons/hi';
