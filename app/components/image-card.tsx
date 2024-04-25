@@ -5,7 +5,8 @@ const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabe
   ({ poet, rarityTraitLabel, rarityCount }, ref) => {
     // Check environment to determine image source
     const isDevelopment = process.env.NODE_ENV === 'development';
-    const baseUrl = poet.g1Url;
+    const baseUrl = isDevelopment ?  poet.g1Url : 
+    `https://staging.findlostpoets.xyz/cdn-cgi/image/width=1024,quality=80/${poet.g1Url.replace('https://ipfs.io', '')}`;
 
     // Define srcSet only for production
    /* const srcSet = isDevelopment ? '' : `
