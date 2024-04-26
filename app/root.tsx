@@ -1,6 +1,8 @@
 // ./app/root.tsx
 
 import type { LinksFunction } from "@remix-run/node";
+import ComingSoon from '~/components/coming-soon';
+
 import {
   Links,
   Meta,
@@ -14,6 +16,8 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
+  const isProduction = process.env.NODE_ENV === 'production';
+
   return (
     <html lang="en">
       <head>
@@ -28,8 +32,8 @@ export default function App() {
         <Links/>
       </head>
       <body>
-        {/* Child routes go here */}
-        <Outlet />
+        {/* Conditionally render Coming Soon page or the main Outlet based on environment */}
+        {isProduction ? <ComingSoon /> : <Outlet />}
 
         {/* Manages scroll position for client-side transitions */}
         {/* If you use a nonce-based content security policy for scripts, you must provide the `nonce` prop. Otherwise, omit the nonce prop as shown here. */}
