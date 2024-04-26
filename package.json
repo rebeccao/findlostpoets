@@ -4,8 +4,8 @@
   "sideEffects": false,
   "scripts": {
     "dev": "export NODE_ENV=development && echo NODE_ENV is $NODE_ENV && remix vite:dev",
-    "build": "export NODE_ENV=production && echo NODE_ENV is $NODE_ENV && remix vite:build",
-    "start": "export NODE_ENV=production && echo NODE_ENV is $NODE_ENV && remix-serve ./build/server/index.js",
+    "build": "remix vite:build",
+    "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
