@@ -6,8 +6,8 @@ const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabe
     // Check environment to determine image source
     const isDevelopment = process.env.NODE_ENV === 'development';
     const baseUrl = isDevelopment ?  poet.g1Url : 
-    //`https://staging.findlostpoets.xyz/cdn-cgi/image/width=1024,quality=80/${poet.g0Url}`;
-    `https://staging.findlostpoets.xyz/cdn-cgi/image/width=1024,quality=80/https://www.fillmurray.com/200/300`;
+    `https://staging.findlostpoets.xyz/cdn-cgi/image/width=1024,quality=80/${poet.g1Url}`;
+
     // Define srcSet only for production
    /* const srcSet = isDevelopment ? '' : `
       ${baseUrl.replace('width=1024', 'width=1024')} 1024w,
