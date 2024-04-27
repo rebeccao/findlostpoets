@@ -5,11 +5,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { remixDevTools } from "remix-development-tools";
 
 export default defineConfig({
-  base: '/',
   server: {
     port: 3000,
   },
-  root: './app',
   plugins: [
     remixDevTools(),
     remix({
@@ -17,12 +15,4 @@ export default defineConfig({
     }),
     tsconfigPaths()
   ],
-  optimizeDeps: {
-    include: [
-      'react',
-      'react-dom',
-      '@remix-run/react',
-      'react/jsx-dev-runtime'
-    ]
-  },
 });
