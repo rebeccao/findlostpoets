@@ -1,13 +1,34 @@
 import React from 'react'; 
 import type { Poet } from '@prisma/client'
 
-const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabel?: string, rarityCount?: number }>(
+interface ImageCardProps {
+  poet: Poet;
+  rarityTraitLabel?: string;
+  rarityCount?: number;
+}
+
+// Function to modify the ipfs URL to the Cloudflare worker URL for resizing
+// https://ipfs.io/ipfs/QmWZHGH8DDaudeazcokTMPt5bz3k7xNKYPZ8bibnrFoajM is formatted to
+// https://staging.findlostpoets.xyz/ipfs/QmWZHGH8DDaudeazcokTMPt5bz3k7xNKYPZ8bibnrFoajM or
+// https://findlostpoets.xyz/ipfs/QmWZHGH8DDaudeazcokTMPt5bz3k7xNKYPZ8bibnrFoajM
+const getResizedIPFSUrl = (originalIPFSUrl: string): string => {
+  // The original URL starts with 'https://ipfs.io/ipfs/'
+  const ipfsBaseUrl = 'https://ipfs.io/ipfs/';
+  if (!originalIPFSUrl.startsWith(ipfsBaseUrl)) return originalIPFSUrl;  // Return original if not in expected format
+
+    const ipfsPath = originalIPFSUrl.substring(ipfsBaseUrl.length);
+    const baseUrl = process.env.NODE_ENV === 'staging'
+      ? 'https://staging.findlostpoets.xyz/ipfs/'
+      : 'https://findlostpoets.xyz/ipfs/';
+
+    return `${baseUrl}${ipfsPath}`;
+  };
+
+const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
   ({ poet, rarityTraitLabel, rarityCount }, ref) => {
     // Check environment to determine image source
     const isDevelopment = process.env.NODE_ENV === 'development';
-    const baseUrl = isDevelopment ? 
-    poet.g1Url : 
-    `https://staging.findlostpoets.xyz/cdn-cgi/image/width=1024,quality=80/${poet.g1Url.replace('https://ipfs.io', '')}`;
+    const imageUrl = isDevelopment ? poet.g1Url : getResizedIPFSUrl(poet.g1Url);
 
     // Define srcSet only for production
    /* const srcSet = isDevelopment ? '' : `
@@ -24,7 +45,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, { poet: Poet, rarityTraitLabe
     return (
       <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden shadow-lg sans">
         <img
-          src={baseUrl}
+          src={imageUrl}
           //srcSet={srcSet}
           sizes={sizes}
           alt={`${poet.pNam + ' Gen1'}`}
