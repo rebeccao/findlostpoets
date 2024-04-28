@@ -60,7 +60,7 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 				<div className="text-2xl font-[LeagueSpartan-SemiBold]"> 
 					F I N D L O S T P O E T S
 				</div> 
-				<div className="text-xs font-[LeagueSpartan-Light] -mt-2">
+				<div className="text-xs font-[LeagueSpartan-Regular] -mt-1 -mb-1">
 					(UNOFFICIAL)
 				</div> 
       </div>
