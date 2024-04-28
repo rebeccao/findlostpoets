@@ -57,7 +57,7 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 			</div>
 			{/* Right Side Banner */}
 			<div className="text-darkgray flex flex-col items-center mr-3"> 
-				<div className="text-2xl font-[LeagueSpartan-SemiBold]"> 
+				<div className="text-2xl lg:text-2xl md:text-xl sm:text-lg font-[LeagueSpartan-SemiBold]"> 
 					F I N D L O S T P O E T S
 				</div> 
 				<div className="text-xs font-[LeagueSpartan-Regular] -mt-1 -mb-1">
