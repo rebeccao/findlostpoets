@@ -1,15 +1,19 @@
-import { useLoaderData, useFetcher } from '@remix-run/react'
-import { json } from '@remix-run/node'
-import type { LoaderFunction } from '@remix-run/node'
-import { prisma } from '~/utils/prisma.server'
 import { useState, useEffect, useRef, useCallback } from 'react';
-import SidebarPanel from '~/components/sidebar/sidebar-panel';
-import ImageCard from '~/components/image-card';
+import { useLoaderData, useFetcher } from '@remix-run/react'
+import type { LoaderFunction } from '@remix-run/node'
+import { json } from '@remix-run/node'
+import { prisma } from '~/utils/prisma.server'
 import type { Poet } from '@prisma/client';
-import { Navbar } from '~/components/navbar';
-import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import '~/tailwind.css';
+import { Navbar } from '~/components/navbar';
+import SidebarPanel from '~/components/sidebar/sidebar-panel';
+import { sidebarItems } from '~/components/sidebar/sidebar-data';
+import ImageCard from '~/components/image-card';
 import ErrorBoundary from '~/components/error-boundary';
+
+const PAGE_SIZE = 24;
+const BUFFER_SIZE = PAGE_SIZE * 3;
+const DATABASE_SIZE = 28170;
 
 export type SearchCriteria = {
   where?: { [key: string]: any };
@@ -22,10 +26,6 @@ interface LoaderData {
   poets: Poet[];
   error?: string; // Assuming error is a string. Adjust according to your actual structure.
 }
-
-const PAGE_SIZE = 24;
-const BUFFER_SIZE = PAGE_SIZE * 3;
-const DATABASE_SIZE = 28170;
 
 export interface SidebarProps {
 	searchTrait: Record<string, string>;
@@ -41,34 +41,6 @@ export interface SidebarProps {
 
 export interface NavbarProps {
   toggleSidebar: () => void;
-}
-
-function Sidebar({ 
-	searchTrait,
-	selectedRareTrait,
-	selectedRangeTrait,  
-	rangeValues,
-	onSearchTraitChange, 
-	onRareTraitChange,
-	onRangeTraitSelect,
-	onRangeChange,
-	performSearch }: SidebarProps) 
-	{
-	return (
-	<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
-			<SidebarPanel 
-				searchTrait={searchTrait}
-				selectedRareTrait={selectedRareTrait}
-				selectedRangeTrait={selectedRangeTrait}
-				rangeValues={rangeValues}
-				onSearchTraitChange={onSearchTraitChange}
-				onRareTraitChange={onRareTraitChange}
-				onRangeTraitSelect={onRangeTraitSelect}
-				onRangeChange={onRangeChange}
-				performSearch={performSearch} 
-			/>
-    </section>
-	);
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -318,6 +290,7 @@ function Index() {
 	/*************** SidebarPanel callback logic ****************/
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
 	const [searchTrait, setSearchTrait] = useState({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
@@ -327,8 +300,6 @@ function Index() {
 
 	// searchButtonPressed is used to conditionally control displaying the Rare Trait count on the ImageCard 
 	const [searchButtonPressed, setSearchButtonPressed] = useState(false);
-
-	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
 	// Callback from SidebarPanel when the user clicks the Search button or Clear button
 	const performSearch = (query: SearchCriteria) => {
@@ -348,6 +319,7 @@ function Index() {
 			console.log("performSearch query.skip = ", query.skip, "newPage = ", newPage);
 		}
 
+		// Reset state
 		setHasMore(true);
 		setFetcherData(null);
 		setFetchDirection('forward');
@@ -404,58 +376,60 @@ function Index() {
 
   return (
 		<ErrorBoundary>
-		<div className="flex">
-			{sidebarOpen && (
-        <Sidebar
-          searchTrait={searchTrait}
-					selectedRareTrait={selectedRareTrait}
-					selectedRangeTrait={selectedRangeTrait}
-					rangeValues={rangeValues}
-					onSearchTraitChange={handleSearchTraitChange}
-          onRareTraitChange={handleRareTraitChange}
-					onRangeTraitSelect={handleRangeTraitSelect}
-					onRangeChange={handleRangeChange}
-					performSearch={performSearch} 
-        />
-      )}
-			<div className="flex flex-col w-full">
-				<Navbar toggleSidebar={toggleSidebar} />
-				<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
-					<div className="mt-4 mb-4 px-4">
-						{/* Display loading state */}
-						{fetcher.state === 'loading' && <div>Loading...</div>}
+			<div className="flex">
+				{sidebarOpen && (
+					<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
+						<SidebarPanel
+							searchTrait={searchTrait}
+							selectedRareTrait={selectedRareTrait}
+							selectedRangeTrait={selectedRangeTrait}
+							rangeValues={rangeValues}
+							onSearchTraitChange={handleSearchTraitChange}
+							onRareTraitChange={handleRareTraitChange}
+							onRangeTraitSelect={handleRangeTraitSelect}
+							onRangeChange={handleRangeChange}
+							performSearch={performSearch} 
+						/>
+					</section>
+				)}
+				<div className="flex flex-col w-full">
+					<Navbar toggleSidebar={toggleSidebar} />
+					<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
+						<div className="mt-4 mb-4 px-4">
+							{/* Display loading state */}
+							{fetcher.state === 'loading' && <div>Loading...</div>}
 
-						{/* Display error state */}
-						{fetchError && (
-							<div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
-								<p className="font-bold">Error</p>
-								<p>{fetchError}</p>
-							</div>
-						)}
+							{/* Display error state */}
+							{fetchError && (
+								<div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+									<p className="font-bold">Error</p>
+									<p>{fetchError}</p>
+								</div>
+							)}
 
-						<div className="grid-container">
-							<div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-								{/* Poets mapping */}
-								{poetSlidingWindow?.map((poet: Poet, index: number) => (
-									<div key={poet.id} id={`poet-${poet.pid}`} className="flex">
-										<ImageCard 
-											key={poet.pid} 
-											poet={poet}
-											// Assign ref to the first poet or the last poet
-      								ref={index === poetSlidingWindow.length - (2*PAGE_SIZE) ? backwardSentinelRef : index === poetSlidingWindow.length - 1 ? forwardSentinelRef : undefined}
-											// Dynamically access the Poet property
-											rarityTraitLabel={searchButtonPressed ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
-											// Dynamically access the rarity count
-											rarityCount={searchButtonPressed && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
-										/>
-									</div>
-								))}
+							<div className="grid-container">
+								<div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+									{/* Poets mapping */}
+									{poetSlidingWindow?.map((poet: Poet, index: number) => (
+										<div key={poet.id} id={`poet-${poet.pid}`} className="flex">
+											<ImageCard 
+												key={poet.pid} 
+												poet={poet}
+												// Assign ref to the first poet or the last poet
+												ref={index === poetSlidingWindow.length - (2*PAGE_SIZE) ? backwardSentinelRef : index === poetSlidingWindow.length - 1 ? forwardSentinelRef : undefined}
+												// Dynamically access the Poet property
+												rarityTraitLabel={searchButtonPressed ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
+												// Dynamically access the rarity count
+												rarityCount={searchButtonPressed && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
+											/>
+										</div>
+									))}
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 		</ErrorBoundary>
   );
 }
