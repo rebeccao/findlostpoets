@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        darkgray: '#202020'
+      },
       fontFamily: {
         sans: ['Arial', 'Helvetica'],
       },

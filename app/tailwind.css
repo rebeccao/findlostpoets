@@ -19,6 +19,33 @@
   position: relative;
 }
 
+@font-face {
+  font-family: 'JosefinSans-Bold';
+  src: url('/fonts/JosefinSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LeagueSpartan-SemiBold';
+  src: url('/fonts/LeagueSpartan-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LeagueSpartan-Regular';
+  src: url('/fonts/LeagueSpartan-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LeagueSpartan-Light';
+  src: url('/fonts/LeagueSpartan-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
 
 @layer utilities {
   /* Styles to remove number input spinners */
