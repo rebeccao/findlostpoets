@@ -49,10 +49,10 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 			<div className="flex items-center ml-3">
 				<button 
 				  onClick={toggleSidebar} 
-					className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-gray-400 hover:bg-gray-500"
+					className="relative flex items-center justify-center h-12 w-12"
 					aria-label='Toggle Sidebar'
 				>
-					<HiMenuAlt3 size={26} className="cursor-pointer text-white" />
+					<HiMenuAlt3 size={38} className="cursor-pointer text-darkgray" />
 				</button>
 			</div>
 			{/* Right Side Banner */}

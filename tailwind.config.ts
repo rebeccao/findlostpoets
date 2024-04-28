@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        darkgray: '#202020'
+        //darkgray: '#202020'
+        darkgray: '#505050'
       },
       fontFamily: {
         sans: ['Arial', 'Helvetica'],
