@@ -15,16 +15,8 @@ const PAGE_SIZE = 24;
 const BUFFER_SIZE = PAGE_SIZE * 3;
 const DATABASE_SIZE = 28170;
 
-export type SearchCriteria = {
-  where?: { [key: string]: any };
-  skip: number;
-  take?: number;
-  orderBy?: { [key: string]: 'asc' | 'desc' }[];
-};
-
-interface LoaderData {
-  poets: Poet[];
-  error?: string; // Assuming error is a string. Adjust according to your actual structure.
+export interface NavbarProps {
+  toggleSidebar: () => void;
 }
 
 export interface SidebarProps {
@@ -39,8 +31,16 @@ export interface SidebarProps {
 	performSearch: (dbQuery: SearchCriteria) => void;
 }
 
-export interface NavbarProps {
-  toggleSidebar: () => void;
+export type SearchCriteria = {
+  where?: { [key: string]: any };
+  skip: number;
+  take?: number;
+  orderBy?: { [key: string]: 'asc' | 'desc' }[];
+};
+
+interface LoaderData {
+  poets: Poet[];
+  error?: string; // Assuming error is a string. Adjust according to your actual structure.
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
