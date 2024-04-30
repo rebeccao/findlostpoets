@@ -1,7 +1,7 @@
 import { NavbarProps } from '~/routes/_index';
 import {HiMenuAlt3} from 'react-icons/hi';
 
-export function Navbar({ toggleSidebar }: NavbarProps) {
+export default function Navbar({ toggleSidebar }: NavbarProps) {
 	return(
 		<header className="sticky top-0 z-[1] h-navbar mx-auto bg-gray-100 border-gray-300 p-2 shadow-md flex w-full justify-between items-center dark:border-gray-800 dark:bg-d-background dark:text-d-text-primary">
 			<div className="flex items-center ml-3">

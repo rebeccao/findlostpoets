@@ -5,10 +5,11 @@ import { json } from '@remix-run/node'
 import { prisma } from '~/utils/prisma.server'
 import type { Poet } from '@prisma/client';
 import '~/tailwind.css';
-import { Navbar } from '~/components/navbar';
+import Navbar from '~/components/navbar';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import ImageCard from '~/components/image-card';
+import PoetDetail from '~/components/poet-detail';
 import ErrorBoundary from '~/components/error-boundary';
 
 const PAGE_SIZE = 24;
@@ -91,6 +92,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 function Index() {
 	const fetcher = useFetcher();
 	const initialData = useLoaderData<typeof loader>();
+	const [activePoet, setActivePoet] = useState<Poet | null>(null);
 
   //console.log("******************* const poets: Poet[] = data.poets, fetcher.data ", fetcher.data); 
 	//console.log("******************* const poets: Poet[] = data.poets, initialData.poets.length", initialData.poets.length); 
@@ -369,6 +371,16 @@ function Index() {
 		}
 	};
 
+	/*************** PoetDetails logic ****************/
+
+	const handlePoetClick = (poet: Poet) => {
+		setActivePoet(poet);
+	};
+
+	if (activePoet) {
+			return <PoetDetail poet={activePoet} onBack={() => setActivePoet(null)} />;
+	}
+
 	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
 	//const selectedRareTraitLabel = sidebarItems.find(item => item.type === 'sort')?.expandedSidebarItems.find(item => item.dbField === selectedRareTrait)?.title;
 	// Example logic to convert 'brdCnt' into 'brd', etc.
@@ -411,7 +423,7 @@ function Index() {
 								<div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
 									{/* Poets mapping */}
 									{poetSlidingWindow?.map((poet: Poet, index: number) => (
-										<div key={poet.id} id={`poet-${poet.pid}`} className="flex">
+										<div key={poet.id} id={`poet-${poet.pid}`} onClick={() => handlePoetClick(poet)} className="cursor-pointer flex">
 											<ImageCard 
 												key={poet.pid} 
 												poet={poet}
