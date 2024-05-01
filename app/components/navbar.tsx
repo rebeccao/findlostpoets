@@ -1,5 +1,5 @@
 import { NavbarProps } from '~/routes/_index';
-import {HiMenuAlt3} from 'react-icons/hi';
+import { PiList } from "react-icons/pi";  
 
 export default function Navbar({ toggleSidebar }: NavbarProps) {
 	return(
@@ -10,17 +10,19 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
 					className="relative flex items-center justify-center h-12 w-12"
 					aria-label='Toggle Sidebar'
 				>
-					<HiMenuAlt3 size={38} className="cursor-pointer text-darkgray" />
+					<PiList size={38} className="cursor-pointer text-darkgray" />
 				</button>
 			</div>
-			{/* Right Side Banner */}
-			<div className="flex flex-col items-center text-darkgray mr-3"> 
+			{/* Centered Banner */}
+			<div className="flex flex-col items-center text-darkgray mx-auto"> 
 				<div className="text-3xl lg:text-3xl md:text-xl sm:text-lg font-[LeagueSpartan-SemiBold]"> 
 					F I N D L O S T P O E T S
 				</div> 
 				<div className="text-xs font-[LeagueSpartan-Regular] -mt-2 -mb-1">
 					(UNOFFICIAL)
 				</div> 
+      </div>
+      <div style={{ width: '48px' }}> {/* Placeholder to balance the space */}
       </div>
 		</header>
 	);
