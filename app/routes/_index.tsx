@@ -373,14 +373,34 @@ function Index() {
 
 	/*************** PoetDetails logic ****************/
 
+	// Handle browser history pop when user returns from PoetDetail
+	useEffect(() => {
+		const handlePopState = (event: PopStateEvent) => {
+			// Check if the state is the one you want to handle or check the hash
+			if (window.location.hash !== "#poetDetail") {
+				setActivePoet(null); // Or however you handle hiding the detail view
+			}
+		};
+		
+		window.addEventListener("popstate", handlePopState);
+		return () => window.removeEventListener("popstate", handlePopState);
+	}, []);
+
 	const handlePoetClick = (poet: Poet) => {
+		// Push a new entry into the browser's history stack.
+		window.history.pushState({ poetId: poet.pid }, "", "#poetDetail");
 		setActivePoet(poet);
 	};
 
 	if (activePoet) {
-			return <PoetDetail poet={activePoet} onBack={() => setActivePoet(null)} />;
+		return <PoetDetail poet={activePoet} onBack={() => setActivePoet(null)} />;
 	}
 
+	// PoetDetail onBack callback
+	const onBack = () => {
+		window.history.back(); // This triggers the popstate event
+	};
+	
 	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
 	//const selectedRareTraitLabel = sidebarItems.find(item => item.type === 'sort')?.expandedSidebarItems.find(item => item.dbField === selectedRareTrait)?.title;
 	// Example logic to convert 'brdCnt' into 'brd', etc.
