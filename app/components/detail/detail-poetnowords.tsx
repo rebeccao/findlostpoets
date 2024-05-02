@@ -14,7 +14,7 @@ export default function DetailPoetNoWords({ poet, onBack }: PoetDetailProps) {
         {/* Main content section for images and traits */}
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full max-w-7xl mx-auto my-6">
           {/* Images container */}
-          <div className="flex justify-center items-center bg-gray-200">
+          <div className="flex justify-center items-center bg-darkgray">
             <div style={{ width: '50%', padding: '0 10px 0 0' }}>  {/* Add right padding to the first image */}
               <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full" />
             </div>
@@ -23,7 +23,7 @@ export default function DetailPoetNoWords({ poet, onBack }: PoetDetailProps) {
             </div>
           </div>
           {/* Container for traits */}
-          <div className="bg-gray-200 shadow-lg p-4">
+          <div className="bg-onyxgray text-offwhite shadow-lg p-4">
             {/*<div className="p-4 grid grid-cols-[2fr_1fr_1fr_1fr] gap-4">*/}
             <div className="grid grid-cols-4 gap-4">
               <div><span>Origin:</span><span className="ml-2 font-bold">{poet.ori}</span></div>

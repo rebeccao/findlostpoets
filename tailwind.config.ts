@@ -7,8 +7,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        //darkgray: '#202020'
-        darkgray: '#505050'
+        offwhite:     '#F0F0F0',
+        pearlwhite:   '#E8E8E8',
+        gainsboro:    '#DCDCDC',
+        mediumgray:   '#505050',
+        darkgray:     '#202020',
+        verydarkgray: '#131313',
+        verydarkgray1: '#101010',
+        onyxgray:     '#393939',
+        charcoalgray: '#333333',
+        gunmetalgray: '#424242',
+        davysgray:    '#555555',
       },
       fontFamily: {
         sans: ['Arial', 'Helvetica'],
