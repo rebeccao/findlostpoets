@@ -9,7 +9,9 @@ import Navbar from '~/components/navbar';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import ImageCard from '~/components/image-card';
-import PoetDetail from '~/components/poet-detail';
+import DetailPoetManyWords from '~/components/detail/detail-poetmanywords';
+import DetailPoetFewWords from '~/components/detail/detail-poetfewwords';
+import DetailPoetNoWords from '~/components/detail/detail-poetnowords';
 import ErrorBoundary from '~/components/error-boundary';
 
 const PAGE_SIZE = 24;
@@ -373,33 +375,29 @@ function Index() {
 
 	/*************** PoetDetails logic ****************/
 
-	// Handle browser history pop when user returns from PoetDetail
-	useEffect(() => {
-		const handlePopState = (event: PopStateEvent) => {
-			// Check if the state is the one you want to handle or check the hash
-			if (window.location.hash !== "#poetDetail") {
-				setActivePoet(null); // Or however you handle hiding the detail view
-			}
-		};
-		
-		window.addEventListener("popstate", handlePopState);
-		return () => window.removeEventListener("popstate", handlePopState);
-	}, []);
-
 	const handlePoetClick = (poet: Poet) => {
 		// Push a new entry into the browser's history stack.
-		window.history.pushState({ poetId: poet.pid }, "", "#poetDetail");
 		setActivePoet(poet);
 	};
 
+	const handleBack = () => {
+    setActivePoet(null);  // This will clear the active poet and potentially show the list again
+  //  history.goBack();     // This will navigate back in the browser history
+  };
+	
 	if (activePoet) {
-		return <PoetDetail poet={activePoet} onBack={() => setActivePoet(null)} />;
-	}
+		let poetDetailComponent;
 
-	// PoetDetail onBack callback
-	const onBack = () => {
-		window.history.back(); // This triggers the popstate event
-	};
+		if (activePoet.wrdCnt === 0) {
+			poetDetailComponent = <DetailPoetNoWords poet={activePoet} onBack={handleBack} />;
+		} else if (activePoet.wrdCnt > 0 && activePoet.wrdCnt <= 50) {
+			poetDetailComponent = <DetailPoetFewWords poet={activePoet} onBack={handleBack} />;
+		} else {
+			poetDetailComponent = <DetailPoetManyWords poet={activePoet} onBack={handleBack} />;
+		}
+		return (
+			<div>{poetDetailComponent}</div>);
+	}
 	
 	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
 	//const selectedRareTraitLabel = sidebarItems.find(item => item.type === 'sort')?.expandedSidebarItems.find(item => item.dbField === selectedRareTrait)?.title;

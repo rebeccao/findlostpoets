@@ -14,7 +14,7 @@ export default function PoetDetailNavbar({ poetName, onBack }: PoetDetailNavbarP
 					className="relative flex items-center justify-center h-12 w-12"
 					aria-label='Toggle Sidebar'
 				>
-					<PiArrowLeft size={38} className="cursor-pointer text-darkgray" />
+					<PiArrowLeft size={30} className="cursor-pointer text-darkgray" />
 				</button>
 			</div>
       <div className="text-3xl font-[LeagueSpartan-SemiBold] text-darkgray mx-auto">
