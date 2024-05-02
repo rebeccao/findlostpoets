@@ -23,7 +23,7 @@ export default function DetailPoetNoWords({ poet, onBack }: PoetDetailProps) {
             </div>
           </div>
           {/* Container for traits */}
-          <div className="bg-onyxgray text-offwhite shadow-lg p-4">
+          <div className="bg-darkgray text-offwhite shadow-lg p-4">
             {/*<div className="p-4 grid grid-cols-[2fr_1fr_1fr_1fr] gap-4">*/}
             <div className="grid grid-cols-4 gap-4">
               <div><span>Origin:</span><span className="ml-2 font-bold">{poet.ori}</span></div>

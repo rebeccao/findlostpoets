@@ -7,7 +7,7 @@ interface PoetDetailNavbarProps {
 
 export default function PoetDetailNavbar({ poetName, onBack }: PoetDetailNavbarProps) {
   return (
-    <header className="sticky top-0 z-[1] h-navbar mx-auto text-pearlwhite bg-darkgray border border-white p-2 flex w-full justify-between items-center"
+    <header className="sticky top-0 z-[1] h-navbar mx-auto text-pearlwhite bg-darkgray border border-verydarkgray p-2 shadow-xl flex w-full justify-between items-center"
        style={{ boxShadow: '0 4px 6px rgba(255, 255, 255, 0.1), 0 1px 3px rgba(255, 255, 255, 0.06)' }}>
       <div className="flex items-center ml-3">
 				<button 

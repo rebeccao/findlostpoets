@@ -7,13 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        offwhite:     '#F0F0F0',
+        //offwhite:     '#F0F0F0',
+        offwhite:     '#E8E8E8',
         pearlwhite:   '#E8E8E8',
         gainsboro:    '#DCDCDC',
         mediumgray:   '#505050',
         darkgray:     '#202020',
-        verydarkgray: '#131313',
-        verydarkgray1: '#101010',
+        verydarkgray1: '#131313',
+        verydarkgray: '#101010',
         onyxgray:     '#393939',
         charcoalgray: '#333333',
         gunmetalgray: '#424242',

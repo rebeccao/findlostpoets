@@ -43,7 +43,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     const sizes = isDevelopment ? undefined : "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw";
 
     return (
-      <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden shadow-lg sans">
+      <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden bg-darkgray text-offwhite shadow-lg sans">
         <img
           src={imageUrl}
           //srcSet={srcSet}
@@ -85,7 +85,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
         {(poet.poem || poet.wrdCnt > 0) && (
         <div className="mt-2">
           Poem:
-          <p className="font-semibold">{poet.poem ? poet.poem.substring(0, 40) + (poet.poem.length > 40 ? "..." : '') : ''}</p>
+          <p className="font-semibold">{poet.poem ? poet.poem.substring(0, 16) + (poet.poem.length > 16 ? "..." : '') : ''}</p>
         </div>
         )}
         </div>

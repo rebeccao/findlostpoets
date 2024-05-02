@@ -406,7 +406,7 @@ function Index() {
 
   return (
 		<ErrorBoundary>
-			<div className="flex">
+			<div className="flex bg-verydarkgray">
 				{sidebarOpen && (
 					<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
 						<SidebarPanel
