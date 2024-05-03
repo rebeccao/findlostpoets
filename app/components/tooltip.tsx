@@ -21,7 +21,7 @@ const Tooltip: React.FC<TooltipProps> = ({ children, content }) => {
     >
       <div className="flex items-center cursor-pointer">
         <div className="mr-2">{children}</div>
-        <span className="ml-1 text-pearlwhite">
+        <span className="ml-1 text-mediumgray">
           <IoIosInformationCircleOutline className="h-4 w-4" />
         </span>
       </div>

@@ -10,11 +10,11 @@ export default function DetailPoetNoWords({ poet, onBack }: PoetDetailProps) {
   return (
     <div className="flex flex-col h-screen">
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onBack={onBack} />
-      <div className="flex flex-1 overflow-hidden relative bg-verydarkgray">
+      <div className="flex flex-1 overflow-hidden relative bg-closetoblack">
         {/* Main content section for images and traits */}
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full max-w-7xl mx-auto my-6 overflow-y-auto">
           {/* Images container */}
-          <div className="flex justify-center items-center px-4 bg-verydarkgray">
+          <div className="flex justify-center items-center px-4 bg-closetoblack">
             <div style={{ width: '50%', padding: '0 10px 0 0' }}>  {/* Add right padding to the first image */}
               <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full" />
             </div>
@@ -23,7 +23,7 @@ export default function DetailPoetNoWords({ poet, onBack }: PoetDetailProps) {
             </div>
           </div>
           {/* Container for traits */}
-          <div className="bg-verydarkgray text-pearlwhite shadow-lg p-4 flex justify-center">
+          <div className="bg-closetoblack text-pearlwhite shadow-lg p-4 flex justify-center">
             <div className="p-4 grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 max-w-4xl w-full">
               <div><span>Origin:</span><span className="ml-2 font-bold">{poet.ori}</span></div>
               <div><span>Breed:</span><span className="ml-2 font-bold">{poet.brd}</span></div>

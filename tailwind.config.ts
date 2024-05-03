@@ -11,17 +11,25 @@ export default {
         pearlwhite:   '#E8E8E8',
         gainsboro:    '#DCDCDC',
         lightmedgray: '#BDBDBD',
+        mediumgray:   '#9E9E9E',
         bgray:        '#808080',
         agray:        '#616161',
         davysgray:    '#555555',
-        mediumgray:   '#5E5E5E',
         darkgray2:    '#494949',
         gunmetalgray: '#424242',
         onyxgray:     '#393939',
         charcoalgray: '#333333',
         darkgray1:    '#212121',
-        verydarkgray1: '#131313',
-        verydarkgray: '#101010',
+        verydarkgray: '#1A1A1A',
+        closetoblack: '#101010',
+      },
+      placeholderColor: {
+        mediumgray:   '#9E9E9E',
+      },
+      variants: {
+        extend: {
+            placeholderColor: ['focus', 'hover'],
+        },
       },
       fontFamily: {
         sans: ['Arial', 'Helvetica'],

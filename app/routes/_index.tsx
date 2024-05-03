@@ -388,13 +388,14 @@ function Index() {
 	
 	if (activePoet) {
 		let poetDetailComponent;
-
-		if (activePoet.wrdCnt === 0) {
+		console.log("Index activePoet.wrdCnt = ", activePoet);
+		if (activePoet.lexCnt === 0) {
 			poetDetailComponent = <DetailPoetNoWords poet={activePoet} onBack={handleBack} />;
-		} else if (activePoet.wrdCnt > 0 && activePoet.wrdCnt <= 50) {
-			poetDetailComponent = <DetailPoetFewWords poet={activePoet} onBack={handleBack} />;
+		} else if (activePoet.lexCnt > 0 && activePoet.lexCnt <= 50) {
+			poetDetailComponent = <DetailPoetManyWords poet={activePoet} onBack={handleBack} />;
 		} else {
 			poetDetailComponent = <DetailPoetManyWords poet={activePoet} onBack={handleBack} />;
+			console.log("Index DetailPoetManyWords");
 		}
 		return (
 			<div>{poetDetailComponent}</div>);
@@ -407,7 +408,7 @@ function Index() {
 
   return (
 		<ErrorBoundary>
-			<div className="flex bg-verydarkgray">
+			<div className="flex bg-closetoblack">
 				{sidebarOpen && (
 					<section className="fixed left-0 top-56 bottom-0 w-80 sidebar">
 						<SidebarPanel
