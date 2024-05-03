@@ -43,7 +43,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     const sizes = isDevelopment ? undefined : "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw";
 
     return (
-      <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden bg-darkgray text-offwhite shadow-lg sans">
+      <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden bg-darkgray1 text-offwhite shadow-lg sans">
         <img
           src={imageUrl}
           //srcSet={srcSet}
