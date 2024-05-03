@@ -2,13 +2,14 @@ import { PiArrowLeft } from "react-icons/pi";
 
 interface PoetDetailNavbarProps {
   poetName: string;
+  className?: string;  // Optional string for CSS classes
   onBack: () => void;  // Add this prop for the back button callback
 }
 
-export default function PoetDetailNavbar({ poetName, onBack }: PoetDetailNavbarProps) {
+export default function PoetDetailNavbar({ poetName, className, onBack }: PoetDetailNavbarProps) {
   return (
-    <header className="sticky top-0 z-[1] h-navbar mx-auto text-pearlwhite bg-darkgray border border-verydarkgray p-2 shadow-xl flex w-full justify-between items-center"
-       style={{ boxShadow: '0 4px 6px rgba(255, 255, 255, 0.1), 0 1px 3px rgba(255, 255, 255, 0.06)' }}>
+    <header className={`navbar sticky top-0 h-navbar mx-auto text-pearlwhite bg-verydarkgray border border-verydarkgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}
+      style={{ boxShadow: '0 4px 6px rgba(255, 255, 255, 0.1), 0 1px 3px rgba(255, 255, 255, 0.06)' }}>
       <div className="flex items-center ml-3">
 				<button 
 				  onClick={onBack} 

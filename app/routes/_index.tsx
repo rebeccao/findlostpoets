@@ -20,6 +20,7 @@ const DATABASE_SIZE = 28170;
 
 export interface NavbarProps {
   toggleSidebar: () => void;
+	className?: string;  // Optional string for CSS classes
 }
 
 export interface SidebarProps {
@@ -408,7 +409,7 @@ function Index() {
 		<ErrorBoundary>
 			<div className="flex bg-verydarkgray">
 				{sidebarOpen && (
-					<section className="fixed left-0 bottom-0 w-80 bg-gray-100 sidebar">
+					<section className="fixed left-0 top-56 bottom-0 w-80 sidebar">
 						<SidebarPanel
 							searchTrait={searchTrait}
 							selectedRareTrait={selectedRareTrait}
@@ -423,7 +424,7 @@ function Index() {
 					</section>
 				)}
 				<div className="flex flex-col w-full">
-					<Navbar toggleSidebar={toggleSidebar} />
+					<Navbar toggleSidebar={toggleSidebar} className="navbar" />
 					<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 						<div className="mt-4 mb-4 px-4">
 							{/* Display loading state */}

@@ -7,7 +7,13 @@
   --navbar-height: 56px;
 }
 
+.navbar {
+  z-index: 10;  /* Ensures the Navbar is above the SidebarPanel */
+}
+
 .sidebar {
+  top: 0px;    /* Height of the Navbar */
+  z-index: 5;   /* Lower than Navbar */
   padding-top: var(--navbar-height);
 }
 

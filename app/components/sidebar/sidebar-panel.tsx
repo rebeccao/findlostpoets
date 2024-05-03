@@ -195,13 +195,13 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="h-screen pb-14 overflow-y-auto scrollbar scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-        <div className="py-4 pt-navbar">
+    <div className="flex flex-col h-screen bg-davysgray">
+      <div className="h-screen pb-14 overflow-y-auto scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
+        <div className="py-4">
           {sidebarItems.map((sidebarItem, index) => {
             return (
               <React.Fragment key={sidebarItem.title}>
-                <div className="flex items-center px-4 pt-4 pb-1 list-none h-15 text-md sans text-base">
+                <div className="flex items-center px-4 pt-4 pb-1 list-none h-15 text-md sans text-pearlwhite text-base">
                   <Tooltip content={sidebarItem.details}>
                     <span>{sidebarItem.title}</span>
                   </Tooltip>
@@ -212,7 +212,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                     <select
                       id="traitSelect"  
                       name="traitSelect"
-                      className="form-select block w-2/5 mb-0 mr-2 text-xs py-2 px-3 rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 flex-grow" 
+                      className="form-select block w-2/5 mb-0 mr-2 text-xs py-2 px-3 rounded-lg font-semibold bg-lightmedgray focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400 flex-grow" 
                       onChange={(e) => handleSearchTraitChange(e.target.value)}
                       aria-label="Select a trait"
                     >
@@ -227,6 +227,12 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         name="searchTerm"
                         type="text"
                         placeholder="Enter search term..."
+                        onFocus={(e) => e.target.placeholder = ''} // Clear placeholder on focus
+                        onBlur={(e) => {
+                          if (e.target.value === '') {
+                              e.target.placeholder = "Enter search term..."; // Restore placeholder if input is empty
+                          }
+                        }}
                         value={searchTrait.searchTraitValue}
                         onChange={(e) => {
                           const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey);
@@ -245,7 +251,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             clearSearchTraitInput(); // Move this inside if you need to clear after search
                           }
                         }}
-                        className="form-input block placeholder-italic flex-grow w-3/5 text-xs py-2 px-4 rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                        className="form-input block placeholder-italic placeholder-darkgray1 flex-grow w-3/5 text-xs py-2 px-4 rounded-lg bg-lightmedgray border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                       />
                       {errorMessages[searchTrait.searchTraitKey] && (
                         <div className="text-red-500 text-xs mt-1 pl-4">{errorMessages[searchTrait.searchTraitKey]}</div>
@@ -260,7 +266,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                   </div>
                 )}  
                 {sidebarItem.type === "sort" && (
-                  <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
+                  <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded w-full">
                     <div className="grid grid-cols-2 gap-4 w-full">
                       {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => (
                         <div key={`${sidebarItem.title}-${index}`} className="flex items-center cursor-pointer">
@@ -276,7 +282,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                   </div>
                 )}
                 {sidebarItem.type === "range" && (
-                  <div className="flex flex-col p-2 pl-6 pr-3 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 w-full">
+                  <div className="flex flex-col p-2 pl-6 pr-3 text-sm rounded w-full">
                     {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => (
                       <div key={`${sidebarItem.title}-${index}`} className="flex items-center space-x-1 mb-2 w-full">
                         <div className="flex items-center flex-1">
@@ -304,7 +310,13 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             }}
                             aria-label={`Minimum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.min}
-                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                            onFocus={(e) => e.target.placeholder = ''} // Clear placeholder on focus
+                            onBlur={(e) => {
+                              if (e.target.value === '') {
+                                  e.target.placeholder = expandedSidebarItem.min || ''; // Restore placeholder if input is empty
+                              }
+                            }}
+                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic bg-lightmedgray placeholder-darkgray1 border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                           />
                           <span>-</span> {/* Dash */}
                           {/* Max Input */}
@@ -322,7 +334,13 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             }}
                             aria-label={`Maximum ${expandedSidebarItem.dbField}`}
                             placeholder={expandedSidebarItem.max}
-                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                            onFocus={(e) => e.target.placeholder = ''} // Clear placeholder on focus
+                            onBlur={(e) => {
+                              if (e.target.value === '') {
+                                  e.target.placeholder = expandedSidebarItem.max || ''; // Restore placeholder if input is empty
+                              }
+                            }}
+                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic bg-lightmedgray placeholder-darkgray1 border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
                           />
                         </div>
                       </div>
@@ -336,13 +354,13 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       </div>
       <div className="absolute inset-x-0 bottom-0 p-4 flex justify-center space-x-2">
         <button
-          className="w-1/4 bg-gray-600 border-gray-300 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-700" // Darker for primary action
+          className="w-1/4 p-2 rounded-lg shadow-sm font-medium border text-white bg-onyxgray border-verydarkgray hover:bg-darkgray1" // Darker for primary action
           onClick={handleSearchClick}
         >
           Search
         </button>
         <button
-          className="w-1/4 bg-gray-400 border-gray-300 p-2 rounded-lg shadow-sm font-medium text-white hover:bg-gray-500" // Lighter for secondary clear action
+          className="w-1/4 p-2 rounded-lg shadow-sm font-medium border text-white bg-darkgray2 border-charcoalgray hover:bg-darkgray1" // Lighter for secondary clear action
           onClick={resetSearch} // Assuming this resets all search inputs
         >
           Clear
