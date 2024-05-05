@@ -43,8 +43,9 @@ export type SearchCriteria = {
 };
 
 interface LoaderData {
-  poets: Poet[];
-  error?: string; // Assuming error is a string. Adjust according to your actual structure.
+  poets?: Poet[];  // Make optional to handle cases where no poets data might be returned
+	error?: string;  // Optional string for when there are errors
+	detail?: string; // Optional detailed error message
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -110,22 +111,29 @@ function Index() {
 	// be set to null. Copy it to a fetcherData state and use that state to control
 	// the infinite scrolling
   useEffect(() => {
-		const data = fetcher.data as LoaderData;
-		try {
-			if (data && data.poets.length > 0) {
-				
-				setFetcherData(data);
-				if (data.poets.length < PAGE_SIZE) { 
-					setHasMore(false); 
-					console.log("fetcher.data useEffect fetcher.data.poets.length = ", data.poets.length, "setHasMore(false)");
+    // Assert the type of fetcher.data to LoaderData right when it's retrieved
+    const data = fetcher.data as LoaderData | undefined;
+    
+    // Now TypeScript knows the structure of 'data', including its 'error' and 'poets' fields
+    if (data) {
+			if ('error' in data && data.error) {
+				// Log the detailed error message if available or provide a generic error message
+				console.error("Error fetching poets:", data.detail || 'Unknown error occurred.');
+				setFetchError(data.detail || 'An error occurred while fetching poets. Please try again later.');
+			} else if (data.poets) {
+				// Handle successful data fetch
+				if (data.poets.length > 0) {
+					setFetcherData(data); // Store the data
+					setHasMore(data.poets.length === PAGE_SIZE); // Determine if there are more poets to load
+					setFetchError(null); // Clear any previous errors
+				} else {
+					// Handle case where no poets are found
+					setFetchError('No poets found. Please adjust your search criteria.');
 				}
-				setFetchError(null);
 			}
-		} catch (error) {
-			console.error(error);
-    	setFetchError('A fetcher error occurred.');
-		}
-  }, [fetcher.data]);
+    }
+	}, [fetcher.data]);
+
 
 	// fetchMorePoets
 	const fetchMorePoets = useCallback((direction: Direction, nextSkip: number) => {
@@ -233,39 +241,36 @@ function Index() {
 
 	// Append fetcherData useEffect
 	useEffect(() => {
-		if (fetcherData) {
-			if (!fetcherData.error) {
-				if (fetcherData.poets && fetcherData.poets.length > 0) {
+		if (fetcherData && !fetcherData.error) {
+			// Make sure poets is actually an array before proceeding.
+			const poetsArray = fetcherData.poets || []; // Default to an empty array if undefined
+
+			if (poetsArray.length > 0) {
 					
-					setPoetSlidingWindow((prevPoets) => {
-						let updatedPoets: Poet[] = [];
-						
-						if (fetchDirection === 'forward') {
-							updatedPoets = [...prevPoets, ...fetcherData.poets];
-							if (updatedPoets.length > BUFFER_SIZE) {
-									// Trim from the beginning when moving forward
-									console.log("---- Append fetcherData useEffect -- SLICE first page -- updatedPoets.length", updatedPoets.length);
-									updatedPoets = updatedPoets.slice(-BUFFER_SIZE);
-							}
-            } else {						// fetchDirection === 'backward'
-							updatedPoets = [...fetcherData.poets, ...prevPoets];
-							if (updatedPoets.length > BUFFER_SIZE) {
-                // Trim from the end when moving backward
-								console.log("---- Append fetcherData useEffect -- SLICE last page");
-                updatedPoets = updatedPoets.slice(0, BUFFER_SIZE);
-							}
-            }
-            return updatedPoets;
-        	});
-					setPoetSlidingWindowUpdated(true);
-					setFetcherData(null);
-				} 
-				setFetchError(null);
-			} else { 
-				console.log("Append fetcherData useEffect --- data.error");
-				console.error(fetcherData.error);
-				setFetchError(fetcherData.error);
-			}
+				setPoetSlidingWindow((prevPoets) => {
+					let updatedPoets: Poet[] = [];
+					
+					if (fetchDirection === 'forward') {
+						updatedPoets = [...prevPoets, ...poetsArray];
+						if (updatedPoets.length > BUFFER_SIZE) {
+								// Trim from the beginning when moving forward
+								console.log("---- Append fetcherData useEffect -- SLICE first page -- updatedPoets.length", updatedPoets.length);
+								updatedPoets = updatedPoets.slice(-BUFFER_SIZE);
+						}
+					} else {						// fetchDirection === 'backward'
+						updatedPoets = [...poetsArray, ...prevPoets];
+						if (updatedPoets.length > BUFFER_SIZE) {
+							// Trim from the end when moving backward
+							console.log("---- Append fetcherData useEffect -- SLICE last page");
+							updatedPoets = updatedPoets.slice(0, BUFFER_SIZE);
+						}
+					}
+					return updatedPoets;
+				});
+				setPoetSlidingWindowUpdated(true);
+				setFetcherData(null);
+			} 
+			setFetchError(null);
 		}
 	}, [fetcherData, fetchDirection]);
 	
@@ -439,13 +444,6 @@ function Index() {
 										<p className="font-bold">Error</p>
 										<p>{fetchError}</p>
 									</div>
-								</div>
-							)}
-
-							{/* Handle no poets found */}
-							{!fetchError && poetSlidingWindow.length === 0 && fetcher.state !== 'loading' && (
-								<div className="flex flex-col justify-start items-center min-h-screen pt-4">
-									<p>No poets found. Please try adjusting your search criteria.</p>
 								</div>
 							)}
 
