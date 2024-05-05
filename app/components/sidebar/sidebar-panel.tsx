@@ -33,23 +33,33 @@ const SidebarPanel: React.FC<SidebarProps> = ({
 
   // Handler for changing the searchTrait Value
   const handleSearchTraitValueChange = (newSearchTraitValue: string, selectedTrait: ExpandedSidebarItem) => {
+    let isValidInput = true;
+    let finalValue: string | number = newSearchTraitValue;  // finalValue can be string or number
+    // Perform type-specific validation if a validation type is specified
     if (selectedTrait.validationType) {
-      const isValidInput = validateSearchTraitInput(selectedTrait.validationType, newSearchTraitValue, selectedTrait);
+      isValidInput = validateSearchTraitInput(selectedTrait.validationType, newSearchTraitValue, selectedTrait);
+    }
+
+    // Handle input types for additional checks
+    if (selectedTrait.inputType === 'number') {
+      // Convert the input to a number and check if it's a valid number within the specified range (if any)
+      const numberValue = Number(newSearchTraitValue);
+      isValidInput = !isNaN(numberValue) && validateNumberInput(numberValue, selectedTrait);
       if (isValidInput) {
-        setErrorMessages(prev => ({ ...prev, [selectedTrait.dbField]: "" }));
-        onSearchTraitChange({
-          searchTraitKey: selectedTrait.dbField,
-          searchTraitValue: newSearchTraitValue,
-        });
+        finalValue = numberValue;  // Assign number directly if valid
       } else {
-        setErrorMessages(prev => ({ ...prev, [selectedTrait.dbField]: "Invalid input for selected trait" }));
+        isValidInput = false;
       }
-    } else {
-      // If no validation type is specified, assume the input is valid
+    }
+    if (isValidInput) {
+      setErrorMessages(prev => ({ ...prev, [selectedTrait.dbField]: "" }));
       onSearchTraitChange({
         searchTraitKey: selectedTrait.dbField,
-        searchTraitValue: newSearchTraitValue,
+        searchTraitValue:  finalValue,
       });
+    } else {
+      const errorMessage = generateErrorMessage(selectedTrait);
+      setErrorMessages(prev => ({ ...prev, [selectedTrait.dbField]: errorMessage }));
     }
   };
 
@@ -70,11 +80,34 @@ const SidebarPanel: React.FC<SidebarProps> = ({
         return true;
     }
   }
+
+  function validateNumberInput(numberValue: number, trait: ExpandedSidebarItem) {
+    // Check the number against the defined min and max values if any
+    if (trait.min !== undefined && numberValue < Number(trait.min)) return false;
+    if (trait.max !== undefined && numberValue > Number(trait.max)) return false;
+    return true;
+  }
+
+  function generateErrorMessage(trait: ExpandedSidebarItem) {
+    // Generate specific error messages based on the input and validation type
+    switch (trait.validationType) {
+      case 'decimal':
+        return `Please enter a valid number within the range ${trait.min} to ${trait.max}.`;
+      case 'alphanumeric':
+        return 'Only alphanumeric characters are allowed.';
+      case 'alpha':
+        return 'Only alphabetic characters are allowed.';
+      case 'enum':
+        return `Please select from the available options: ${trait.enumValues?.join(', ')}.`;
+      default:
+        return 'Invalid input for selected trait.';
+    }
+  }
   
   const clearSearchTraitInput = () => {
     // Set searchTraitValue  to empty string while keeping the current searchTraitKey
     const updatedSearchTrait = {
-      searchTraitKey: searchTrait.searchTraitKey,
+      searchTraitKey: searchTrait.searchTraitKey.toString(),
       searchTraitValue: '',
     };
     setErrorMessages(prev => ({ ...prev, [searchTrait.searchTraitKey]: "" }));
@@ -140,12 +173,11 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     let orderByConditions: SearchCriteria['orderBy'] = [];
   
     // Search By Trait
-    if (searchTrait.searchTraitValue) {
-      const trimmedSearchValue = searchTrait.searchTraitValue.trim();
-  
-      if (trimmedSearchValue !== '') {
+    if (searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) { // Ensure zero is considered a valid number
+      const searchValue = searchTrait.searchTraitValue;
+      if (typeof searchValue === 'number' || searchValue !== '') {
         whereConditions.push({
-          [searchTrait.searchTraitKey]: { equals: trimmedSearchValue, mode: "insensitive" }
+          [searchTrait.searchTraitKey]: { equals: searchValue, mode: "insensitive" }
         });
       }
     }

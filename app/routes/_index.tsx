@@ -24,11 +24,11 @@ export interface NavbarProps {
 }
 
 export interface SidebarProps {
-	searchTrait: Record<string, string>;
+	searchTrait: Record<string, string | number>;
 	selectedRareTrait: string | null; 
 	selectedRangeTrait: string | null; 
 	rangeValues: Record<string, { min?: number; max?: number }>;
-	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => void;
+	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => void;
 	onRareTraitChange: (selectedDbField: string | null) => void;
 	onRangeTraitSelect: (selectedDbField: string | null) => void; 
 	onRangeChange: (selectedDbField: string | null, min?: number, max?: number) => void;
@@ -69,26 +69,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 		const poets = await prisma.poet.findMany({ ...dbQuery });
 		return json({ poets, isEmpty: poets.length === 0 });
-
 	} catch (error: unknown) {
-		console.error('Loader error:', error);
-		let errorDetail;
-	  if (error instanceof Error) {
-			// Fallback for general errors
-			errorDetail = {
-					message: error.message,
-			};
-		} else {
-				// Handle unknown errors
-				errorDetail = {
-						message: 'An unknown error occurred',
-				};
-				console.error('An unknown error occurred', error);
-		}
-		return json({ 
-			error: "Server Error. Index route, loader: LoadFunction. Please contact Support.", 
-			detail: errorDetail
-		}, { status: 500 });
+			console.error('Loader error:', error);
+        return json({
+            error: "Server error occurred. Please try again later.",
+            detail: error instanceof Error ? error.message : 'Unknown error'
+        }, { status: 500 });
 	}
 };
 
@@ -299,7 +285,7 @@ function Index() {
 	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
-	const [searchTrait, setSearchTrait] = useState({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
+	const [searchTrait, setSearchTrait] = useState<{ searchTraitKey: string; searchTraitValue: string | number }>({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
 	const [selectedRareTrait, setSelectedRareTrait] = useState<string | null>(null);
 	const [selectedRangeTrait, setSelectedRangeTrait] = useState<string | null>(null);
 	const [rangeValues, setRangeValues] = useState<Record<string, { min?: number; max?: number }>>({});
@@ -342,7 +328,10 @@ function Index() {
   };
 
 	// Callback from SidebarPanel when the user selects a searchTrait and sets its value
-	const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string }) => {
+	const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => {
+		if (typeof searchTraitState.searchTraitValue === 'string') {
+			searchTraitState.searchTraitValue = searchTraitState.searchTraitValue.trim();
+		}
     setSearchTrait(searchTraitState);
 		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
   };
