@@ -437,7 +437,12 @@ function Index() {
 					<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 						<div className="mt-4 mb-4 px-4">
 							{/* Display loading state */}
-							{fetcher.state === 'loading' && <div>Loading...</div>}
+							{fetcher.state === 'loading' && (
+								<div className="flex flex-col justify-start items-start min-h-screen pt-4 pl-4">
+									<p>Loading...</p>
+								</div>
+							)}
+
 
 							{/* Display error state */}
 							{fetchError && (
