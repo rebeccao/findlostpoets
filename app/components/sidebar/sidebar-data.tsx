@@ -21,6 +21,7 @@ export const sidebarItems: SidebarItem[] = [
     type: 'traitSearch',
     expandedSidebarItems: [
       { title: 'Poet Name', dbField: 'pNam', validationType: 'alphanumeric' },
+      { title: 'Poet Number', dbField: 'pid', validationType: 'decimal', min: '1', max: '28170' },
       { title: 'Origin', dbField: 'ori', validationType: 'alphanumeric' },
       { title: 'Latent', dbField: 'lat', validationType: 'alphanumeric' },
       { title: 'Breed', dbField: 'brd', validationType: 'alpha' },

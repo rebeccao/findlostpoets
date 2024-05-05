@@ -248,7 +248,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                               handleSearchTraitValueChange('', selectedTrait); // Clear the input box by setting its value to an empty string
                             }
                             handleSearchClick(); // Call the search handler when Enter key is pressed
-                            clearSearchTraitInput(); // Move this inside if you need to clear after search
+                            clearSearchTraitInput(); 
                           }
                         }}
                         className="form-input block placeholder-italic placeholder-mediumgray flex-grow w-3/5 text-xs py-2 px-4 rounded-lg text-pearlwhite bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray"

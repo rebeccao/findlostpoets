@@ -443,17 +443,18 @@ function Index() {
 								</div>
 							)}
 
-
 							{/* Display error state */}
 							{fetchError && (
-								<div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
-									<p className="font-bold">Error</p>
-									<p>{fetchError}</p>
+								<div className="flex flex-col justify-start min-h-screen">
+									<div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+										<p className="font-bold">Error</p>
+										<p>{fetchError}</p>
+									</div>
 								</div>
 							)}
 
 							{/* Handle no poets found */}
-							{poetSlidingWindow.length === 0 && fetcher.state !== 'loading' && (
+							{!fetchError && poetSlidingWindow.length === 0 && fetcher.state !== 'loading' && (
 								<div className="flex flex-col justify-start items-center min-h-screen pt-4">
 									<p>No poets found. Please try adjusting your search criteria.</p>
 								</div>
