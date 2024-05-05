@@ -55,7 +55,7 @@
 
 @layer base {
   ::placeholder {
-      color: mediumgray;
+    color: mediumgray;  /* Color for placeholder-italic in SidebarPanel */
   }
 }
 

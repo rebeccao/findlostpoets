@@ -11,7 +11,7 @@ import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import ImageCard from '~/components/image-card';
 import DetailPoetManyWords from '~/components/detail/detail-poetmanywords';
 import DetailPoetFewWords from '~/components/detail/detail-poetfewwords';
-import DetailPoetNoWords from '~/components/detail/detail-poetnowords';
+import PoetDetail from '~/components/detail/poetdetail';
 import ErrorBoundary from '~/components/error-boundary';
 
 const PAGE_SIZE = 24;
@@ -68,7 +68,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		}		
 
 		const poets = await prisma.poet.findMany({ ...dbQuery });
-		return json({ poets });
+		return json({ poets, isEmpty: poets.length === 0 });
 
 	} catch (error: unknown) {
 		console.error('Loader error:', error);
@@ -109,6 +109,7 @@ function Index() {
 	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [fetchDirection, setFetchDirection] = useState<Direction>('forward');
 	const [hasMore, setHasMore] = useState<boolean>(true);
+	const [searchPerformed, setSearchPerformed] = useState(false);
 	
 	const forwardSentinelRef = useRef<HTMLDivElement | null>(null);
 	const backwardSentinelRef = useRef<HTMLDivElement | null>(null);
@@ -388,15 +389,22 @@ function Index() {
 	
 	if (activePoet) {
 		let poetDetailComponent;
-		console.log("Index activePoet.wrdCnt = ", activePoet);
+		const numberOfLineBreaks = (activePoet.poem?.split('\n')?.length ?? 0) - 1;
+		const numberOfCharacters = activePoet.poem?.length ?? 0;
+		const longestLineWidth = activePoet.poem?.split('\n').reduce((max, line) => {
+			return Math.max(max, line.length);
+		}, 0) ?? 0;
+		console.log("Index activePoet.wrdCnt = ", activePoet.wrdCnt);
+		console.log("numberOfCharacters = ", numberOfCharacters, "numberOfLineBreaks = ", numberOfLineBreaks);
+		console.log("longestLineWidth = ", longestLineWidth);
 		if (activePoet.lexCnt === 0) {
-			poetDetailComponent = <DetailPoetNoWords poet={activePoet} onBack={handleBack} />;
-		} else if (activePoet.lexCnt > 0 && activePoet.lexCnt <= 50) {
-			poetDetailComponent = <DetailPoetManyWords poet={activePoet} onBack={handleBack} />;
-		} else {
+			poetDetailComponent = <PoetDetail poet={activePoet} hasSmallPoem={false} onBack={handleBack} />;
+		} else if (activePoet.lexCnt > 0) { //&& activePoet.lexCnt <= 50) {
+			poetDetailComponent = <PoetDetail poet={activePoet} hasSmallPoem={true} onBack={handleBack} />;
+		} /*else {
 			poetDetailComponent = <DetailPoetManyWords poet={activePoet} onBack={handleBack} />;
 			console.log("Index DetailPoetManyWords");
-		}
+		}*/
 		return (
 			<div>{poetDetailComponent}</div>);
 	}
@@ -408,7 +416,7 @@ function Index() {
 
   return (
 		<ErrorBoundary>
-			<div className="flex bg-closetoblack">
+			<div className="flex bg-closetoblack text-pearlwhite">
 				{sidebarOpen && (
 					<section className="fixed left-0 top-56 bottom-0 w-80 sidebar">
 						<SidebarPanel
@@ -436,6 +444,13 @@ function Index() {
 								<div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
 									<p className="font-bold">Error</p>
 									<p>{fetchError}</p>
+								</div>
+							)}
+
+							{/* Handle no poets found */}
+							{poetSlidingWindow.length === 0 && fetcher.state !== 'loading' && (
+								<div className="flex flex-col justify-start items-center min-h-screen pt-4">
+									<p>No poets found. Please try adjusting your search criteria.</p>
 								</div>
 							)}
 
