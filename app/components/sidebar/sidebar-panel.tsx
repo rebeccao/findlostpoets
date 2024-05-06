@@ -5,6 +5,7 @@ import CustomCheckbox from "~/components/custom-checkbox";
 import Tooltip from "~/components/tooltip";
 import type { SidebarProps, SearchCriteria } from "~/routes/_index";
 import type { ExpandedSidebarItem } from "~/components/sidebar/sidebar-data";
+import { FloatingError } from "~/components/floating-error";
 
 const SidebarPanel: React.FC<SidebarProps> = ({ 
   searchTrait,
@@ -66,7 +67,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   function validateSearchTraitInput(type: string, value: string, trait: ExpandedSidebarItem): boolean {
     switch (type) {
       case 'alphanumeric':
-        return /^[a-z0-9]+$/i.test(value);
+        return /^[a-z0-9# ]+$/i.test(value);
       case 'alpha':
         return /^[a-zA-Z]+$/.test(value);
       case 'decimal':
@@ -132,16 +133,38 @@ const SidebarPanel: React.FC<SidebarProps> = ({
 
   const handleRangeInputChange = (selectedDbField: string, rangeType: 'min' | 'max', value: string) => {
     const numericValue = value === '' ? undefined : Number(value);
-    // Check if numericValue is NaN and handle it, e.g., by not updating the state
-    if (numericValue !== undefined && isNaN(numericValue)) {
+
+    // Early exit if input is not a valid number
+    if (numericValue === undefined || isNaN(numericValue)) {
       console.error('Invalid input: Not a number');
-      return; // Exit the function early if the input is not a valid number
+      setErrorMessages(prev => ({ ...prev, [selectedDbField]: "Please enter a valid number." }));
+      return;
     }
 
+    // Validate against any defined min/max constraints
+    const definedMin = Number(rangeValues[selectedDbField]?.min);
+    const definedMax = Number(rangeValues[selectedDbField]?.max);
+
+    let isValidInput = true;
     if (rangeType === 'min') {
-      onRangeChange(selectedDbField, numericValue, rangeValues[selectedDbField]?.max);
+        isValidInput = numericValue >= definedMin && numericValue <= definedMax;
+    } else if (rangeType === 'max') {
+        isValidInput = numericValue >= definedMin && numericValue <= definedMax;
+    }
+        isValidInput = numericValue >= definedMin && numericValue <= definedMax;
+    console.log("isValidInput = ", isValidInput);
+    if (isValidInput) {
+      setErrorMessages(prev => ({ ...prev, [selectedDbField]: "" }));
+      if (rangeType === 'min') {
+        onRangeChange(selectedDbField, numericValue, rangeValues[selectedDbField]?.max);
+      } else {
+        onRangeChange(selectedDbField, rangeValues[selectedDbField]?.min, numericValue);
+      }
     } else {
-      onRangeChange(selectedDbField, rangeValues[selectedDbField]?.min, numericValue);
+      console.log("isValidInput = ", isValidInput, "Please ensure the value is within the specified range")
+      const errorMessage = `Please ensure the value is within the specified range.`;
+      setErrorMessages(prev => ({ ...prev, [selectedDbField + (rangeType === 'min' ? 'Min' : 'Max')]: errorMessage }));
+      console.log("[selectedDbField + (rangeType === 'min' ? 'Min' : 'Max')]", [selectedDbField + (rangeType === 'min' ? 'Min' : 'Max')], "errorMessage = ", errorMessage);
     }
   };
 
@@ -175,7 +198,11 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     // Search By Trait
     if (searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) { // Ensure zero is considered a valid number
       const searchValue = searchTrait.searchTraitValue;
-      if (typeof searchValue === 'number' || searchValue !== '') {
+      if (typeof searchValue === 'number') {
+        whereConditions.push({
+          [searchTrait.searchTraitKey]: { equals: searchValue }
+        });
+      } else if (searchValue !== '') {
         whereConditions.push({
           [searchTrait.searchTraitKey]: { equals: searchValue, mode: "insensitive" }
         });
@@ -239,7 +266,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                   </Tooltip>
                 </div>
                 {sidebarItem.type === "traitSearch" && (
-                  <div className="flex items-center py-2 pr-3 pl-6 w-full">
+                  <div className="relative flex items-center py-2 pr-3 pl-6 w-full">
                     {/* Dropdown for selecting traits */}
                     <select
                       id="traitSelect"  
@@ -286,7 +313,10 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                         className="form-input block placeholder-italic placeholder-mediumgray flex-grow w-3/5 text-xs py-2 px-4 rounded-lg text-pearlwhite bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray"
                       />
                       {errorMessages[searchTrait.searchTraitKey] && (
-                        <div className="text-red-500 text-xs mt-1 pl-4">{errorMessages[searchTrait.searchTraitKey]}</div>
+                        <FloatingError
+                          message={errorMessages[searchTrait.searchTraitKey]}
+                          onClose={() => setErrorMessages(prev => ({ ...prev, [searchTrait.searchTraitKey]: '' }))}
+                        />
                       )}
                       {searchTrait.searchTraitValue && (
                         <GrFormClose
@@ -296,7 +326,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                       )}
                     </div>
                   </div>
-                )}  
+                )}
                 {sidebarItem.type === "sort" && (
                   <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded w-full">
                     <div className="grid grid-cols-2 gap-4 w-full">
@@ -350,6 +380,12 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             }}
                             className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray"
                           />
+                          {errorMessages.minValue && (
+                            <FloatingError
+                              message={errorMessages[expandedSidebarItem.dbField + 'Min']}
+                              onClose={() => setErrorMessages(prev => ({ ...prev, [expandedSidebarItem.dbField + 'Min']: '' }))}
+                            />
+                          )}
                           <span>-</span> {/* Dash */}
                           {/* Max Input */}
                           <input
@@ -374,6 +410,12 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             }}
                             className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray"
                           />
+                          {errorMessages.maxValue && (
+                            <FloatingError
+                              message={errorMessages[expandedSidebarItem.dbField + 'Max']}
+                              onClose={() => setErrorMessages(prev => ({ ...prev, [expandedSidebarItem.dbField + 'Max']: '' }))}
+                            />
+                          )}
                         </div>
                       </div>
                     ))}

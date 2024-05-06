@@ -335,7 +335,7 @@ function Index() {
 	// Callback from SidebarPanel when the user selects a searchTrait and sets its value
 	const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => {
 		if (typeof searchTraitState.searchTraitValue === 'string') {
-			searchTraitState.searchTraitValue = searchTraitState.searchTraitValue.trim();
+			//searchTraitState.searchTraitValue = searchTraitState.searchTraitValue.trim();
 		}
     setSearchTrait(searchTraitState);
 		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
@@ -410,7 +410,7 @@ function Index() {
 
   return (
 		<ErrorBoundary>
-			<div className="flex bg-closetoblack text-pearlwhite">
+			<div className="flex min-h-screen bg-closetoblack text-pearlwhite">
 				{sidebarOpen && (
 					<section className="fixed left-0 top-56 bottom-0 w-80 sidebar">
 						<SidebarPanel
