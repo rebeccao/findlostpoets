@@ -134,37 +134,10 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   const handleRangeInputChange = (selectedDbField: string, rangeType: 'min' | 'max', value: string) => {
     const numericValue = value === '' ? undefined : Number(value);
 
-    // Early exit if input is not a valid number
-    if (numericValue === undefined || isNaN(numericValue)) {
-      console.error('Invalid input: Not a number');
-      setErrorMessages(prev => ({ ...prev, [selectedDbField]: "Please enter a valid number." }));
-      return;
-    }
-
-    // Validate against any defined min/max constraints
-    const definedMin = Number(rangeValues[selectedDbField]?.min);
-    const definedMax = Number(rangeValues[selectedDbField]?.max);
-
-    let isValidInput = true;
     if (rangeType === 'min') {
-        isValidInput = numericValue >= definedMin && numericValue <= definedMax;
-    } else if (rangeType === 'max') {
-        isValidInput = numericValue >= definedMin && numericValue <= definedMax;
-    }
-        isValidInput = numericValue >= definedMin && numericValue <= definedMax;
-    console.log("isValidInput = ", isValidInput);
-    if (isValidInput) {
-      setErrorMessages(prev => ({ ...prev, [selectedDbField]: "" }));
-      if (rangeType === 'min') {
-        onRangeChange(selectedDbField, numericValue, rangeValues[selectedDbField]?.max);
-      } else {
-        onRangeChange(selectedDbField, rangeValues[selectedDbField]?.min, numericValue);
-      }
+      onRangeChange(selectedDbField, numericValue, rangeValues[selectedDbField]?.max);
     } else {
-      console.log("isValidInput = ", isValidInput, "Please ensure the value is within the specified range")
-      const errorMessage = `Please ensure the value is within the specified range.`;
-      setErrorMessages(prev => ({ ...prev, [selectedDbField + (rangeType === 'min' ? 'Min' : 'Max')]: errorMessage }));
-      console.log("[selectedDbField + (rangeType === 'min' ? 'Min' : 'Max')]", [selectedDbField + (rangeType === 'min' ? 'Min' : 'Max')], "errorMessage = ", errorMessage);
+      onRangeChange(selectedDbField, rangeValues[selectedDbField]?.min, numericValue);
     }
   };
 
@@ -380,12 +353,6 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             }}
                             className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray"
                           />
-                          {errorMessages.minValue && (
-                            <FloatingError
-                              message={errorMessages[expandedSidebarItem.dbField + 'Min']}
-                              onClose={() => setErrorMessages(prev => ({ ...prev, [expandedSidebarItem.dbField + 'Min']: '' }))}
-                            />
-                          )}
                           <span>-</span> {/* Dash */}
                           {/* Max Input */}
                           <input
@@ -410,12 +377,6 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             }}
                             className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray"
                           />
-                          {errorMessages.maxValue && (
-                            <FloatingError
-                              message={errorMessages[expandedSidebarItem.dbField + 'Max']}
-                              onClose={() => setErrorMessages(prev => ({ ...prev, [expandedSidebarItem.dbField + 'Max']: '' }))}
-                            />
-                          )}
                         </div>
                       </div>
                     ))}
