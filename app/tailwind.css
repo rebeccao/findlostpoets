@@ -25,6 +25,17 @@
   position: relative;
 }
 
+.form-select {
+  -webkit-appearance: none; /* Removes default styling in WebKit browsers */
+  -moz-appearance: none;    /* Removes default styling in Firefox */
+  appearance: none;         /* Removes default styling */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23E8E8E8'%3E%3Cpolyline fill='none' stroke='%23E8E8E8' stroke-width='2' points='5,7 10,12 15,7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.2em 1.2em; /* Adjust size as needed */
+  padding-right: 1.5rem; /* Ensure padding to the right is sufficient to not overlap text */
+}
+
 @font-face {
   font-family: 'JosefinSans-Bold';
   src: url('/fonts/JosefinSans-Bold.ttf') format('truetype');

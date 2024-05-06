@@ -16,10 +16,10 @@ export default function Navbar({ toggleSidebar, className }: NavbarProps) {
 			</div>
 			{/* Centered Banner */}
 			<div className="flex flex-col items-center mx-auto"> 
-				<div className="text-md lg:text-3xl md:text-xl sm:text-md font-[LeagueSpartan-SemiBold]"> 
+				<div className="text-md lg:text-2xl md:text-xl sm:text-md font-[LeagueSpartan-SemiBold]"> 
 					F I N D L O S T P O E T S
 				</div> 
-				<div className="text-xs font-[LeagueSpartan-Regular] -mt-2 -mb-1">
+				<div className="text-xs font-[LeagueSpartan-Regular] -mt-1">
 					(UNOFFICIAL)
 				</div> 
       </div>

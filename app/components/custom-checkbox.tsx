@@ -21,7 +21,7 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({ id, checked, onChange, 
         aria-hidden="true"
       />
       {/* Custom Checkbox UI */}
-      <label htmlFor={id} className="flex items-center cursor-pointer text-pearlwhite">
+      <label htmlFor={id} className="flex items-center cursor-pointer text-gainsboro">
         <div className={`w-4 h-4 rounded shadow-sm flex justify-center items-center mr-2 border ${checked ? 'bg-charcoalgray border-darkgray2' : 'bg-davysgray border border-agray'}`}>
           {checked && (
             <svg className="w-3 h-3 text-white" viewBox="0 0 20 20" fill="currentColor">
