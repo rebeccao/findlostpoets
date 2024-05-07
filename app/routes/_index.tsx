@@ -383,22 +383,19 @@ function Index() {
 	
 	if (activePoet) {
 		let poetDetailComponent;
-		const numberOfLineBreaks = (activePoet.poem?.split('\n')?.length ?? 0) - 1;
+		/*const numberOfLineBreaks = (activePoet.poem?.split('\n')?.length ?? 0) - 1;
 		const numberOfCharacters = activePoet.poem?.length ?? 0;
 		const longestLineWidth = activePoet.poem?.split('\n').reduce((max, line) => {
 			return Math.max(max, line.length);
 		}, 0) ?? 0;
 		console.log("Index activePoet.wrdCnt = ", activePoet.wrdCnt);
 		console.log("numberOfCharacters = ", numberOfCharacters, "numberOfLineBreaks = ", numberOfLineBreaks);
-		console.log("longestLineWidth = ", longestLineWidth);
+		console.log("longestLineWidth = ", longestLineWidth);*/
 		if (activePoet.lexCnt === 0) {
-			poetDetailComponent = <PoetDetail poet={activePoet} hasSmallPoem={false} onBack={handleBack} />;
-		} else if (activePoet.lexCnt > 0) { //&& activePoet.lexCnt <= 50) {
-			poetDetailComponent = <PoetDetail poet={activePoet} hasSmallPoem={true} onBack={handleBack} />;
-		} /*else {
-			poetDetailComponent = <DetailPoetManyWords poet={activePoet} onBack={handleBack} />;
-			console.log("Index DetailPoetManyWords");
-		}*/
+			poetDetailComponent = <PoetDetail poet={activePoet} hasPoem={false} onBack={handleBack} />;
+		} else if (activePoet.lexCnt > 0) { 
+			poetDetailComponent = <PoetDetail poet={activePoet} hasPoem={true} onBack={handleBack} />;
+		} 
 		return (
 			<div>{poetDetailComponent}</div>);
 	}

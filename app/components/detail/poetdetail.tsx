@@ -4,11 +4,11 @@ import PoetTraits from '~/components/detail/poettraits';
 
 interface PoetDetailProps {
   poet: Poet;
-  hasSmallPoem: boolean;
+  hasPoem: boolean;
   onBack: () => void;
 }
 
-export default function PoetDetail({ poet, hasSmallPoem, onBack }: PoetDetailProps) {
+export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
   return (
     <div className="flex flex-col h-screen">
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onBack={onBack} />
@@ -24,21 +24,21 @@ export default function PoetDetail({ poet, hasSmallPoem, onBack }: PoetDetailPro
               <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full" />
             </div>
           </div>
-          {/* Container for traits */}
-          <div className="bg-closetoblack text-pearlwhite p-4 flex justify-center">
-            {hasSmallPoem ? (
-                <div className="flex gap-4 w-full">
-                    {/* First section for traits */}
-                    <div className="flex-1">
-                        <PoetTraits poet={poet} />
-                    </div>
-                    {/* Second section for the poem */}
-                    <div className="flex-1 flex flex-col justify-center items-start text-center text-pearlwhite p-4 overflow-y-auto max-h-64">
-                      <pre className="whitespace-pre-wrap">{poet.poem}</pre>
-                    </div>
-                </div>
+          {/* Container for the traits and the poem, if one exists */}
+          <div className="bg-closetoblack text-pearlwhite px-4 pb-4 pt-8 flex justify-center">
+            {hasPoem ? (
+              <div className="flex gap-4 w-full">
+                  {/* First section for traits */}
+                  <div className="flex-1 px-4 pb-4">
+                      <PoetTraits poet={poet} />
+                  </div>
+                  {/* Second section for the poem */}
+                  <div className="flex-1 flex-col justify-center items-start text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-64">
+                    <pre className="whitespace-pre-wrap">{poet.poem}</pre>
+                  </div>
+              </div>
             ) : (
-                <PoetTraits poet={poet} />
+              <PoetTraits poet={poet} />
             )}
           </div>
         </div>
