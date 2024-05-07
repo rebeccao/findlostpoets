@@ -35,10 +35,10 @@ export default {
         sans: ['Arial', 'Helvetica'],
       },
       spacing: {
-        'navbar': '56px', // Define custom spacing for navbar height
+        'navbar': '56px',      // custom spacing for navbar height
       },
       top: {
-        'navbar': '56px', // Define custom top positioning, same as navbar height)
+        'navbar': '56px',     // navbar height)
       },
       boxShadow: {
         'inner-top-left': 'inset -2px 2px 6px -1px rgba(0, 0, 0, 0.1)',
