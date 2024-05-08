@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import Draggable from 'react-draggable';
 import type { Poet } from '@prisma/client';
 import PoetDetailNavbar from '~/components/navbar-poet-detail';
 import PoetTraits from '~/components/detail/poettraits';
@@ -9,6 +11,9 @@ interface PoetDetailProps {
 }
 
 export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
+  const [showPoemModal, setShowPoemModal] = useState(false);
+  const toggleModal = () => setShowPoemModal(!showPoemModal);
+  
   return (
     <div className="flex flex-col h-screen">
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onBack={onBack} />
@@ -28,20 +33,40 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
           <div className="bg-closetoblack text-pearlwhite px-4 pb-4 pt-8 flex justify-center">
             {hasPoem ? (
               <div className="flex gap-4 w-full">
-                  {/* First section for traits */}
-                  <div className="flex-1 px-4 pb-4">
-                      <PoetTraits poet={poet} />
-                  </div>
-                  {/* Second section for the poem */}
-                  <div className="flex-1 flex-col justify-center items-start text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-64">
-                    <pre className="whitespace-pre-wrap">{poet.poem}</pre>
-                  </div>
+                {/* First section for traits */}
+                <div className="flex-1 px-4 pb-4">
+                    <PoetTraits poet={poet} />
+                </div>
+                {/* Second section for the poem */}
+                <div 
+                  className="flex-1 flex-col justify-center items-start text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-64 cursor-pointer"
+                  onClick={toggleModal}
+                >
+                  <pre className="whitespace-pre-wrap">{poet.poem}</pre>
+                </div>
               </div>
             ) : (
               <PoetTraits poet={poet} />
             )}
           </div>
         </div>
+
+        {/* Poem modal */}
+        {hasPoem && showPoemModal && (
+          <Draggable>
+            <div 
+              className="fixed top-16 left-1/2 w-2/5 h-full bg-verydarkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50"
+              style={{ cursor: 'move' }}
+            >
+              <div className="absolute top-4 left-7">
+                <button onClick={toggleModal}>Close</button>
+              </div>
+              <div className="pt-12 text-center overflow-auto h-full">
+                <pre className="whitespace-pre-wrap">{poet.poem}</pre>
+              </div>
+            </div>
+          </Draggable>
+        )}
       </div>
     </div>
   );
