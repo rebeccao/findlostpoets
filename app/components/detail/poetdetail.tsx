@@ -3,6 +3,7 @@ import Draggable from 'react-draggable';
 import type { Poet } from '@prisma/client';
 import PoetDetailNavbar from '~/components/navbar-poet-detail';
 import PoetTraits from '~/components/detail/poettraits';
+import { GrClose } from "react-icons/gr";
 
 interface PoetDetailProps {
   poet: Poet;
@@ -58,10 +59,10 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
               className="fixed top-16 left-1/2 w-2/5 h-full bg-verydarkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50"
               style={{ cursor: 'move' }}
             >
-              <div className="absolute top-4 left-7">
-                <button onClick={toggleModal}>Close</button>
-              </div>
-              <div className="pt-12 text-center overflow-auto h-full">
+              <button onClick={toggleModal} className="text-lg pt-5 pl-2 pb-2">
+                <GrClose />
+              </button>
+              <div className="text-center overflow-auto h-full">
                 <pre className="whitespace-pre-wrap">{poet.poem}</pre>
               </div>
             </div>
