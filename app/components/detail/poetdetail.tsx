@@ -11,12 +11,19 @@ interface PoetDetailProps {
   onBack: () => void;
 }
 
+// Display Poet's details. The poem m
 export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
   const [showPoemModal, setShowPoemModal] = useState(false);
   const toggleModal = () => setShowPoemModal(!showPoemModal);
+
+  const handleBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (showPoemModal) {
+      toggleModal();
+    }
+  };
   
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen" onClick={handleBackgroundClick}>
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onBack={onBack} />
       <div className="flex flex-1 overflow-hidden relative bg-closetoblack">
         {/* Main content section for images and traits */}
@@ -30,7 +37,9 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
               <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full" />
             </div>
           </div>
-          {/* Container for the traits and the poem, if one exists */}
+          {/* Container for the traits and the poem if it exists. */}
+          {/* When the poem modal is not active, show this container. Hide this container when poem modal is active */}
+          {!showPoemModal && (
           <div className="bg-closetoblack text-pearlwhite px-4 pb-4 pt-8 flex justify-center">
             {hasPoem ? (
               <div className="flex gap-4 w-full">
@@ -39,9 +48,8 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
                     <PoetTraits poet={poet} />
                 </div>
                 {/* Second section for the poem */}
-                <div 
+                <div onClick={toggleModal}
                   className="flex-1 flex-col justify-center items-start text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-64 cursor-pointer"
-                  onClick={toggleModal}
                 >
                   <pre className="whitespace-pre-wrap">{poet.poem}</pre>
                 </div>
@@ -50,6 +58,7 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
               <PoetTraits poet={poet} />
             )}
           </div>
+          )}
         </div>
 
         {/* Poem modal */}
@@ -58,6 +67,7 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
             <div 
               className="fixed top-16 left-1/2 w-2/5 h-full bg-verydarkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50"
               style={{ cursor: 'move' }}
+              onClick={(e) => e.stopPropagation()} // Prevents click from propagating to background
             >
               <button onClick={toggleModal} className="text-lg pt-5 pl-2 pb-2">
                 <GrClose />
