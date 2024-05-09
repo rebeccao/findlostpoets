@@ -244,7 +244,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                     <select
                       id="traitSelect"  
                       name="traitSelect"
-                      className="form-select block w-2/5 mb-0 mr-2 text-sm py-2 px-2 rounded-lg font-medium text-pearlwhite focus:outline-none bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray flex-grow" 
+                      className="form-select block w-2/5 mb-0 mr-2 text-sm py-2 px-2 rounded-lg font-medium text-pearlwhite focus:outline-none bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray flex-grow" 
                       onChange={(e) => handleSearchTraitChange(e.target.value)}
                       aria-label="Select a trait"
                     >
@@ -283,7 +283,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                             clearSearchTraitInput(); 
                           }
                         }}
-                        className="form-input block placeholder-italic placeholder-mediumgray flex-grow w-3/5 text-sm py-2 px-4 rounded-lg text-pearlwhite bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray"
+                        className="form-input block placeholder-italic placeholder-mediumgray flex-grow w-3/5 text-sm py-2 px-4 rounded-lg text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                       />
                       {errorMessages[searchTrait.searchTraitKey] && (
                         <FloatingError
@@ -351,7 +351,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                                   e.target.placeholder = expandedSidebarItem.min || ''; // Restore placeholder if input is empty
                               }
                             }}
-                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray"
+                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic border placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                           />
                           <span>-</span> {/* Dash */}
                           {/* Max Input */}
@@ -375,7 +375,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                                   e.target.placeholder = expandedSidebarItem.max || ''; // Restore placeholder if input is empty
                               }
                             }}
-                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-davysgray focus:border-davysgray focus:ring-1 focus:ring-davysgray"
+                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                           />
                         </div>
                       </div>
@@ -389,13 +389,13 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       </div>
       <div className="absolute inset-x-0 bottom-0 p-4 flex justify-center space-x-2">
         <button
-          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-davysgray border-davysgray hover:bg-darkgray1 hover:border-charcoalgray"// Lighter for secondary clear action
+          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-davysgray border-naughtygray hover:bg-darkgray1 hover:border-charcoalgray"// Lighter for secondary clear action
           onClick={handleSearchClick}
         >
           Search
         </button>
         <button
-          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-charcoalgray border-charcoalgray hover:bg-darkgray1 hover:border-charcoalgray" // Darker for primary action
+          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-charcoalgray border-gunmetalgray hover:bg-darkgray1 hover:border-charcoalgray" // Darker for primary action
           onClick={resetSearch} // Assuming this resets all search inputs
         >
           Clear

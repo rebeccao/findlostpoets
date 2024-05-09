@@ -13,6 +13,8 @@ export default {
         lightmedgray: '#BDBDBD',
         mediumgray:   '#9E9E9E',
         bgray:        '#808080',
+        midtonegray:  '#757575',
+        naughtygray:  '#696969',
         agray:        '#616161',
         davysgray:    '#555555',
         darkgray2:    '#494949',
