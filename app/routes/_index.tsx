@@ -370,11 +370,21 @@ function Index() {
 	/*************** PoetDetails logic ****************/
 
 	const handleShowingPoetDetail = (poet: Poet) => {
-		setActivatePoetDetail(poet);
+		// Save current scroll position
+		sessionStorage.setItem('lastScrollPosition', window.scrollY.toString());
+		setActivatePoetDetail(poet);		
 	};
 
 	const handleReturnFromPoetDetail = () => {
-    setActivatePoetDetail(null);  // This will clear the active poet and potentially show the list again
+    setActivatePoetDetail(null); 						// Clear the active poet detail view
+		// Restore scroll position if available
+		requestAnimationFrame(() => {
+			const lastScrollPosition = sessionStorage.getItem('lastScrollPosition');
+			if (lastScrollPosition) {
+					window.scrollTo(0, parseInt(lastScrollPosition));
+					sessionStorage.removeItem('lastScrollPosition');
+			}
+		});
   };
 	
 	if (activatePoetDetail) {
