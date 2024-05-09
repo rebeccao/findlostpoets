@@ -18,7 +18,7 @@ export default function PoetDetailNavbar({ poetName, className, onReturn }: Poet
 					<PiArrowLeft size={30} className="cursor-pointer" />
 				</button>
 			</div>
-      <div className="text-3xl font-[LeagueSpartan-Regular] mt-1 mx-auto">
+      <div className="text-3xl font-[LeagueSpartan-Light] mt-1 mx-auto">
         {poetName}
       </div>
       <div style={{ width: '48px' }}></div> {/* Placeholder to maintain the center alignment of the title */}
