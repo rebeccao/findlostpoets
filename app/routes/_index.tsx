@@ -373,16 +373,16 @@ function Index() {
 		setActivatePoetDetail(poet);
 	};
 
-	const handleBack = () => {
+	const handleReturnFromPoetDetail = () => {
     setActivatePoetDetail(null);  // This will clear the active poet and potentially show the list again
   };
 	
 	if (activatePoetDetail) {
 		let poetDetailComponent;
 		if (activatePoetDetail.lexCnt === 0) {
-			poetDetailComponent = <PoetDetail poet={activatePoetDetail} hasPoem={false} onBack={handleBack} />;
+			poetDetailComponent = <PoetDetail poet={activatePoetDetail} hasPoem={false} onReturn={handleReturnFromPoetDetail} />;
 		} else if (activatePoetDetail.lexCnt > 0) { 
-			poetDetailComponent = <PoetDetail poet={activatePoetDetail} hasPoem={true} onBack={handleBack} />;
+			poetDetailComponent = <PoetDetail poet={activatePoetDetail} hasPoem={true} onReturn={handleReturnFromPoetDetail} />;
 		} 
 		return (
 			<div>{poetDetailComponent}</div>);

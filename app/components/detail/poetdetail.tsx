@@ -8,11 +8,11 @@ import { GrClose } from "react-icons/gr";
 interface PoetDetailProps {
   poet: Poet;
   hasPoem: boolean;
-  onBack: () => void;
+  onReturn: () => void;
 }
 
 // Display Poet's details. The poem m
-export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
+export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps) {
   const [showPoemModal, setShowPoemModal] = useState(false);
   const [isPoemOverflowing, setIsPoemOverflowing] = useState(false);
   const poemContainerRef = useRef<HTMLDivElement>(null);
@@ -36,7 +36,7 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
 
   return (
     <div className="flex flex-col h-screen" onClick={handleBackgroundClick}>
-      <PoetDetailNavbar poetName={poet.pNam} className="navbar" onBack={onBack} />
+      <PoetDetailNavbar poetName={poet.pNam} className="navbar" onReturn={onReturn} />
       <div className="flex flex-1 overflow-hidden relative bg-closetoblack">
         {/* Main content section for images and traits */}
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full max-w-7xl mx-auto my-6 overflow-y-auto">
