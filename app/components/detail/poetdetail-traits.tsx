@@ -1,10 +1,10 @@
 import type { Poet } from '@prisma/client';
 
-interface PoetTraitsProps {
+interface PoetDetailTraitsProps {
   poet: Poet;
 }
 
-function PoetTraits({ poet }: PoetTraitsProps) {
+function PoetDetailTraits({ poet }: PoetDetailTraitsProps) {
   return (
       <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 max-w-4xl w-full cursor-default select-none">
         <div><span>Origin:</span><span className="ml-2 font-bold">{poet.ori}</span></div>
@@ -23,4 +23,4 @@ function PoetTraits({ poet }: PoetTraitsProps) {
   );
 }
 
-export default PoetTraits;
+export default PoetDetailTraits;

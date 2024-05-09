@@ -9,8 +9,6 @@ import Navbar from '~/components/navbar';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import ImageCard from '~/components/image-card';
-import DetailPoetManyWords from '~/components/detail/detail-poetmanywords';
-import DetailPoetFewWords from '~/components/detail/detail-poetfewwords';
 import PoetDetail from '~/components/detail/poetdetail';
 import ErrorBoundary from '~/components/error-boundary';
 

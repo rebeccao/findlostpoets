@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import type { Poet } from '@prisma/client';
 import PoetDetailNavbar from '~/components/navbar-poet-detail';
-import PoetTraits from '~/components/detail/poettraits';
+import PoetDetailTraits from '~/components/detail/poetdetail-traits';
 import { GrClose } from "react-icons/gr";
 
 interface PoetDetailProps {
@@ -57,7 +57,7 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
               <div className="flex gap-4 w-full">
                 {/* First section for traits */}
                 <div className="flex-1 px-4 pb-4">
-                    <PoetTraits poet={poet} />
+                    <PoetDetailTraits poet={poet} />
                 </div>
                 {/* Second section for the poem */}
                 <div 
@@ -71,7 +71,7 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
                 </div>
               </div>
             ) : (
-              <PoetTraits poet={poet} />
+              <PoetDetailTraits poet={poet} />
             )}
           </div>
           )}

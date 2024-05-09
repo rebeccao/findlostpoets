@@ -1,6 +1,6 @@
 import React from 'react'; 
 import type { Poet } from '@prisma/client'
-import PoetTraits from '~/components/detail/poettraits';
+import PoetTraits from '~/components/detail/poetdetail-traits';
 
 interface ImageCardProps {
   poet: Poet;
