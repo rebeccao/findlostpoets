@@ -80,7 +80,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 function Index() {
 	const fetcher = useFetcher();
 	const initialData = useLoaderData<typeof loader>();
-	const [activePoet, setActivePoet] = useState<Poet | null>(null);
+	const [activatePoetDetail, setActivatePoetDetail] = useState<Poet | null>(null);
 
   //console.log("******************* const poets: Poet[] = data.poets, fetcher.data ", fetcher.data); 
 	//console.log("******************* const poets: Poet[] = data.poets, initialData.poets.length", initialData.poets.length); 
@@ -369,30 +369,20 @@ function Index() {
 
 	/*************** PoetDetails logic ****************/
 
-	const handlePoetClick = (poet: Poet) => {
-		// Push a new entry into the browser's history stack.
-		setActivePoet(poet);
+	const handleShowingPoetDetail = (poet: Poet) => {
+		setActivatePoetDetail(poet);
 	};
 
 	const handleBack = () => {
-    setActivePoet(null);  // This will clear the active poet and potentially show the list again
-  //  history.goBack();     // This will navigate back in the browser history
+    setActivatePoetDetail(null);  // This will clear the active poet and potentially show the list again
   };
 	
-	if (activePoet) {
+	if (activatePoetDetail) {
 		let poetDetailComponent;
-		/*const numberOfLineBreaks = (activePoet.poem?.split('\n')?.length ?? 0) - 1;
-		const numberOfCharacters = activePoet.poem?.length ?? 0;
-		const longestLineWidth = activePoet.poem?.split('\n').reduce((max, line) => {
-			return Math.max(max, line.length);
-		}, 0) ?? 0;
-		console.log("Index activePoet.wrdCnt = ", activePoet.wrdCnt);
-		console.log("numberOfCharacters = ", numberOfCharacters, "numberOfLineBreaks = ", numberOfLineBreaks);
-		console.log("longestLineWidth = ", longestLineWidth);*/
-		if (activePoet.lexCnt === 0) {
-			poetDetailComponent = <PoetDetail poet={activePoet} hasPoem={false} onBack={handleBack} />;
-		} else if (activePoet.lexCnt > 0) { 
-			poetDetailComponent = <PoetDetail poet={activePoet} hasPoem={true} onBack={handleBack} />;
+		if (activatePoetDetail.lexCnt === 0) {
+			poetDetailComponent = <PoetDetail poet={activatePoetDetail} hasPoem={false} onBack={handleBack} />;
+		} else if (activatePoetDetail.lexCnt > 0) { 
+			poetDetailComponent = <PoetDetail poet={activatePoetDetail} hasPoem={true} onBack={handleBack} />;
 		} 
 		return (
 			<div>{poetDetailComponent}</div>);
@@ -446,7 +436,7 @@ function Index() {
 								<div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
 									{/* Poets mapping */}
 									{poetSlidingWindow?.map((poet: Poet, index: number) => (
-										<div key={poet.id} id={`poet-${poet.pid}`} onClick={() => handlePoetClick(poet)} className="cursor-pointer flex">
+										<div key={poet.id} id={`poet-${poet.pid}`} onClick={() => handleShowingPoetDetail(poet)} className="cursor-pointer flex">
 											<ImageCard 
 												key={poet.pid} 
 												poet={poet}
