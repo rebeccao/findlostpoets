@@ -227,7 +227,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-screen bg-verydarkgray">
+    <div className="flex flex-col h-screen border bg-verydarkgray border-darkgray">
       <div className="h-screen pb-14 overflow-y-auto scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
         <div className="py-4">
           {sidebarItems.map((sidebarItem, index) => {
@@ -389,13 +389,13 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       </div>
       <div className="absolute inset-x-0 bottom-0 p-4 flex justify-center space-x-2">
         <button
-          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-davysgray border-naughtygray hover:bg-darkgray1 hover:border-charcoalgray"// Lighter for secondary clear action
+          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-davysgray border-naughtygray hover:bg-darkgray hover:border-charcoalgray"// Lighter for secondary clear action
           onClick={handleSearchClick}
         >
           Search
         </button>
         <button
-          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-charcoalgray border-gunmetalgray hover:bg-darkgray1 hover:border-charcoalgray" // Darker for primary action
+          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-charcoalgray border-gunmetalgray hover:bg-darkgray hover:border-charcoalgray" // Darker for primary action
           onClick={resetSearch} // Assuming this resets all search inputs
         >
           Clear

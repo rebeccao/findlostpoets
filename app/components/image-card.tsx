@@ -35,7 +35,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     const imageUrl = isDevelopment ? poet.g1Url : getResizedIPFSUrl(poet.g1Url);
 
     return (
-      <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden bg-darkgray1 text-gainsboro shadow-lg sans">
+      <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
         <img src={imageUrl} alt={`${poet.pNam + ' Gen1'}`} loading="lazy" className="w-full mb-2"/>
         <img src={poet.g0Url} alt={`${poet.pNam + ' Gen0'}`} loading="lazy" className="w-full" />    
         <div className="px-4 py-4">
