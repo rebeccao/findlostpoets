@@ -6,7 +6,7 @@ interface PoetTraitsProps {
 
 function PoetTraits({ poet }: PoetTraitsProps) {
   return (
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 max-w-4xl w-full">
+      <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 max-w-4xl w-full cursor-default select-none">
         <div><span>Origin:</span><span className="ml-2 font-bold">{poet.ori}</span></div>
         <div><span>Breed:</span><span className="ml-2 font-bold">{poet.brd}</span></div>
         <div><span>Polarity:</span><span className="ml-2 font-bold">{poet.pol}</span></div>

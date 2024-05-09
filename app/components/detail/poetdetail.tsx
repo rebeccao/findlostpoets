@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import type { Poet } from '@prisma/client';
 import PoetDetailNavbar from '~/components/navbar-poet-detail';
@@ -14,6 +14,9 @@ interface PoetDetailProps {
 // Display Poet's details. The poem m
 export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
   const [showPoemModal, setShowPoemModal] = useState(false);
+  const [isPoemOverflowing, setIsPoemOverflowing] = useState(false);
+  const poemContainerRef = useRef<HTMLDivElement>(null);
+
   const toggleModal = () => setShowPoemModal(!showPoemModal);
 
   const handleBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -21,7 +24,16 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
       toggleModal();
     }
   };
-  
+
+  // checkOverflow useEffect to check for poem overflowing the poem section
+  useEffect(() => {
+    const element = poemContainerRef.current;
+    if (element) {
+      const currentIsOverflowing = element.scrollHeight > element.clientHeight;
+      setIsPoemOverflowing(currentIsOverflowing); // Update state based on current overflow status
+    }
+  }, [poet.poem]); 
+
   return (
     <div className="flex flex-col h-screen" onClick={handleBackgroundClick}>
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onBack={onBack} />
@@ -48,8 +60,12 @@ export default function PoetDetail({ poet, hasPoem, onBack }: PoetDetailProps) {
                     <PoetTraits poet={poet} />
                 </div>
                 {/* Second section for the poem */}
-                <div onClick={toggleModal}
-                  className="flex-1 flex-col justify-center items-start text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-64 cursor-pointer"
+                <div 
+                  onClick={isPoemOverflowing ? toggleModal : undefined}
+                  ref={poemContainerRef}
+                  className={`flex-1 flex-col justify-center items-start text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-64 ${
+                    isPoemOverflowing ? 'cursor-pointer' : 'cursor-default'
+                  }`}
                 >
                   <pre className="whitespace-pre-wrap">{poet.poem}</pre>
                 </div>
