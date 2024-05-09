@@ -187,8 +187,9 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       const trait = selectedRareTrait.slice(0, -3);
 
       whereConditions.push({ [selectedRareTrait]: { gt: 0 } });
-      orderByConditions.push({ [selectedRareTrait]: 'asc' })
-      orderByConditions.push({ [trait]: 'asc' })                // sort the actual trait after sorting the trait count
+      orderByConditions.push({ [selectedRareTrait]: 'asc' });
+      orderByConditions.push({ [trait]: 'asc' });                // sort the actual trait after sorting the trait count
+      orderByConditions.push({ ['pid']: 'asc' });                // sort the actual trait after sorting the trait count
     }
 
     // Sort By Range Trait
@@ -207,7 +208,8 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       }
       if (Object.keys(rangeCondition).length > 0) {
           whereConditions.push({ [selectedRangeTrait]: rangeCondition });
-          orderByConditions.push({ [selectedRangeTrait]: 'desc' }) 
+          orderByConditions.push({ [selectedRangeTrait]: 'asc' }); 
+          orderByConditions.push({ 'pid': 'asc' }); 
       }
   }
   
