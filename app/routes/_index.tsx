@@ -207,22 +207,31 @@ function Index() {
 			};
 
 			//const observerOptions = {	root: null,	rootMargin: '0px 0px 200px 0px', // top right bottom left	threshold: 0, };
-			const forwardObserver = new IntersectionObserver(observerCallback, { threshold: 0.1 });// observerOptions);  //{ threshold: 0.1 });
-			const backwardObserver = new IntersectionObserver(observerCallback, { threshold: 0.1 });// observerOptions);  //{ threshold: 0.1 });
+			const observerOptions = {
+				root: null, // observing entire viewport
+				rootMargin: '200px 0px', // gives some margin to start loading before reaching sentinel
+				threshold: 0.1 // adjust this based on how sensitive you need the observer to be
+			};
+			forwardGlobalObserver.current = new IntersectionObserver(observerCallback, observerOptions);  //{ threshold: 0.1 });
+			backwardGlobalObserver.current = new IntersectionObserver(observerCallback, observerOptions);  //{ threshold: 0.1 });
 
 			if (forwardSentinelRef.current) {
-				forwardObserver.observe(forwardSentinelRef.current);
+				forwardGlobalObserver.current.observe(forwardSentinelRef.current);
 			}
 
 			if (backwardSentinelRef.current) {
-				backwardObserver.observe(backwardSentinelRef.current);
+				backwardGlobalObserver.current.observe(backwardSentinelRef.current);
 			}
-
-			// Assigning observers to globalObservers for later access
-			backwardGlobalObserver.current = backwardObserver;
-			forwardGlobalObserver.current = forwardObserver;
 		}
-	}, [currentDbQuery.skip, poetSlidingWindow, fetchDirection, fetchMorePoets]);
+	}, [currentDbQuery, poetSlidingWindow, fetchMorePoets]);
+
+	useEffect(() => {
+    if (forwardSentinelRef.current && backwardSentinelRef.current) {
+        forwardGlobalObserver.current?.observe(forwardSentinelRef.current);
+        backwardGlobalObserver.current?.observe(backwardSentinelRef.current);
+        console.log("***** ****** Observers reattached to sentinel refs");
+    }
+	}, [forwardSentinelRef.current, backwardSentinelRef.current]);		
 
 	// InitialData useEffect
 	useEffect(() => {
@@ -384,6 +393,9 @@ function Index() {
 					window.scrollTo(0, parseInt(lastScrollPosition));
 					sessionStorage.removeItem('lastScrollPosition');
 			}
+			console.log("*****  observerCallback -- fetchDirection=", fetchDirection, "-- backwardSentinelRef data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
+			console.log("*****  forwardGlobalObserver.current=", forwardGlobalObserver.current, "backwardGlobalObserver.current=", backwardGlobalObserver.current);
+			console.log("*****  poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
 		});
   };
 	
