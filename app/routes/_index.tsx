@@ -54,7 +54,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		let dbQuery: SearchCriteria = { orderBy: [{ pid: 'asc' }], skip: 0, take:PAGE_SIZE }; // query on first load
 		
 		const searchQuery = url.searchParams.get("query");
-		console.log('++++++++  Index loader: Received searchQuery:', searchQuery);
+		console.log('++++++  Index loader: Received searchQuery:', searchQuery);
 
 		if (searchQuery) {
 			try {
@@ -229,7 +229,6 @@ function Index() {
     if (forwardSentinelRef.current && backwardSentinelRef.current) {
         forwardGlobalObserver.current?.observe(forwardSentinelRef.current);
         backwardGlobalObserver.current?.observe(backwardSentinelRef.current);
-        console.log("***** ****** Observers reattached to sentinel refs");
     }
 	}, [forwardSentinelRef.current, backwardSentinelRef.current]);		
 
@@ -393,9 +392,6 @@ function Index() {
 					window.scrollTo(0, parseInt(lastScrollPosition));
 					sessionStorage.removeItem('lastScrollPosition');
 			}
-			console.log("*****  observerCallback -- fetchDirection=", fetchDirection, "-- backwardSentinelRef data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
-			console.log("*****  forwardGlobalObserver.current=", forwardGlobalObserver.current, "backwardGlobalObserver.current=", backwardGlobalObserver.current);
-			console.log("*****  poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
 		});
   };
 	

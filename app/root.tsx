@@ -11,6 +11,11 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+// Disable console.log in production
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => {};
+}
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: "/app/tailwind.css", precedence: 'high' },
 ];
