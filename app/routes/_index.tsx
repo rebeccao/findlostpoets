@@ -207,13 +207,13 @@ function Index() {
 			};
 
 			//const observerOptions = {	root: null,	rootMargin: '0px 0px 200px 0px', // top right bottom left	threshold: 0, };
-			const observerOptions = {
-				root: null, // observing entire viewport
-				rootMargin: '200px 0px', // gives some margin to start loading before reaching sentinel
-				threshold: 0.1 // adjust this based on how sensitive you need the observer to be
-			};
-			forwardGlobalObserver.current = new IntersectionObserver(observerCallback, observerOptions);  //{ threshold: 0.1 });
-			backwardGlobalObserver.current = new IntersectionObserver(observerCallback, observerOptions);  //{ threshold: 0.1 });
+			//const observerOptions = {
+			//	root: null, // observing entire viewport
+			//	rootMargin: '200px 0px', // gives some margin to start loading before reaching sentinel
+			//	threshold: 0.1 // adjust this based on how sensitive you need the observer to be
+			//};
+			forwardGlobalObserver.current = new IntersectionObserver(observerCallback, { threshold: 0.1 });  //observerOptions);  //{ threshold: 0.1 });
+			backwardGlobalObserver.current = new IntersectionObserver(observerCallback, { threshold: 0.1 });  //observerOptions);  //{ threshold: 0.1 });
 
 			if (forwardSentinelRef.current) {
 				forwardGlobalObserver.current.observe(forwardSentinelRef.current);
