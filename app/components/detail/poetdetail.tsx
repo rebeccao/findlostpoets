@@ -35,18 +35,18 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
   }, [poet.poem]); 
 
   return (
-    <div className="flex flex-col h-screen" onClick={handleBackgroundClick}>
+    <div className="flex flex-col h-screen overflow-y-auto" onClick={handleBackgroundClick}>
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onReturn={onReturn} />
-      <div className="flex flex-1 overflow-hidden relative bg-closetoblack">
+      <div className="flex flex-1 relative bg-closetoblack">
         {/* Main content section for images and traits */}
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full max-w-7xl mx-auto my-6 overflow-y-auto">
           {/* Images container */}
           <div className="flex justify-center items-center px-4 bg-closetoblack">
             <div style={{ width: '50%', padding: '0 10px 0 0' }}>  {/* Add right padding to the first image */}
-              <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full" />
+              <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full" loading="lazy" />
             </div>
             <div style={{ width: '50%', padding: '0 0 0 10px' }}>  {/* Add left padding to the second image */}
-              <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full" />
+              <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full" loading="lazy" />
             </div>
           </div>
           {/* Container for the traits and the poem if it exists. */}
@@ -66,6 +66,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
                   className={`flex-1 flex flex-col justify-start items-center text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-28 ${
                     isPoemOverflowing ? 'cursor-pointer' : 'cursor-default'
                   }`}
+                  aria-label="Click to toggle poem details"
                 >
                   <pre className="whitespace-pre-wrap">{poet.poem}</pre>
                 </div>
