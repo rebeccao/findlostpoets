@@ -63,7 +63,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
                 <div 
                   onClick={isPoemOverflowing ? toggleModal : undefined}
                   ref={poemContainerRef}
-                  className={`flex-1 flex flex-col justify-center items-start text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-28 ${
+                  className={`flex-1 flex flex-col justify-start items-center text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-28 ${
                     isPoemOverflowing ? 'cursor-pointer' : 'cursor-default'
                   }`}
                 >
