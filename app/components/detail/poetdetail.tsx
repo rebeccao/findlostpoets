@@ -54,7 +54,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
           {!showPoemModal && (
           <div className="bg-closetoblack text-pearlwhite px-4 pb-4 pt-8 flex justify-center">
             {hasPoem ? (
-              <div className="flex gap-4 w-full">
+              <div className="flex gap-4 w-full h-auto">
                 {/* First section for traits */}
                 <div className="flex-1 px-4 pb-4">
                     <PoetDetailTraits poet={poet} />
@@ -63,7 +63,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
                 <div 
                   onClick={isPoemOverflowing ? toggleModal : undefined}
                   ref={poemContainerRef}
-                  className={`flex-1 flex-col justify-center items-start text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-64 ${
+                  className={`flex-1 flex flex-col justify-center items-start text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-28 ${
                     isPoemOverflowing ? 'cursor-pointer' : 'cursor-default'
                   }`}
                 >
