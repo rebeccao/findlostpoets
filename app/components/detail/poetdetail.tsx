@@ -3,6 +3,7 @@ import Draggable from 'react-draggable';
 import type { Poet } from '@prisma/client';
 import PoetDetailNavbar from '~/components/navbar-poet-detail';
 import PoetDetailTraits from '~/components/detail/poetdetail-traits';
+import ImageModal from './imagemodal'; 
 import { GrClose } from "react-icons/gr";
 
 interface PoetDetailProps {
@@ -34,6 +35,14 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
     }
   }, [poet.poem]); 
 
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState<string>('');
+
+  const openModal = (imageSrc: string) => {
+    setCurrentImage(imageSrc);
+    setModalOpen(true);
+  };
+
   return (
     <div className="flex flex-col h-screen overflow-y-auto" onClick={handleBackgroundClick}>
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onReturn={onReturn} />
@@ -42,13 +51,14 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full max-w-7xl mx-auto my-6 overflow-y-auto">
           {/* Images container */}
           <div className="flex justify-center items-center px-4 bg-closetoblack">
-            <div style={{ width: '50%', padding: '0 10px 0 0' }}>  {/* Add right padding to the first image */}
+            <div style={{ width: '50%', padding: '0 10px 0 0' }} onClick={() => openModal(poet.g0Url)}>  {/* Add right padding to the first image */}
               <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full" loading="lazy" />
             </div>
-            <div style={{ width: '50%', padding: '0 0 0 10px' }}>  {/* Add left padding to the second image */}
+            <div style={{ width: '50%', padding: '0 0 0 10px' }} onClick={() => openModal(poet.g1Url)}>  {/* Add left padding to the second image */}
               <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full" loading="lazy" />
             </div>
           </div>
+          <ImageModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} imageSrc={currentImage} />
           {/* Container for the traits and the poem if it exists. */}
           {/* When the poem modal is not active, show this container. Hide this container when poem modal is active */}
           {!showPoemModal && (
