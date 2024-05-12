@@ -40,7 +40,7 @@ const ImageModal: React.FC<ImageModalProps> = ({ isOpen, onClose, imageSrc }) =>
   if (!shouldRender) return null;
 
   return (
-    <div className={`fixed inset-0 bg-black flex justify-center items-center z-50 transition-opacity ease-in-out duration-1000 ${showModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+    <div className={`fixed inset-0 bg-closetoblack flex justify-center items-center z-50 transition-opacity ease-in-out duration-1000 ${showModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
       <button onClick={onClose} className="absolute top-5 left-5 text-white text-3xl">
         <GrClose/>
       </button>
