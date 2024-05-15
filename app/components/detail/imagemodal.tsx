@@ -10,9 +10,12 @@ interface ImageModalProps {
 }
 
 const ImageModal: React.FC<ImageModalProps> = ({ isOpen, onClose, imageSrc, imageSize }) => {
+  // Constants for initial and minimum scales based on image size
+  const initialScale = 1;                           // Start at full size for 1X, half for 2X
+  const minScale = imageSize === '2X' ? 0.5 : 1;    // Minimum scale for 2X is 0.5 (1024px view)
+
   const [showModal, setShowModal] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
-  const initialScale = 1; // Scale images to 1024x1024
   const [scale, setScale] = useState(initialScale);
 
 
@@ -37,13 +40,13 @@ const ImageModal: React.FC<ImageModalProps> = ({ isOpen, onClose, imageSrc, imag
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
-  const handleZoomIn = () => setScale(scale => Math.min(scale * 1.25, 2));  // Allow scaling up to full size for 2X image
-  const handleZoomOut = () => setScale(scale => Math.max(scale / 1.25, 0.5));  // Minimum scale
+  const handleZoomIn = () => setScale(scale => scale * 1.25);                       // Increase scale
+  const handleZoomOut = () => setScale(scale => Math.max(scale / 1.25, minScale));  // Do not zoom out beyond 1024x1024 equivalent
 
   if (!shouldRender) return null;
 
   return (
-    <div className={`fixed inset-0 bg-closetoblack flex justify-center items-center z-50 transition-opacity ease-in-out duration-1000 ${showModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+    <div className={`image-container fixed inset-0 bg-closetoblack flex justify-center items-center z-50 transition-opacity ease-in-out duration-1000 ${showModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
       <div style={{ transform: `scale(${scale})` }} className="flex flex-col items-center w-full h-full overflow-auto">
         <img src={imageSrc} alt="Enlarged view" className={`${imageSize === '2X' ? "zoomed-img" : "normal-img"} transition-transform duration-300 cursor-pointer`} />
       </div>
