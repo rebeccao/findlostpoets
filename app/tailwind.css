@@ -27,29 +27,6 @@
   transform: scale(1.15);
 }
 
-.image-container {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.img-content {
-  position: relative; /* Direct positioning inside the container */
-  width: 100%; /* Full container width */
-  max-width: 1024px; /* Maximum image width */
-  height: 100%; /* Full container height */
-  max-height: 1024px; /* Maximum image height */
-  overflow: hidden; /* Hide overflow inside this element */
-}
-
-/* Ensure the image itself is not causing overflow issues */
-img {
-  width: 100%; /* Fit to container */
-  height: auto; /* Maintain aspect ratio */
-  object-fit: contain; /* Avoid distortion */
-}
-
 .form-select {
   -webkit-appearance: none; /* Removes default styling in WebKit browsers */
   -moz-appearance: none;    /* Removes default styling in Firefox */
