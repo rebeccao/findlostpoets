@@ -27,32 +27,27 @@
   transform: scale(1.15);
 }
 
-.normal-img, .zoomed-img {
-  cursor: pointer; /* Indicates the image can be interacted with */
-  position: relative; /* Correct positioning within the draggable container */
-  width: 1024px; /* Scale both images to appear as 1024x1024 initially */
-  height: 1024px; /* Scale both images to appear as 1024x1024 initially */
-  object-fit: contain; /* Ensure the image maintains its aspect ratio */
-}
-
-@media (min-width: 1024px) {
-  .normal-img, .zoomed-img {
-    max-width: 1024px; /* Limit maximum width */
-    max-height: 1024px; /* Limit maximum height */
-  }
-
-/* Adjust the container to allow scrolling */
 .image-container {
-  width: 100vw;
-  height: 100vh;
-  overflow: auto; /* Enables scroll bars when content overflows */
-  position: fixed;
   top: 0;
   left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  right: 0;
+  bottom: 0;
 }
+
+.img-content {
+  position: relative; /* Direct positioning inside the container */
+  width: 100%; /* Full container width */
+  max-width: 1024px; /* Maximum image width */
+  height: 100%; /* Full container height */
+  max-height: 1024px; /* Maximum image height */
+  overflow: hidden; /* Hide overflow inside this element */
+}
+
+/* Ensure the image itself is not causing overflow issues */
+img {
+  width: 100%; /* Fit to container */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: contain; /* Avoid distortion */
 }
 
 .form-select {
