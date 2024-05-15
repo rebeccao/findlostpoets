@@ -1,14 +1,16 @@
 import { NavbarProps } from '~/routes/_index';
 import { PiList } from "react-icons/pi";  
+//import { FiSearch } from "react-icons/fi";
+//import { GoSearch } from "react-icons/go";
+//import { IoSearchOutline } from "react-icons/io5";
 
 export default function Navbar({ toggleSidebar, className }: NavbarProps) {
 	return(
-		<header className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-closetoblack border-darkgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
-      {/*style={{ boxShadow: '0 4px 6px rgba(255, 255, 255, 0.1), 0 1px 3px rgba(255, 255, 255, 0.06)' }}>*/}
+		<header className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
 			<div className="flex items-center ml-3">
 				<button 
 				  onClick={toggleSidebar} 
-					className="relative flex items-center justify-center h-12 w-12"
+					className="relative flex items-center justify-center h-12 w-12 hover-grow"
 					aria-label='Toggle Sidebar'
 				>
 					<PiList size={38} className="cursor-pointer" />

@@ -19,6 +19,42 @@
   position: relative;
 }
 
+.hover-grow {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover-grow:hover {
+  transform: scale(1.15);
+}
+
+.normal-img, .zoomed-img {
+  cursor: pointer; /* Indicates the image can be interacted with */
+  position: relative; /* Correct positioning within the draggable container */
+  width: 1024px; /* Scale both images to appear as 1024x1024 initially */
+  height: 1024px; /* Scale both images to appear as 1024x1024 initially */
+  object-fit: contain; /* Ensure the image maintains its aspect ratio */
+}
+
+@media (min-width: 1024px) {
+  .normal-img, .zoomed-img {
+    max-width: 1024px; /* Limit maximum width */
+    max-height: 1024px; /* Limit maximum height */
+  }
+
+/* Adjust the container to allow scrolling */
+.image-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto; /* Enables scroll bars when content overflows */
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+}
+
 .form-select {
   -webkit-appearance: none; /* Removes default styling in WebKit browsers */
   -moz-appearance: none;    /* Removes default styling in Firefox */

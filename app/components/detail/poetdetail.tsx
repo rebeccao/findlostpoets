@@ -12,6 +12,8 @@ interface PoetDetailProps {
   onReturn: () => void;
 }
 
+export type ImageSize = '1X' | '2X';
+
 // Display Poet's details. The poem m
 export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps) {
   const [showPoemModal, setShowPoemModal] = useState(false);
@@ -20,6 +22,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
   const togglePoemModal = () => setShowPoemModal(!showPoemModal);
   const [isImageModalOpen, setImageModalOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState<string>('');
+  const [imageSize, setImageSize] = useState<ImageSize>('1X');
 
   const handlePoemModalBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (showPoemModal) {
@@ -36,9 +39,10 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
     }
   }, [poet.poem]); 
 
-  const openImageModal = (imageSrc: string) => {
+  const openImageModal = (imageSrc: string, imageSize: ImageSize) => {
     setCurrentModalImage(imageSrc);
     setImageModalOpen(true);
+    setImageSize(imageSize);
   };
 
   return (
@@ -49,14 +53,14 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full max-w-7xl mx-auto my-6 overflow-y-auto">
           {/* Images container */}
           <div className="flex justify-center items-center px-4 bg-closetoblack">
-            <div style={{ width: '50%', padding: '0 10px 0 0' }} onClick={() => openImageModal(poet.g0Url)}>  {/* Add right padding to the first image */}
+            <div style={{ width: '50%', padding: '0 10px 0 0' }} onClick={() => openImageModal(poet.g0Url, '1X')}>  {/* Add right padding to the first image */}
               <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full" loading="lazy" />
             </div>
-            <div style={{ width: '50%', padding: '0 0 0 10px' }} onClick={() => openImageModal(poet.g1Url)}>  {/* Add left padding to the second image */}
+            <div style={{ width: '50%', padding: '0 0 0 10px' }} onClick={() => openImageModal(poet.g1Url, '2X')}>  {/* Add left padding to the second image */}
               <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full" loading="lazy" />
             </div>
           </div>
-          <ImageModal isOpen={isImageModalOpen} onClose={() => setImageModalOpen(false)} imageSrc={currentModalImage} />
+          <ImageModal isOpen={isImageModalOpen} onClose={() => setImageModalOpen(false)} imageSrc={currentModalImage} imageSize={imageSize}/>
           {/* Container for the traits and the poem if it exists. */}
           {/* When the poem modal is not active, show this container. Hide this container when poem modal is active */}
           {!showPoemModal && (
@@ -94,7 +98,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
               style={{ cursor: 'move' }}
               onClick={(e) => e.stopPropagation()} // Prevents click from propagating to background
             >
-              <button onClick={togglePoemModal} className="text-lg pt-5 pl-2 pb-2">
+              <button onClick={togglePoemModal} className="text-lg pt-5 pr-2 pb-2">
                 <GrClose />
               </button>
               <div className="text-center overflow-auto h-full">
