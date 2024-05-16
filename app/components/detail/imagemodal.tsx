@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GrClose } from "react-icons/gr";
 import { ImageSize } from './poetdetail';
+import { HiOutlineMagnifyingGlassPlus, HiOutlineMagnifyingGlassMinus } from "react-icons/hi2";
 
 interface ImageModalProps {
   isOpen: boolean;
@@ -49,12 +50,16 @@ const ImageModal: React.FC<ImageModalProps> = ({ isOpen, onClose, imageSrc, imag
       <div style={{ transform: `scale(${scale})` }} className="relative w-full max-w-[1024px] h-full max-h-[1024px] overflow-hidden transition-transform duration-300 cursor-pointer">
         <img src={imageSrc} alt="Enlarged view" className="w-full h-auto object-contain" />
       </div>
-      <div className="absolute top-5 left-5 flex space-x-2">
+      <div className="fixed top-5 left-5 flex space-x-2">
         <button onClick={onClose} className="text-pearlwhite text-3xl">
           <GrClose/>
         </button>
-        <button onClick={handleZoomOut} className="bg-pearlwhite p-2 rounded-full text-black">-</button>
-        <button onClick={handleZoomIn} className="bg-pearlwhite p-2 rounded-full text-black">+</button>
+        <button onClick={handleZoomOut} className="text-pearlwhite text-4xl">
+          <HiOutlineMagnifyingGlassMinus/>
+        </button>
+        <button onClick={handleZoomIn} className="text-pearlwhite text-4xl">
+          <HiOutlineMagnifyingGlassPlus/>
+        </button>
       </div>
     </div>
   );
