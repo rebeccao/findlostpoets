@@ -177,7 +177,6 @@ function Index() {
 
 			const observerCallback = debounce((entries: IntersectionObserverEntry[]) => {
 				entries.forEach((entry) => {
-					console.log("fetcher.state ", fetcher.state);
 					if (entry.isIntersecting && fetcher.state !== 'loading') {
 						if (entry.target === forwardSentinelRef.current && poetSlidingWindow.length > 0) {
 							
