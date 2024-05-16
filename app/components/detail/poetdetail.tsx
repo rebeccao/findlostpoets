@@ -23,22 +23,14 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
   const [isImageModalOpen, setImageModalOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState<string>('');
   const [imageSize, setImageSize] = useState<ImageSize>('1X');
-  const [imageContainerHeight, setImageContainerHeight] = useState('75vh'); 
+  const [containerDimensions, setContainerDimensions] = useState({ height: '75vh', width: '50%' });
 
-  useEffect(() => {
-    const adjustImageHeight = () => {
-      const viewportHeight = window.innerHeight;
-      const newHeight = `${viewportHeight * 0.7}px`; // Set images to 75% of the viewport height
-      setImageContainerHeight(newHeight);
-    };
-
-    window.addEventListener('resize', adjustImageHeight);
-    adjustImageHeight(); // Call on initial mount
-
-    return () => {
-      window.removeEventListener('resize', adjustImageHeight); // Clean up event listener
-    };
-  }, []);
+  const [imageContainerHeight, setImageContainerHeight] = useState(() => {
+    const navbarHeight = 56; // Assuming navbar height is known and fixed
+    const initialViewportHeight = window.innerHeight;
+    const availableHeight = initialViewportHeight - navbarHeight;
+    return `${availableHeight * 0.75}px`;
+  });
 
   const handlePoemModalBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (showPoemModal) {
@@ -55,6 +47,52 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
     }
   }, [poet.poem]); 
 
+  // Set image container height useEffect
+  useEffect(() => {
+    const adjustLayoutHeights = () => {
+      const navbarHeight = 56; // As specified, Navbar height is 56px
+      const viewportHeight = window.innerHeight;
+      const availableHeight = viewportHeight - navbarHeight; // Total available height minus the Navbar height
+  
+      const newImageContainerHeight = `${availableHeight * 0.75}px`; // 75% for the image container
+      //const newTraitsContainerHeight = `${availableHeight * 0.25}px`; // 25% for the traits container
+  
+      setImageContainerHeight(newImageContainerHeight);
+      //setTraitsContainerHeight(newTraitsContainerHeight); // Assuming you have a state to manage this
+    };
+  
+    window.addEventListener('resize', adjustLayoutHeights);
+    adjustLayoutHeights(); // Call on initial mount
+  
+    return () => {
+      window.removeEventListener('resize', adjustLayoutHeights); // Clean up event listener
+    };
+  }, []);
+
+  useEffect(() => {
+    const adjustContainerDimensions = () => {
+      const navbarHeight = 56; // Fixed navbar height
+      const viewportHeight = window.innerHeight;
+      const availableHeight = viewportHeight - navbarHeight;
+      const targetHeight = availableHeight * 0.75; // 75% for the image container
+  
+      const padding = 10; // Adjust this value based on actual padding between images in pixels
+      const targetWidth = 2 * targetHeight + padding; // Width for two images side by side plus padding
+  
+      setContainerDimensions({
+        height: `${targetHeight}px`,
+        width: `${targetWidth}px`
+      });
+    };
+  
+    window.addEventListener('resize', adjustContainerDimensions);
+    adjustContainerDimensions();
+  
+    return () => {
+      window.removeEventListener('resize', adjustContainerDimensions);
+    };
+  }, []);
+  
   const openImageModal = (imageSrc: string, imageSize: ImageSize) => {
     setCurrentModalImage(imageSrc);
     setImageModalOpen(true);
@@ -64,16 +102,16 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
   return (
     <div className="flex flex-col h-screen overflow-y-auto" onClick={handlePoemModalBackgroundClick}>
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onReturn={onReturn} />
-      <div className="flex flex-1 relative bg-closetoblack">
+      <div className="flex flex-1 relative bg-closetoblack items-center">
         {/* Main content container for images and traits */}
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full mx-auto my-6 overflow-y-auto">
           {/* Images container */}
-          <div className="flex justify-center items-center px-4 bg-closetoblack" style={{ height: imageContainerHeight }}>
-            <div style={{ width: '50%', padding: '0 10px 0 0' }} onClick={() => openImageModal(poet.g0Url, '1X')}>  {/* Add right padding to the first image */}
-              <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full" loading="lazy" />
+          <div className="flex justify-between items-center px-4 bg-closetoblack" style={{ height: containerDimensions.height, width: containerDimensions.width, margin: '0 auto' }}>
+            <div style={{ width: 'calc(50% - 5px)' }} onClick={() => openImageModal(poet.g0Url, '1X')}>  {/* Add right padding to the first image */}
+              <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full h-full object-contain" loading="lazy" />
             </div>
-            <div style={{ width: '50%', padding: '0 0 0 10px' }} onClick={() => openImageModal(poet.g1Url, '2X')}>  {/* Add left padding to the second image */}
-              <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full" loading="lazy" />
+            <div style={{ width: 'calc(50% - 5px)' }} onClick={() => openImageModal(poet.g1Url, '2X')}>  {/* Add left padding to the second image */}
+              <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full h-full object-contain" loading="lazy" />
             </div>
           </div>
           <ImageModal isOpen={isImageModalOpen} onClose={() => setImageModalOpen(false)} imageSrc={currentModalImage} imageSize={imageSize}/>
@@ -110,15 +148,17 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
         {hasPoem && showPoemModal && (
           <Draggable>
             <div 
-              className="fixed top-15 left-1/2 w-2/5 h-full bg-verydarkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50"
+              className={`fixed top-15 left-1/2 transform -translate-x-1/2 w-1/2 h-full bg-verydarkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50 transition-opacity duration-300 ease-in-out ${showPoemModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               style={{ cursor: 'move' }}
               onClick={(e) => e.stopPropagation()} // Prevents click from propagating to background
             >
               <button onClick={togglePoemModal} className="text-lg pt-5 pr-2 pb-2">
                 <GrClose />
               </button>
-              <div className="text-center overflow-auto h-full">
-                <pre className="whitespace-pre-wrap">{poet.poem}</pre>
+              <div className="text-center overflow-auto h-full px-2 sm:px-8 lg:px-32">
+                <pre className="whitespace-pre-wrap" >
+                  {poet.poem}
+                </pre>
               </div>
             </div>
           </Draggable>
