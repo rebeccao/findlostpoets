@@ -3,6 +3,7 @@ import { useLoaderData, useFetcher } from '@remix-run/react'
 import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { prisma } from '~/utils/prisma.server'
+import debounce from 'lodash/debounce';
 import type { Poet } from '@prisma/client';
 import '~/tailwind.css';
 import Navbar from '~/components/navbar';
@@ -174,15 +175,16 @@ function Index() {
 				forwardGlobalObserver.current.disconnect(); // Temporarily disconnect
 			}
 
-			const observerCallback = (entries: IntersectionObserverEntry[]) => {
+			const observerCallback = debounce((entries: IntersectionObserverEntry[]) => {
 				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
+					console.log("fetcher.state ", fetcher.state);
+					if (entry.isIntersecting && fetcher.state !== 'loading') {
 						if (entry.target === forwardSentinelRef.current && poetSlidingWindow.length > 0) {
-
-							console.log("observerCallback -- entry.isIntersecting=", entry.isIntersecting, "-- fetchDirection=", fetchDirection, "-- entry.target=data-pid=", entry.target?.getAttribute('data-pid'), "   backwardSentinelRef data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
+							
+							console.log("observerCallback -- isIntersecting forwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target=data-pid=", entry.target?.getAttribute('data-pid'), "   backwardSentinelRef data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
 							console.log("                 poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
 							let nextSkip = currentDbQuery.skip + PAGE_SIZE;
-							// Switched directions, set nextSkip to end of poetSlidingWindow
+							// Switched directions from backward to forward, set nextSkip to end of poetSlidingWindow
 							if (fetchDirection === 'backward') {
 								nextSkip = currentDbQuery.skip + (3 * PAGE_SIZE);
 							}
@@ -191,7 +193,7 @@ function Index() {
 
 						} else if (entry.target === backwardSentinelRef.current && poetSlidingWindow[0].pid !== 1 && poetSlidingWindow.length > 0) {
 
-							console.log("observerCallback -- entry.isIntersecting=", entry.isIntersecting, "-- fetchDirection=", fetchDirection, "-- entry.target=data-pid=", entry.target?.getAttribute('data-pid'), "   backwardSentinelRef data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
+							console.log("observerCallback -- isIntersecting backwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target=data-pid=", entry.target?.getAttribute('data-pid'), "   backwardSentinelRef data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
 							console.log("                 poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
 							const firstPoetIndex = poetSlidingWindow[0].pid; 
 							console.log("                 firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
@@ -204,16 +206,16 @@ function Index() {
 						}
 					}
 				});
-			};
+			}, 300);
 
 			//const observerOptions = {	root: null,	rootMargin: '0px 0px 200px 0px', // top right bottom left	threshold: 0, };
-			//const observerOptions = {
-			//	root: null, // observing entire viewport
-			//	rootMargin: '200px 0px', // gives some margin to start loading before reaching sentinel
-			//	threshold: 0.1 // adjust this based on how sensitive you need the observer to be
-			//};
-			forwardGlobalObserver.current = new IntersectionObserver(observerCallback, { threshold: 0.1 });  //observerOptions);  //{ threshold: 0.1 });
-			backwardGlobalObserver.current = new IntersectionObserver(observerCallback, { threshold: 0.1 });  //observerOptions);  //{ threshold: 0.1 });
+			const observerOptions = {
+				root: null, // observing entire viewport
+				rootMargin: '200px 0px 0px 0px', // gives some margin to start loading before reaching sentinel
+				threshold: 0.1 // 10%
+			};
+			forwardGlobalObserver.current = new IntersectionObserver(observerCallback, observerOptions);  //{ threshold: 0.1 });
+			backwardGlobalObserver.current = new IntersectionObserver(observerCallback, observerOptions);  //{ threshold: 0.1 });
 
 			if (forwardSentinelRef.current) {
 				forwardGlobalObserver.current.observe(forwardSentinelRef.current);
@@ -223,7 +225,7 @@ function Index() {
 				backwardGlobalObserver.current.observe(backwardSentinelRef.current);
 			}
 		}
-	}, [currentDbQuery, poetSlidingWindow, fetchMorePoets]);
+	}, [currentDbQuery, poetSlidingWindow, fetchMorePoets, fetcher.state]);
 
 	useEffect(() => {
     if (forwardSentinelRef.current && backwardSentinelRef.current) {
@@ -260,14 +262,12 @@ function Index() {
 						updatedPoets = [...prevPoets, ...poetsArray];
 						if (updatedPoets.length > BUFFER_SIZE) {
 								// Trim from the beginning when moving forward
-								console.log("---- Append fetcherData useEffect -- SLICE first page -- updatedPoets.length", updatedPoets.length);
 								updatedPoets = updatedPoets.slice(-BUFFER_SIZE);
 						}
 					} else {						// fetchDirection === 'backward'
 						updatedPoets = [...poetsArray, ...prevPoets];
 						if (updatedPoets.length > BUFFER_SIZE) {
 							// Trim from the end when moving backward
-							console.log("---- Append fetcherData useEffect -- SLICE last page");
 							updatedPoets = updatedPoets.slice(0, BUFFER_SIZE);
 						}
 					}
