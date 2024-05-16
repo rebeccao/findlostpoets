@@ -23,6 +23,22 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
   const [isImageModalOpen, setImageModalOpen] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState<string>('');
   const [imageSize, setImageSize] = useState<ImageSize>('1X');
+  const [imageContainerHeight, setImageContainerHeight] = useState('75vh'); 
+
+  useEffect(() => {
+    const adjustImageHeight = () => {
+      const viewportHeight = window.innerHeight;
+      const newHeight = `${viewportHeight * 0.7}px`; // Set images to 75% of the viewport height
+      setImageContainerHeight(newHeight);
+    };
+
+    window.addEventListener('resize', adjustImageHeight);
+    adjustImageHeight(); // Call on initial mount
+
+    return () => {
+      window.removeEventListener('resize', adjustImageHeight); // Clean up event listener
+    };
+  }, []);
 
   const handlePoemModalBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (showPoemModal) {
@@ -49,10 +65,10 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
     <div className="flex flex-col h-screen overflow-y-auto" onClick={handlePoemModalBackgroundClick}>
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onReturn={onReturn} />
       <div className="flex flex-1 relative bg-closetoblack">
-        {/* Main content section for images and traits */}
-        <div className="grid grid-rows-[auto,1fr] min-h-0 w-full max-w-7xl mx-auto my-6 overflow-y-auto">
+        {/* Main content container for images and traits */}
+        <div className="grid grid-rows-[auto,1fr] min-h-0 w-full mx-auto my-6 overflow-y-auto">
           {/* Images container */}
-          <div className="flex justify-center items-center px-4 bg-closetoblack">
+          <div className="flex justify-center items-center px-4 bg-closetoblack" style={{ height: imageContainerHeight }}>
             <div style={{ width: '50%', padding: '0 10px 0 0' }} onClick={() => openImageModal(poet.g0Url, '1X')}>  {/* Add right padding to the first image */}
               <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full" loading="lazy" />
             </div>
@@ -67,11 +83,11 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
           <div className="bg-closetoblack text-pearlwhite px-4 pb-4 pt-8 flex justify-center">
             {hasPoem ? (
               <div className="flex gap-4 w-full h-auto">
-                {/* First section for traits */}
+                {/* First container for traits */}
                 <div className="flex-1 px-4 pb-4">
                     <PoetDetailTraits poet={poet} />
                 </div>
-                {/* Second section for the poem */}
+                {/* Second container for the poem */}
                 <div 
                   onClick={isPoemOverflowing ? togglePoemModal : undefined}
                   ref={poemContainerRef}
