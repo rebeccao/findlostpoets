@@ -76,7 +76,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
       const availableHeight = viewportHeight - navbarHeight;
       const targetHeight = availableHeight * 0.75; // 75% for the image container
   
-      const padding = 10; // Adjust this value based on actual padding between images in pixels
+      const padding = 30; // Adjust this value based on actual padding between images in pixels
       const targetWidth = 2 * targetHeight + padding; // Width for two images side by side plus padding
   
       setContainerDimensions({
@@ -104,13 +104,13 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
       <PoetDetailNavbar poetName={poet.pNam} className="navbar" onReturn={onReturn} />
       <div className="flex flex-1 relative bg-closetoblack items-center">
         {/* Main content container for images and traits */}
-        <div className="grid grid-rows-[auto,1fr] min-h-0 w-full mx-auto my-6 overflow-y-auto">
+        <div className="grid grid-rows-[auto,1fr] min-h-0 w-full mx-auto my-4 overflow-y-auto">
           {/* Images container */}
-          <div className="flex justify-between items-center px-4 bg-closetoblack" style={{ height: containerDimensions.height, width: containerDimensions.width, margin: '0 auto' }}>
-            <div style={{ width: 'calc(50% - 5px)' }} onClick={() => openImageModal(poet.g0Url, '1X')}>  {/* Add right padding to the first image */}
+          <div className="flex justify-between items-center  bg-closetoblack" style={{ height: containerDimensions.height, width: containerDimensions.width, margin: '0 auto' }}>
+            <div style={{ width: 'calc(50% - 15px)' }} onClick={() => openImageModal(poet.g0Url, '1X')}>  {/* Add right padding to the first image */}
               <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full h-full object-contain" loading="lazy" />
             </div>
-            <div style={{ width: 'calc(50% - 5px)' }} onClick={() => openImageModal(poet.g1Url, '2X')}>  {/* Add left padding to the second image */}
+            <div style={{ width: 'calc(50% - 15px)' }} onClick={() => openImageModal(poet.g1Url, '2X')}>  {/* Add left padding to the second image */}
               <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full h-full object-contain" loading="lazy" />
             </div>
           </div>
@@ -118,7 +118,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
           {/* Container for the traits and the poem if it exists. */}
           {/* When the poem modal is not active, show this container. Hide this container when poem modal is active */}
           {!showPoemModal && (
-          <div className="bg-closetoblack text-pearlwhite px-4 pb-4 pt-8 flex justify-center">
+          <div className="bg-closetoblack text-pearlwhite px-4 pb-4 pt-8 flex justify-center" style={{ width: containerDimensions.width, margin: '0 auto' }}>
             {hasPoem ? (
               <div className="flex gap-4 w-full h-auto">
                 {/* First container for traits */}
