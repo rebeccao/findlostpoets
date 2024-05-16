@@ -69,6 +69,8 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
     };
   }, []);
 
+  // Set the image container height based on the aspect ratio of the two images plus the padding 
+  // inbetween. Subtracting this from the navbar height defines the height of the traits/poem container
   useEffect(() => {
     const adjustContainerDimensions = () => {
       const navbarHeight = 56; // Fixed navbar height
