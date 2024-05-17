@@ -40,60 +40,56 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     const [gen1ImageLoaded, setGen1ImageLoaded] = useState(false);
     const [gen0ImageLoaded, setGen0ImageLoaded] = useState(false);
 
-    // Effect to handle image loading from cache
+    // useEffect to create a new Image object to preload the image
+    // Force the browser to fetch the images when the component mounts, to ensure
+    // that the images are preloaded and ready to be displayed once they are fully loaded.
+    // Added this useEffect to fix images not loading when the placeholder was introduced.
     useEffect(() => {
-      // Immediate check for image complete property on mount
-      if (gen1ImgRef.current?.complete) {
-        setGen1ImageLoaded(true);
-      }
-      if (gen0ImgRef.current?.complete) {
-        setGen0ImageLoaded(true);
-      }
-      // Also set up an event listener for future image loads
-      const handleLoad1 = () => setGen1ImageLoaded(true);
-      const handleLoad0 = () => setGen0ImageLoaded(true);
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = () => setGen1ImageLoaded(true);
+      img.onerror = (e) => console.error(`Failed to load Gen1 image for poet: ${poet.pNam}`, e);
 
-      if (gen1ImgRef.current) {
-        gen1ImgRef.current.addEventListener('load', handleLoad1);
-      }
-      if (gen0ImgRef.current) {
-        gen0ImgRef.current.addEventListener('load', handleLoad0);
-      }
+      const img2 = new Image();
+      img2.src = poet.g0Url;
+      img2.onload = () => setGen0ImageLoaded(true);
+      img2.onerror = (e) => console.error(`Failed to load Gen0 image for poet: ${poet.pNam}`, e);
 
-      // Clean up listeners when component unmounts
+      // Cleanup function to ensure memory is freed
       return () => {
-        if (gen1ImgRef.current) {
-          gen1ImgRef.current.removeEventListener('load', handleLoad1);
-        }
-        if (gen0ImgRef.current) {
-          gen0ImgRef.current.removeEventListener('load', handleLoad0);
-        }
+        // Set the source to an empty string to release memory
+        img.src = '';
+        img2.src = '';
       };
-    }, []);
+    }, [imageUrl, poet.g0Url, poet.pNam]);
 
     return (
       <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
-        {!gen1ImageLoaded && (
-          <div className="animate-pulse aspect-w-1 aspect-h-1 bg-gray-300 w-full mb-2"></div>
-        )}
-        <img
-          ref={gen1ImgRef}
-          src={imageUrl}
-          alt={`${poet.pNam + ' Gen1'}`}
-          loading="lazy"
-          className={`w-full mb-2 ${gen1ImageLoaded ? '' : 'hidden'}`}
-        />
+        <div className="relative w-full pb-[100%] mb-2">
+          {!gen1ImageLoaded && (
+            <div className="absolute top-0 left-0 right-0 bottom-0 animate-pulse border bg-darkgray border-charcoalgray"></div>
+          )}
+          <img
+            ref={gen1ImgRef}
+            src={imageUrl}
+            alt={`${poet.pNam + ' Gen1'}`}
+            loading="lazy"
+            className={`absolute top-0 left-0 w-full h-full object-cover ${gen1ImageLoaded ? '' : 'hidden'}`}
+          />
+        </div>
 
-        {!gen0ImageLoaded && (
-          <div className="animate-pulse aspect-w-1 aspect-h-1 bg-gray-300 w-full"></div>
-        )}
-        <img
-          ref={gen0ImgRef}
-          src={poet.g0Url}
-          alt={`${poet.pNam + ' Gen0'}`}
-          loading="lazy"
-          className={`w-full ${gen0ImageLoaded ? '' : 'hidden'}`}
-        />
+        <div className="relative w-full pb-[100%]">
+          {!gen0ImageLoaded && (
+            <div className="absolute top-0 left-0 right-0 bottom-0 animate-pulse border bg-darkgray border-charcoalgray"></div>
+          )}
+          <img
+            ref={gen0ImgRef}
+            src={poet.g0Url}
+            alt={`${poet.pNam + ' Gen0'}`}
+            loading="lazy"
+            className={`absolute top-0 left-0 w-full h-full object-cover ${gen0ImageLoaded ? '' : 'hidden'}`}
+          />
+        </div>
         <div className="px-4 py-4">
         <div className="font-medium text-base mb-2">{poet.pNam}</div>
         {/* Responsive grid layout for traits */}
