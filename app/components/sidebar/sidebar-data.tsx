@@ -33,7 +33,7 @@ export const sidebarItems: SidebarItem[] = [
     ]
   },
   {
-    title: 'Sort By Rare Trait',
+    title: 'Sort By Rarest',
     details: 'Sort Poets by Rarity starting with the lowest trait count.',
     type: 'sort',
     expandedSidebarItems: [

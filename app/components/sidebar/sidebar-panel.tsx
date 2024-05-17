@@ -229,8 +229,8 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-screen border bg-verydarkgray border-darkgray">
-      <div className="h-screen pb-14 overflow-y-auto scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
+    <div className="flex flex-col h-screen relative border bg-verydarkgray border-darkgray">
+      <div className="flex-grow overflow-y-auto max-h-[calc(100vh-20rem)] scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
         <div className="py-4">
           {sidebarItems.map((sidebarItem, index) => {
             return (
@@ -389,7 +389,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
           })}
         </div>
       </div>
-      <div className="absolute inset-x-0 bottom-0 p-4 flex justify-center space-x-2">
+      <div className="sticky bottom-0 p-4 flex justify-center space-x-2">
         <button
           className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-davysgray border-naughtygray hover:bg-darkgray hover:border-charcoalgray"// Lighter for secondary clear action
           onClick={handleSearchClick}
