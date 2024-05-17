@@ -1,6 +1,5 @@
-import React from 'react'; 
+import React, { useState, useRef, useEffect } from 'react';
 import type { Poet } from '@prisma/client'
-import PoetTraits from '~/components/detail/poetdetail-traits';
 
 interface ImageCardProps {
   poet: Poet;
@@ -34,10 +33,67 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     const isDevelopment = process.env.NODE_ENV === 'development';
     const imageUrl = isDevelopment ? poet.g1Url : getResizedIPFSUrl(poet.g1Url);
 
+    const gen1ImgRef = useRef<HTMLImageElement>(null);
+    const gen0ImgRef = useRef<HTMLImageElement>(null);
+
+    // States to track the loading status of each image separately
+    const [gen1ImageLoaded, setGen1ImageLoaded] = useState(false);
+    const [gen0ImageLoaded, setGen0ImageLoaded] = useState(false);
+
+    // Effect to handle image loading from cache
+    useEffect(() => {
+      // Immediate check for image complete property on mount
+      if (gen1ImgRef.current?.complete) {
+        setGen1ImageLoaded(true);
+      }
+      if (gen0ImgRef.current?.complete) {
+        setGen0ImageLoaded(true);
+      }
+      // Also set up an event listener for future image loads
+      const handleLoad1 = () => setGen1ImageLoaded(true);
+      const handleLoad0 = () => setGen0ImageLoaded(true);
+
+      if (gen1ImgRef.current) {
+        gen1ImgRef.current.addEventListener('load', handleLoad1);
+      }
+      if (gen0ImgRef.current) {
+        gen0ImgRef.current.addEventListener('load', handleLoad0);
+      }
+
+      // Clean up listeners when component unmounts
+      return () => {
+        if (gen1ImgRef.current) {
+          gen1ImgRef.current.removeEventListener('load', handleLoad1);
+        }
+        if (gen0ImgRef.current) {
+          gen0ImgRef.current.removeEventListener('load', handleLoad0);
+        }
+      };
+    }, []);
+
     return (
       <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
-        <img src={imageUrl} alt={`${poet.pNam + ' Gen1'}`} loading="lazy" className="w-full mb-2"/>
-        <img src={poet.g0Url} alt={`${poet.pNam + ' Gen0'}`} loading="lazy" className="w-full" />    
+        {!gen1ImageLoaded && (
+          <div className="animate-pulse aspect-w-1 aspect-h-1 bg-gray-300 w-full mb-2"></div>
+        )}
+        <img
+          ref={gen1ImgRef}
+          src={imageUrl}
+          alt={`${poet.pNam + ' Gen1'}`}
+          loading="lazy"
+          className={`w-full mb-2 ${gen1ImageLoaded ? '' : 'hidden'}`}
+        />
+
+        {!gen0ImageLoaded && (
+          <div className="animate-pulse aspect-w-1 aspect-h-1 bg-gray-300 w-full"></div>
+        )}
+        <img
+          ref={gen0ImgRef}
+          src={poet.g0Url}
+          alt={`${poet.pNam + ' Gen0'}`}
+          loading="lazy"
+          className={`w-full ${gen0ImageLoaded ? '' : 'hidden'}`}
+        />
         <div className="px-4 py-4">
         <div className="font-medium text-base mb-2">{poet.pNam}</div>
         {/* Responsive grid layout for traits */}
