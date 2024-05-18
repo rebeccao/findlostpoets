@@ -24,10 +24,10 @@ const SidebarPanel: React.FC<SidebarProps> = ({
 
   // Handler for changing the searchTrait
   const handleSearchTraitChange = (newSearchTraitKey: string) => {
-    // Preserve the current searchTraitValue while updating searchTraitKey
+    // Update the searchTraitKey and clear the searchTraitValue
     const updatedSearchTrait = {
       searchTraitKey: newSearchTraitKey,
-      searchTraitValue: searchTrait.searchTraitValue,
+      searchTraitValue: '',
     };
     onSearchTraitChange(updatedSearchTrait);
   };
@@ -36,6 +36,7 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   const handleSearchTraitValueChange = (newSearchTraitValue: string, selectedTrait: ExpandedSidebarItem) => {
     let isValidInput = true;
     let finalValue: string | number = newSearchTraitValue;  // finalValue can be string or number
+
     // Perform type-specific validation if a validation type is specified
     if (selectedTrait.validationType) {
       isValidInput = validateSearchTraitInput(selectedTrait.validationType, newSearchTraitValue, selectedTrait);
@@ -43,21 +44,28 @@ const SidebarPanel: React.FC<SidebarProps> = ({
 
     // Handle input types for additional checks
     if (selectedTrait.inputType === 'number') {
-      // Convert the input to a number and check if it's a valid number within the specified range (if any)
-      const numberValue = Number(newSearchTraitValue);
-      isValidInput = !isNaN(numberValue) && validateNumberInput(numberValue, selectedTrait);
-      if (isValidInput) {
-        finalValue = numberValue;  // Assign number directly if valid
+      // Allow decimal point and leading zeros
+      if (newSearchTraitValue === '.' || newSearchTraitValue.endsWith('.') || newSearchTraitValue === '0.' || newSearchTraitValue === '0.0') {
+        finalValue = newSearchTraitValue;
       } else {
-        isValidInput = false;
+        // Convert the input to a number and check if it's a valid number within the specified range (if any)
+        const numberValue = Number(newSearchTraitValue);
+        isValidInput = !isNaN(numberValue) && validateNumberInput(numberValue, selectedTrait);
+        if (isValidInput || newSearchTraitValue === '0' || newSearchTraitValue === '0.0' || newSearchTraitValue === '') {
+          finalValue = newSearchTraitValue;  // Keep as string to maintain input value
+        } else {
+          isValidInput = false;
+        }
       }
     }
-    if (isValidInput) {
+
+    onSearchTraitChange({
+      searchTraitKey: selectedTrait.dbField,
+      searchTraitValue:  finalValue,
+    });
+
+    if (isValidInput || newSearchTraitValue === '') {
       setErrorMessages(prev => ({ ...prev, [selectedTrait.dbField]: "" }));
-      onSearchTraitChange({
-        searchTraitKey: selectedTrait.dbField,
-        searchTraitValue:  finalValue,
-      });
     } else {
       const errorMessage = generateErrorMessage(selectedTrait);
       setErrorMessages(prev => ({ ...prev, [selectedTrait.dbField]: errorMessage }));
@@ -71,6 +79,9 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       case 'alpha':
         return /^[a-zA-Z]+$/.test(value);
       case 'decimal':
+        if (value === '.' || value.endsWith('.') || value === '0.' || value === '') {
+          return true;  // Allow initial decimal point and empty string
+        }
         let number = parseFloat(value);
         return !isNaN(number) && number >= parseFloat(trait.min!) && number <= parseFloat(trait.max!);
       case 'fixedLength':
@@ -171,9 +182,9 @@ const SidebarPanel: React.FC<SidebarProps> = ({
     // Search By Trait
     if (searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) { // Ensure zero is considered a valid number
       const searchValue = searchTrait.searchTraitValue;
-      if (typeof searchValue === 'number') {
+      if (!isNaN(Number(searchValue))) {
         whereConditions.push({
-          [searchTrait.searchTraitKey]: { equals: searchValue }
+          [searchTrait.searchTraitKey]: { equals: Number(searchValue) }
         });
       } else if (searchValue !== '') {
         whereConditions.push({
@@ -275,14 +286,13 @@ const SidebarPanel: React.FC<SidebarProps> = ({
                           }
                         }}
                         onKeyDown={(e) => {
+                          const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey);
+                          if (selectedTrait?.inputType === 'number' && !/[\d.]/.test(e.key) && e.key !== 'Enter' && e.key !== '.' && e.key !== 'Backspace') {
+                            e.preventDefault(); // Allow only digits, backspace, and decimal point for numbers
+                          }
                           if (e.key === 'Enter') {
                             e.preventDefault(); // Prevent default form submission if applicable
-                            const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey);
-                            if (selectedTrait) {
-                              handleSearchTraitValueChange('', selectedTrait); // Clear the input box by setting its value to an empty string
-                            }
                             handleSearchClick(); // Call the search handler when Enter key is pressed
-                            clearSearchTraitInput(); 
                           }
                         }}
                         className="form-input block placeholder-italic placeholder-mediumgray flex-grow w-3/5 text-sm py-2 px-4 rounded-lg text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
