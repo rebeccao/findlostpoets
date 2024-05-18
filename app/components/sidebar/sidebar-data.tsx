@@ -28,13 +28,13 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Breed', dbField: 'brd', inputType: 'text', validationType: 'alpha' },
       { title: 'Age', dbField: 'age', inputType: 'number', validationType: 'decimal', min: '0.00', max: '1.00' },
       { title: 'Genre', dbField: 'gen', inputType: 'text', validationType: 'alpha' },
-      { title: 'Ego', dbField: 'ego', inputType: 'text', validationType: 'enum', enumValues: ['I', 'II', 'III', 'IV', 'V', '1', '2', '3', '4', '5'] },
+      { title: 'Ego', dbField: 'ego', inputType: 'text', validationType: 'enum', enumValues: ['I', 'II', 'III', 'IV', 'V'] },
       { title: 'Polarity', dbField: 'pol', inputType: 'text', validationType: 'enum', enumValues: ['ka', 'qu'] },
     ]
   },
   {
     title: 'Sort By Rarest',
-    details: 'Sort Poets by Rarity starting with the lowest trait count.',
+    details: 'Sorts the Poets by the rarest trait count. The trait count is displayed in the bottom left corner.',
     type: 'sort',
     expandedSidebarItems: [
       { title: 'Breed', dbField: 'brdCnt', inputType: 'number' },   // Mongodb field name for Breed

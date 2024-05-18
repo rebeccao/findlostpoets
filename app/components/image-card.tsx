@@ -45,23 +45,38 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     // that the images are preloaded and ready to be displayed once they are fully loaded.
     // Added this useEffect to fix images not loading when the placeholder was introduced.
     useEffect(() => {
+      //console.log('Gen1 Image URL:', imageUrl);
+    
       const img = new Image();
       img.src = imageUrl;
-      img.onload = () => setGen1ImageLoaded(true);
-      img.onerror = (e) => console.error(`Failed to load Gen1 image for poet: ${poet.pNam}`, e);
-
+      img.onload = () => {
+        setGen1ImageLoaded(true);
+        //console.log('Gen1 image loaded successfully.');
+      };
+      /* Commenting this out. For some weird reason, the error was being triggered but the images are loading just fine.
+      img.onerror = (e) => {
+        const event = e as Event & { target: HTMLImageElement };
+        if (event.target) {
+          console.error(`Retrying load for Gen1 image for poet: ${poet.pNam}`);
+          event.target.src = imageUrl; // Retry loading the image
+          console.error(`Failed to load Gen1 image for poet: ${poet.pNam}`);
+          console.error('Gen1 Image Event Target Source:', event.target.src);
+          console.error('Gen1 Image src:', img.src);
+          console.error('Gen1 Image URL:', imageUrl);
+        }
+      };*/
+    
       const img2 = new Image();
       img2.src = poet.g0Url;
-      img2.onload = () => setGen0ImageLoaded(true);
-      img2.onerror = (e) => console.error(`Failed to load Gen0 image for poet: ${poet.pNam}`, e);
+      img2.onload = () => {
+        setGen0ImageLoaded(true);
+      };
 
-      // Cleanup function to ensure memory is freed
       return () => {
-        // Set the source to an empty string to release memory
         img.src = '';
         img2.src = '';
       };
-    }, [imageUrl, poet.g0Url, poet.pNam]);
+    }, [imageUrl, poet.g0Url, poet.pNam]);    
 
     return (
       <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
