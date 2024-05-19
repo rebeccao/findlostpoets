@@ -20,6 +20,7 @@ const DATABASE_SIZE = 28170;
 export interface NavbarProps {
   toggleSidebar: () => void;
 	className?: string;  // Optional string for CSS classes
+	count?: number;      // Optional count to display search count after performSearch
 }
 
 export interface SidebarProps {
@@ -42,7 +43,8 @@ export type SearchCriteria = {
 };
 
 interface LoaderData {
-  poets?: Poet[];  // Make optional to handle cases where no poets data might be returned
+  poets?: Poet[];  // Optional to handle cases where no poets data might be returned
+	count?: number;  // Optional count of poets
 	error?: string;  // Optional string for when there are errors
 	detail?: string; // Optional detailed error message
 }
@@ -51,7 +53,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	try {
 		const url = new URL(request.url);
-
 		let dbQuery: SearchCriteria = { orderBy: [{ pid: 'asc' }], skip: 0, take:PAGE_SIZE }; // query on first load
 		
 		const searchQuery = url.searchParams.get("query");
@@ -60,7 +61,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 		if (searchQuery) {
 			try {
 				const parsedQuery: SearchCriteria = JSON.parse(decodeURIComponent(searchQuery));
-				// see if it works after removing the merge of the 2 queries. Have a conditional to do the query instead
 				dbQuery = { ...dbQuery, ...parsedQuery };
 			} catch (error) {
 				console.error('Error parsing search query:', error);
@@ -68,7 +68,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 		}		
 
 		const poets = await prisma.poet.findMany({ ...dbQuery });
-		return json({ poets, isEmpty: poets.length === 0 });
+		const count = await prisma.poet.count({ where: dbQuery.where });
+
+		return json({ poets, count, isEmpty: poets.length === 0 });
 	} catch (error: unknown) {
 			console.error('Loader error:', error);
         return json({
@@ -96,6 +98,7 @@ function Index() {
 	const [fetchDirection, setFetchDirection] = useState<Direction>('forward');
 	const [hasMore, setHasMore] = useState<boolean>(true);
 	const [searchPerformed, setSearchPerformed] = useState(false);
+	const [searchCount, setSearchCount] = useState<number | null>(null); 
 	
 	const forwardSentinelRef = useRef<HTMLDivElement | null>(null);
 	const backwardSentinelRef = useRef<HTMLDivElement | null>(null);
@@ -121,13 +124,18 @@ function Index() {
 				setFetchError(data.detail || 'An error occurred while fetching poets. Please try again later.');
 			} else if (data.poets) {
 				// Handle successful data fetch
+				setSearchPerformed(false);
 				if (data.poets.length > 0) {
 					setFetcherData(data); // Store the data
 					setHasMore(data.poets.length === PAGE_SIZE); // Determine if there are more poets to load
 					setFetchError(null); // Clear any previous errors
+					if (searchPerformed && data.count !== undefined) {
+						setSearchCount(data.count);
+					}
 				} else {
 					// Handle case where no poets are found
 					setFetchError('No poets found. Please adjust your search criteria.');
+					setSearchCount(null);
 				}
 			}
     }
@@ -303,6 +311,21 @@ function Index() {
 	// searchButtonPressed is used to conditionally control displaying the Rare Trait count on the ImageCard 
 	const [searchButtonPressed, setSearchButtonPressed] = useState(false);
 
+	const keysToCheck: string[] = ["brdCnt", "genCnt", "ageCnt", "egoCnt"];
+	function containsKey(query: SearchCriteria, keys: string[]): boolean {
+		if (query.where && query.where.AND) {
+			for (const condition of query.where.AND) {
+				for (const key of keys) {
+					if (condition.hasOwnProperty(key)) {
+						console.log("condition.hasOwnProperty key = ", key);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	// Callback from SidebarPanel when the user clicks the Search button or Clear button
 	const performSearch = (query: SearchCriteria) => {
 
@@ -312,28 +335,34 @@ function Index() {
 		// Reset all the states and fetch the new query
 		query.take = PAGE_SIZE;
 
-		if (query.where !== undefined) {			// All new searches include where:, start at the beginning
+		// searchPerformed = true displays the searchCount in the Navbar
+		// Display the searchCount for Search by Trait and Search by Ranges, not Search by Rarities
+		setSearchPerformed(false);
+		setSearchCount(null);
+		if (query.where !== undefined) {			// All user searches include where:, start at the beginning
 			query.skip = 0
-			console.log("performSearch query.skip = ", query.skip);
+			if (!containsKey(query, keysToCheck)) {								
+				setSearchPerformed(true);
+			}
 		} else {															// User pressed Clear button, skip to a random place in the DB 
 			const newPage = (Math.floor(Math.random() * (DATABASE_SIZE-100)/PAGE_SIZE));
 			query.skip = (newPage - 1) * PAGE_SIZE;
-			console.log("performSearch query.skip = ", query.skip, "newPage = ", newPage);
 		}
 
-		// Reset state
+		// Reset all state
 		setHasMore(true);
 		setFetcherData(null);
 		setFetchDirection('forward');
 		setPoetSlidingWindow([]);
 
+		// Update currentDbQuery
 		setCurrentDbQuery(query);
 		console.log('**************************** performSearch: query));', JSON.stringify(query, null, 2));
 		
 		const queryString = JSON.stringify(query);
   	const dbQueryString = new URLSearchParams({ query: queryString }).toString();
 		
-		// Use fetcher.load to initiate the request
+		// Use fetcher.load to initiate the request to fetch poets and count
 		fetcher.load(`?index&${dbQueryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
   };
 
@@ -429,7 +458,7 @@ function Index() {
 					</section>
 				)}
 				<div className="flex flex-col w-full">
-					<Navbar toggleSidebar={toggleSidebar} className="navbar" />
+					<Navbar toggleSidebar={toggleSidebar} className="navbar" count={searchCount ? searchCount : undefined} />
 					<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 						<div className="mt-4 mb-4 px-4">
 							{/* Display loading state */}

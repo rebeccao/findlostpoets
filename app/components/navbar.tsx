@@ -1,10 +1,8 @@
 import { NavbarProps } from '~/routes/_index';
 import { PiList } from "react-icons/pi";  
-//import { FiSearch } from "react-icons/fi";
-//import { GoSearch } from "react-icons/go";
-//import { IoSearchOutline } from "react-icons/io5";
 
-export default function Navbar({ toggleSidebar, className }: NavbarProps) {
+const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, className, count }) => {
+	console.log("Navbar count = ", count);
 	return(
 		<header className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
 			<div className="flex items-center ml-3">
@@ -25,8 +23,15 @@ export default function Navbar({ toggleSidebar, className }: NavbarProps) {
 					(UNOFFICIAL)
 				</div> 
       </div>
-      <div style={{ width: '48px' }}> {/* Placeholder to balance the space */}
+      <div className="flex items-center justify-center">
+        {count !== undefined && (
+          <div className="text-sm font-[LeagueSpartan-Regular] mr-3">
+            {`Poets Found: ${count}`}
+          </div>
+        )}
       </div>
 		</header>
 	);
 }
+
+export default Navbar;
