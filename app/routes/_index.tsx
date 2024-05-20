@@ -300,7 +300,7 @@ function Index() {
 	/*************** SidebarPanel callback logic ****************/
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+	const toggleSidebar = useCallback(() => setSidebarOpen(!sidebarOpen), [setSidebarOpen]);
 
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
 	const [searchTrait, setSearchTrait] = useState<{ searchTraitKey: string; searchTraitValue: string | number }>({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });

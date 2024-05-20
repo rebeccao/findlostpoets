@@ -1,8 +1,11 @@
+import React from 'react';
 import { NavbarProps } from '~/routes/_index';
 import { PiList } from "react-icons/pi";  
 
-const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, className, count }) => {
-	console.log("Navbar count = ", count);
+const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, count }) => {
+	console.log("Navbar re-render");
+  // Log the props to check if they are changing
+  console.log({ toggleSidebar, className, count });
 	return(
 		<header className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
 			<div className="flex items-center ml-3">
@@ -32,6 +35,6 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, className, count }) => {
       </div>
 		</header>
 	);
-}
+});
 
 export default Navbar;
