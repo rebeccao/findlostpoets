@@ -22,14 +22,12 @@ export const sidebarItems: SidebarItem[] = [
     type: 'traitSearch',
     expandedSidebarItems: [
       { title: 'Poet Name', dbField: 'pNam', inputType: 'text', validationType: 'alphanumeric' },
-      { title: 'Poet Number', dbField: 'pid', inputType: 'number', validationType: 'decimal', min: '1', max: '28170' },
       { title: 'Origin', dbField: 'ori', inputType: 'text', validationType: 'alphanumeric' },
       { title: 'Latent', dbField: 'lat', inputType: 'text', validationType: 'alphanumeric' },
       { title: 'Breed', dbField: 'brd', inputType: 'text', validationType: 'alpha' },
       { title: 'Age', dbField: 'age', inputType: 'number', validationType: 'decimal', min: '0.00', max: '1.00' },
       { title: 'Genre', dbField: 'gen', inputType: 'text', validationType: 'alpha' },
       { title: 'Ego', dbField: 'ego', inputType: 'text', validationType: 'enum', enumValues: ['I', 'II', 'III', 'IV', 'V'] },
-      { title: 'Polarity', dbField: 'pol', inputType: 'text', validationType: 'enum', enumValues: ['ka', 'qu'] },
     ]
   },
   {
@@ -40,7 +38,6 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Breed', dbField: 'brdCnt', inputType: 'number' },   // Mongodb field name for Breed
       { title: 'Age', dbField: 'ageCnt', inputType: 'number' },
       { title: 'Genre', dbField: 'genCnt', inputType: 'number' },
-      //{ title: 'Polarity', dbField: 'polCnt' },
       { title: 'Ego', dbField: 'egoCnt', inputType: 'number' }
     ]
   },
@@ -53,6 +50,7 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Word Count', dbField: 'wrdCnt', inputType: 'number', min: "2", max: "255" }, 
       { title: 'Rewrites', dbField: 'rewrCnt', inputType: 'number', min: "1", max: "89" }, 
       { title: 'Prime Number', dbField: 'prim', inputType: 'number', min: "2", max: "835399" }, 
+      { title: 'Poet Number', dbField: 'pid', inputType: 'number', min: '1', max: '28170' },
     ]
   },
 ];

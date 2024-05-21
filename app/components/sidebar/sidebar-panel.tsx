@@ -238,9 +238,9 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   };
 
   return (
-    <div className="flex flex-col h-screen relative border bg-verydarkgray border-darkgray">
-      <div className="flex-grow overflow-y-auto max-h-[calc(100vh-20rem)] scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
-        <div className="py-4">
+    <div className="flex flex-col h-[calc(100vh-56px)]  relative border bg-verydarkgray border-darkgray">
+      <div className="flex-grow overflow-y-auto scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
+        <div className="pt-4 pb-4">
           {sidebarItems.map((sidebarItem, index) => {
             return (
               <React.Fragment key={sidebarItem.title}>
@@ -396,21 +396,23 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
             );
           })}
         </div>
+        {/* Buttons Container */}
+        <div className="sticky bottom-0 p-4 flex justify-center space-x-2">
+          <button
+            className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-davysgray border-naughtygray hover:bg-darkgray hover:border-charcoalgray"// Lighter for secondary clear action
+            onClick={handleSearchClick}
+          >
+            Search
+          </button>
+          <button
+            className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-charcoalgray border-gunmetalgray hover:bg-darkgray hover:border-charcoalgray" // Darker for primary action
+            onClick={resetSearch} // Assuming this resets all search inputs
+          >
+            Clear
+          </button>
+        </div>
       </div>
-      <div className="sticky bottom-0 p-4 flex justify-center space-x-2">
-        <button
-          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-davysgray border-naughtygray hover:bg-darkgray hover:border-charcoalgray"// Lighter for secondary clear action
-          onClick={handleSearchClick}
-        >
-          Search
-        </button>
-        <button
-          className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-charcoalgray border-gunmetalgray hover:bg-darkgray hover:border-charcoalgray" // Darker for primary action
-          onClick={resetSearch} // Assuming this resets all search inputs
-        >
-          Clear
-        </button>
-      </div>
+      
     </div>
   );
 });
