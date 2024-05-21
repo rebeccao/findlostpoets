@@ -40,6 +40,19 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
       isValidInput = validateSearchTraitInput(selectedTrait.validationType, newSearchTraitValue, selectedTrait);
     }
 
+    // Check if the input is for "Poet Name" and if a number was entered
+    if (selectedTrait.dbField === 'pNam' || selectedTrait.dbField === 'ori') {
+      if (!isNaN(Number(newSearchTraitValue))) {
+          // Prepend the required prefix
+          finalValue = `Poet #${newSearchTraitValue}`;
+      } else {
+          isValidInput = /^[a-z0-9# ]+$/i.test(newSearchTraitValue);
+      }
+    } else if (selectedTrait.validationType) {
+        // Perform type-specific validation if a validation type is specified
+        isValidInput = validateSearchTraitInput(selectedTrait.validationType, newSearchTraitValue, selectedTrait);
+    }
+
     // Handle input types for additional checks
     if (selectedTrait.inputType === 'number') {
       // Allow decimal point and leading zeros
