@@ -150,7 +150,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
         {hasPoem && showPoemModal && (
           <Draggable>
             <div 
-              className={`fixed top-14 left-1/2 transform -translate-x-1/2 w-1/2 max-h-[calc(100vh-66px)] bg-verydarkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50 transition-opacity duration-300 ease-in-out ${showPoemModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+              className={`fixed top-14 left-1/2 transform -translate-x-1/2 w-1/2 max-h-[calc(100vh-66px)] border bg-verydarkgray border-darkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50 transition-opacity duration-300 ease-in-out ${showPoemModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               style={{ cursor: 'move' }}
               onClick={(e) => e.stopPropagation()} // Prevents click from propagating to background
             >

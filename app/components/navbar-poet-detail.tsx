@@ -8,7 +8,7 @@ interface PoetDetailNavbarProps {
 
 export default function PoetDetailNavbar({ poetName, className, onReturn }: PoetDetailNavbarProps) {
   return (
-    <header className={`navbar sticky top-0 h-navbar mx-auto text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
+    <header className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
       <div className="flex items-center ml-3">
 				<button 
 				  onClick={onReturn} 
