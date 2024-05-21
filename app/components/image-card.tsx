@@ -79,7 +79,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     }, [imageUrl, poet.g0Url, poet.pNam]);    
 
     return (
-      <div ref={ref} data-pid={poet.pid} className="max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
+      <div ref={ref} data-pid={poet.pid} className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
         <div className="relative w-full pb-[100%] mb-2">
           {!gen1ImageLoaded && (
             <div className="absolute top-0 left-0 right-0 bottom-0 animate-pulse border bg-darkgray border-charcoalgray"></div>
