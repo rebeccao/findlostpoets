@@ -440,7 +440,7 @@ function Index() {
 		<ErrorBoundary>
 			<div className="flex min-h-screen bg-closetoblack text-pearlwhite">
 				{sidebarOpen && (
-					<section className="fixed left-0 top-14 bottom-0 w-80 z-5">
+					<section className="fixed left-0 top-14 bottom-0 w-80 z-5 h-[calc(100vh-56px)]">
 						<SidebarPanel
 							searchTrait={searchTrait}
 							selectedRareTrait={selectedRareTrait}

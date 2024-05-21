@@ -238,7 +238,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-56px)]  relative border bg-verydarkgray border-darkgray">
+    <div className="flex flex-col h-full relative border bg-verydarkgray border-darkgray">
       <div className="flex-grow overflow-y-auto scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
         <div className="pt-4 pb-4">
           {sidebarItems.map((sidebarItem, index) => {
