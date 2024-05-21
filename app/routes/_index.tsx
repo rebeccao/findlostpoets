@@ -367,29 +367,26 @@ function Index() {
   };
 
 	// Callback from SidebarPanel when the user selects a searchTrait and sets its value
-	const handleSearchTraitChange = (searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => {
-		if (typeof searchTraitState.searchTraitValue === 'string') {
-			//searchTraitState.searchTraitValue = searchTraitState.searchTraitValue.trim();
-		}
+	const handleSearchTraitChange = useCallback((searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => {
     setSearchTrait(searchTraitState);
 		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
-  };
+  }, []);
 
 	// Callback from SidebarPanel when the user selects the rare trait checkbox
-  const handleRareTraitChange = (selectedDbField: string | null) => {
+  const handleRareTraitChange = useCallback((selectedDbField: string | null) => {
 		// Toggle selection: if the same trait is selected again, deselect it; otherwise, update the selection
 		setSelectedRareTrait(prev => (prev === selectedDbField ? null : selectedDbField));
 		// Reset searchButtonPressed to false to clear rarityTraitLabel and rarityCount until next search
 		setSearchButtonPressed(false);
-	};
+	}, []);
 
 	// Callback from SidebarPanel when the user selects the range checkbox
-	const handleRangeTraitSelect = (selectedDbField: string | null) => {
+	const handleRangeTraitSelect = useCallback((selectedDbField: string | null) => {
 		setSelectedRangeTrait(selectedDbField);
-	};
+	}, []);
 
 	// Callback from SidebarPanel when the user sets the min and max range values 
-	const handleRangeChange = (selectedDbField: string | null, min?: number, max?: number) => {
+	const handleRangeChange = useCallback((selectedDbField: string | null, min?: number, max?: number) => {
 		if (selectedDbField !== null) {
 			// Update min/max for the specified range trait
 			setRangeValues(prev => ({
@@ -401,7 +398,7 @@ function Index() {
 			setSelectedRangeTrait(null);
 			setRangeValues({});
 		}
-	};
+	}, []);
 
 	/*************** PoetDetails logic ****************/
 

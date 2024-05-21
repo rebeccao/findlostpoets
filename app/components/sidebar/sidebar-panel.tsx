@@ -7,7 +7,7 @@ import type { SidebarProps, SearchCriteria } from "~/routes/_index";
 import type { ExpandedSidebarItem } from "~/components/sidebar/sidebar-data";
 import { FloatingError } from "~/components/floating-error";
 
-const SidebarPanel: React.FC<SidebarProps> = ({ 
+const SidebarPanel: React.FC<SidebarProps> = React.memo(({ 
   searchTrait,
   selectedRareTrait, 
   selectedRangeTrait,
@@ -18,8 +18,6 @@ const SidebarPanel: React.FC<SidebarProps> = ({
   onRangeChange,
   performSearch 
 }) => {
-  console.log("SidebarPanel start");
-  
   const [errorMessages, setErrorMessages] = useState<Record<string, string>>({});
 
   // Handler for changing the searchTrait
@@ -415,6 +413,6 @@ const SidebarPanel: React.FC<SidebarProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default SidebarPanel;
