@@ -150,15 +150,15 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
         {hasPoem && showPoemModal && (
           <Draggable>
             <div 
-              className={`fixed top-15 left-1/2 transform -translate-x-1/2 w-1/2 h-full bg-verydarkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50 transition-opacity duration-300 ease-in-out ${showPoemModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+              className={`fixed top-14 left-1/2 transform -translate-x-1/2 w-1/2 max-h-[calc(100vh-66px)] bg-verydarkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50 transition-opacity duration-300 ease-in-out ${showPoemModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               style={{ cursor: 'move' }}
               onClick={(e) => e.stopPropagation()} // Prevents click from propagating to background
             >
               <button onClick={togglePoemModal} className="text-lg pt-5 pr-2 pb-2">
                 <GrClose />
               </button>
-              <div className="text-center overflow-auto h-full px-2 sm:px-8 lg:px-32">
-                <pre className="whitespace-pre-wrap" >
+              <div className="text-center overflow-auto max-h-[calc(100vh-110px)] px-2 sm:px-8 lg:px-32">
+                <pre className="whitespace-pre-wrap pb-10" >
                   {poet.poem}
                 </pre>
               </div>
