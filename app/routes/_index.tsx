@@ -456,7 +456,7 @@ function Index() {
 				)}
 				<div className="flex flex-col w-full">
 					<Navbar toggleSidebar={toggleSidebar} className="navbar" count={searchCount ? searchCount : undefined} />
-					<div className={`transition-all duration-300 ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
+					<div className={`transition-all duration-400 ease-in-out ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 						<div className="mt-4 mb-4 px-4">
 							{/* Display loading state */}
 							{fetcher.state === 'loading' && (
