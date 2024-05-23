@@ -81,25 +81,22 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 function Index() {
+	type Direction = 'forward' | 'backward';
+
 	const fetcher = useFetcher();
 	const initialData = useLoaderData<typeof loader>();
+	const [fetcherData, setFetcherData] = useState<LoaderData | null>(null);
+	const [fetchError, setFetchError] = useState<string | null>(null);
+	const [poetCount, setPoetCount] = useState<number | null>(initialData.count);
+	const [hasMore, setHasMore] = useState<boolean>(true);
+
 	const [activatePoetDetail, setActivatePoetDetail] = useState<Poet | null>(null);
-
-  //console.log("******************* const poets: Poet[] = data.poets, fetcher.data ", fetcher.data); 
-	//console.log("******************* const poets: Poet[] = data.poets, initialData.poets.length", initialData.poets.length); 
-
-	type Direction = 'forward' | 'backward';
 
   const [currentDbQuery, setCurrentDbQuery] = useState<SearchCriteria>({ orderBy: [{ pid: 'asc' }], take: PAGE_SIZE, skip: 0 });
 	const [poetSlidingWindow, setPoetSlidingWindow] = useState<Poet[]>(initialData.poets || []);
 	const [windowIndices, setWindowIndices] = useState({ backwardIndex: 1, forwardIndex: 24 });
 	const [poetSlidingWindowUpdated, setPoetSlidingWindowUpdated] = useState<boolean>(false);
-	const [fetcherData, setFetcherData] = useState<LoaderData | null>(null);
-	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [fetchDirection, setFetchDirection] = useState<Direction>('forward');
-	const [hasMore, setHasMore] = useState<boolean>(true);
-	const [searchPerformed, setSearchPerformed] = useState(false);
-	const [searchCount, setSearchCount] = useState<number | null>(null); 
 	
 	const forwardSentinelRef = useRef<HTMLDivElement | null>(null);
 	const backwardSentinelRef = useRef<HTMLDivElement | null>(null);
@@ -126,17 +123,16 @@ function Index() {
 				setFetchError(data.detail || 'An error occurred while fetching poets. Please try again later.');
 			} else if (data.poets) {
 				// Handle successful data fetch
-				setSearchPerformed(false);
 				if (data.poets.length > 0) {
 					setFetcherData(data); // Store the data
 					setFetchError(null); // Clear any previous errors
-					if (searchPerformed && data.count !== undefined) {
-						setSearchCount(data.count);
+					if (data.count !== undefined) {
+						setPoetCount(data.count);
 					}
 				} else {
 					// Handle case where no poets are found
 					setFetchError('No poets found. Please adjust your search criteria.');
-					setSearchCount(null);
+					setPoetCount(null);
 				}
 			}
     }
@@ -305,16 +301,14 @@ function Index() {
 	
 	// poetSlidingWindow updated useEffect
 	useEffect(() => {
-		//if (poetSlidingWindowUpdated && hasMore && poetSlidingWindow.length > 0) {
 		if (poetSlidingWindowUpdated && poetSlidingWindow.length > 0) {
 			setPoetSlidingWindowUpdated(false);
 			console.log("useEffect poetSlidingWindow updated CALLING setupObserver --  backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
 			console.log("                                    -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
-			//console.log("    indexes          ", Array.from(poetSlidingWindow.keys()).join(", "));
 			console.log("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
 			setupObserver();
 		}
-	}, [poetSlidingWindow, poetSlidingWindowUpdated, hasMore, setupObserver]);
+	}, [poetSlidingWindow, poetSlidingWindowUpdated, setupObserver]);
 
 
 	/*************** SidebarPanel callback logic ****************/
@@ -331,21 +325,6 @@ function Index() {
 	// searchButtonPressed is used to conditionally control displaying the Rare Trait count on the ImageCard 
 	const [searchButtonPressed, setSearchButtonPressed] = useState(false);
 
-	const keysToCheck: string[] = ["brdCnt", "genCnt", "ageCnt", "egoCnt"];
-	function containsKey(query: SearchCriteria, keys: string[]): boolean {
-		if (query.where && query.where.AND) {
-			for (const condition of query.where.AND) {
-				for (const key of keys) {
-					if (condition.hasOwnProperty(key)) {
-						console.log("condition.hasOwnProperty key = ", key);
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
 	// Callback from SidebarPanel when the user clicks the Search button or Clear button
 	const performSearch = (query: SearchCriteria) => {
 
@@ -355,15 +334,9 @@ function Index() {
 		// Reset all the states and fetch the new query
 		query.take = PAGE_SIZE;
 
-		// searchPerformed = true displays the searchCount in the Navbar
-		// Display the searchCount for Search by Trait and Search by Ranges, not Search by Rarities
-		setSearchPerformed(false);
-		setSearchCount(null);
+		setPoetCount(null);
 		if (query.where !== undefined) {			// All user searches include where:, start at the beginning
 			query.skip = 0
-			if (!containsKey(query, keysToCheck)) {								
-				setSearchPerformed(true);
-			}
 		} else {															// User pressed Clear button, skip to a random place in the DB 
 			const newPage = (Math.floor(Math.random() * (DATABASE_SIZE-100)/PAGE_SIZE));
 			query.skip = (newPage - 1) * PAGE_SIZE;
@@ -374,7 +347,7 @@ function Index() {
 		setFetcherData(null);
 		setFetchDirection('forward');
 		setPoetSlidingWindow([]);
-		setWindowIndices({ backwardIndex: 1, forwardIndex: 24 });
+		setWindowIndices({ backwardIndex: 1, forwardIndex: 0 });
 
 		// Update currentDbQuery
 		setCurrentDbQuery(query);
@@ -476,7 +449,7 @@ function Index() {
 					</section>
 				)}
 				<div className="flex flex-col w-full">
-					<Navbar toggleSidebar={toggleSidebar} className="navbar" count={searchCount ? searchCount : undefined} />
+					<Navbar toggleSidebar={toggleSidebar} className="navbar" count={poetCount ? poetCount : undefined} />
 					<div className={`transition-all duration-400 ease-in-out ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 						<div className="mt-4 mb-4 px-4">
 							{/* Display loading state */}
