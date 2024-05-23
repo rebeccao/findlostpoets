@@ -92,6 +92,7 @@ function Index() {
 
   const [currentDbQuery, setCurrentDbQuery] = useState<SearchCriteria>({ orderBy: [{ pid: 'asc' }], take: PAGE_SIZE, skip: 0 });
 	const [poetSlidingWindow, setPoetSlidingWindow] = useState<Poet[]>(initialData.poets || []);
+	const [windowIndices, setWindowIndices] = useState({ backwardIndex: 1, forwardIndex: 24 });
 	const [poetSlidingWindowUpdated, setPoetSlidingWindowUpdated] = useState<boolean>(false);
 	const [fetcherData, setFetcherData] = useState<LoaderData | null>(null);
 	const [fetchError, setFetchError] = useState<string | null>(null);
@@ -114,10 +115,11 @@ function Index() {
 	// the infinite scrolling
   useEffect(() => {
     // Assert the type of fetcher.data to LoaderData right when it's retrieved
+		// Now TypeScript knows the structure of 'data', including its 'error' and 'poets' fields
     const data = fetcher.data as LoaderData | undefined;
-    
-    // Now TypeScript knows the structure of 'data', including its 'error' and 'poets' fields
+  
     if (data) {
+			console.log("useEffect fetcher.data");
 			if ('error' in data && data.error) {
 				// Log the detailed error message if available or provide a generic error message
 				console.error("Error fetching poets:", data.detail || 'Unknown error occurred.');
@@ -127,7 +129,6 @@ function Index() {
 				setSearchPerformed(false);
 				if (data.poets.length > 0) {
 					setFetcherData(data); // Store the data
-					setHasMore(data.poets.length === PAGE_SIZE); // Determine if there are more poets to load
 					setFetchError(null); // Clear any previous errors
 					if (searchPerformed && data.count !== undefined) {
 						setSearchCount(data.count);
@@ -152,8 +153,8 @@ function Index() {
 
 		setCurrentDbQuery(newQuery);
 		setFetchDirection(direction);
-		//console.log("<--------> fetchMorePoets direction = ", direction, "newQuery = ", JSON.stringify(newQuery, null, 2));
-		console.log("<--------> fetchMorePoets direction = ", direction, "newQuery = ", newQuery);
+		//console.log("        --> fetchMorePoets direction = ", direction, "newQuery = ", JSON.stringify(newQuery, null, 2));
+		console.log("        --> fetchMorePoets direction = ", direction, "newQuery = ", newQuery);
 
 		if (forwardGlobalObserver.current) {
 			forwardGlobalObserver.current.disconnect(); // Temporarily disconnect
@@ -173,8 +174,9 @@ function Index() {
 	// setupObserver callback
 	const setupObserver = useCallback(() => {
 		if (poetSlidingWindow.length > 0) {
-			console.log("********  setupObserver  fetchDirection = ", fetchDirection, "        currentDbQuery.skip = ", currentDbQuery.skip);
-
+			console.log("********  setupObserver  fetchDirection = ", fetchDirection);
+			console.log("******************************************************************************************************************************************");
+			
 			// Disconnect the current global observers if they exist
 			if (backwardGlobalObserver.current) {
 				backwardGlobalObserver.current.disconnect(); // Temporarily disconnect
@@ -186,29 +188,33 @@ function Index() {
 			const observerCallback = debounce((entries: IntersectionObserverEntry[]) => {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting && fetcher.state !== 'loading') {
-						if (entry.target === forwardSentinelRef.current && poetSlidingWindow.length > 0) {
+						if (entry.target === forwardSentinelRef.current && poetSlidingWindow.length > 0 && hasMore) {
 							
-							console.log("observerCallback -- isIntersecting forwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target=data-pid=", entry.target?.getAttribute('data-pid'), "   backwardSentinelRef data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
-							console.log("                 poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
+							console.log("observerCallback -- isIntersecting forwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target =", entry.target?.getAttribute('data-pid'), "-- backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "-- forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
+							console.log("                 -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
 							let nextSkip = currentDbQuery.skip + PAGE_SIZE;
 							// Switched directions from backward to forward, set nextSkip to end of poetSlidingWindow
 							if (fetchDirection === 'backward') {
+								console.log("                -- #####  (fetchDirection === backward ######");
 								nextSkip = currentDbQuery.skip + (3 * PAGE_SIZE);
+								console.log("                -- (fetchDirection switched to backward - nextSkip = currentDbQuery.skip + (3 * PAGE_SIZE) = ", nextSkip = currentDbQuery.skip + (3 * PAGE_SIZE));
 							}
-							console.log("                 poetSlidingWindow currentDbQuery.skip = ", currentDbQuery.skip, "nextSkip = ", nextSkip);
+							console.log("                 -- currentDbQuery.skip = ", currentDbQuery.skip, "nextSkip = ", nextSkip);
 							fetchMorePoets('forward', nextSkip); // Fetch next page
 
 						} else if (entry.target === backwardSentinelRef.current && poetSlidingWindow[0].pid !== 1 && poetSlidingWindow.length > 0) {
 
-							console.log("observerCallback -- isIntersecting backwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target=data-pid=", entry.target?.getAttribute('data-pid'), "   backwardSentinelRef data-pid=",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef data-pid=",  forwardSentinelRef.current?.getAttribute('data-pid'));
-							console.log("                 poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "  - ", poetSlidingWindow[poetSlidingWindow.length-1].pid);
-							const firstPoetIndex = poetSlidingWindow[0].pid; 
-							console.log("                 firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
-							const expectedPrevFirstPoetIndex = firstPoetIndex - PAGE_SIZE;
-							if (expectedPrevFirstPoetIndex > 0) {
-								const prevSkip = expectedPrevFirstPoetIndex - 1;
-								console.log("                 poetSlidingWindow prevSkip = ", prevSkip);
-								fetchMorePoets('backward', prevSkip); // Fetch previous page
+							console.log("observerCallback -- isIntersecting backwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target =", entry.target?.getAttribute('data-pid'), "-- backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "-- forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
+							console.log("                 -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
+							//const firstPoetIndexOriginal = poetSlidingWindow[0].pid; 
+							const firstPoetIndex = windowIndices.backwardIndex;
+							//console.log("                 -- firstPoetIndexOriginal = ", firstPoetIndexOriginal, "firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
+							console.log("                 -- firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
+							const newFirstPoetIndex = firstPoetIndex - PAGE_SIZE;
+							if (newFirstPoetIndex > 0) {
+								const backwardSkip = newFirstPoetIndex - 1;
+								console.log("                 -- backwardSkip = ", backwardSkip);
+								fetchMorePoets('backward', backwardSkip); // Fetch page to append at beginning of poetSlidingWindow
 							}
 						}
 					}
@@ -233,14 +239,15 @@ function Index() {
 			}
 		}
 	}, [currentDbQuery, poetSlidingWindow, fetchMorePoets, fetcher.state]);
-
+/*
 	useEffect(() => {
+		console.log("forwardSentinelRef.current useEffect");
     if (forwardSentinelRef.current && backwardSentinelRef.current) {
         forwardGlobalObserver.current?.observe(forwardSentinelRef.current);
         backwardGlobalObserver.current?.observe(backwardSentinelRef.current);
     }
 	}, [forwardSentinelRef.current, backwardSentinelRef.current]);		
-
+*/
 	// InitialData useEffect
 	useEffect(() => {
 		if (initialData.poets.length > 0) {
@@ -248,7 +255,8 @@ function Index() {
       // and if globalObserver is initialized 
       if (!forwardGlobalObserver.current && initialData.poets.length === PAGE_SIZE) {
 				setCurrentDbQuery({ ...currentDbQuery, skip: PAGE_SIZE, take: PAGE_SIZE });		// Update current query skip
-				console.log("InitialData useEffect setupObserver forward, currentDbQuery = ", currentDbQuery);
+				console.log("useEffect InitialData CALLING setupObserver setupObserver forward, currentDbQuery = ", currentDbQuery);
+				console.log("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
 				setupObserver();
       }
     }
@@ -261,23 +269,31 @@ function Index() {
 			const poetsArray = fetcherData.poets || []; // Default to an empty array if undefined
 
 			if (poetsArray.length > 0) {
-					
+				console.log("useEffect Append fetcherData -- poetsArray.length =", poetsArray.length);
+				setHasMore(poetsArray.length == PAGE_SIZE);
 				setPoetSlidingWindow((prevPoets) => {
 					let updatedPoets: Poet[] = [];
+					let newBackwardIndex = windowIndices.backwardIndex;
+          let newForwardIndex = windowIndices.forwardIndex;
 					
 					if (fetchDirection === 'forward') {
 						updatedPoets = [...prevPoets, ...poetsArray];
-						if (updatedPoets.length > BUFFER_SIZE) {
+						newForwardIndex = windowIndices.forwardIndex + poetsArray.length;
+						if (updatedPoets.length > BUFFER_SIZE && poetsArray.length == PAGE_SIZE) {
 								// Trim from the beginning when moving forward
 								updatedPoets = updatedPoets.slice(-BUFFER_SIZE);
+								newBackwardIndex = newForwardIndex - BUFFER_SIZE + 1;
 						}
 					} else {						// fetchDirection === 'backward'
 						updatedPoets = [...poetsArray, ...prevPoets];
-						if (updatedPoets.length > BUFFER_SIZE) {
+						newBackwardIndex = windowIndices.backwardIndex - poetsArray.length;
+						if (updatedPoets.length > BUFFER_SIZE && poetsArray.length == PAGE_SIZE) {
 							// Trim from the end when moving backward
 							updatedPoets = updatedPoets.slice(0, BUFFER_SIZE);
+							newForwardIndex = newBackwardIndex + BUFFER_SIZE - 1;
 						}
 					}
+					setWindowIndices({ backwardIndex: newBackwardIndex, forwardIndex: newForwardIndex });
 					return updatedPoets;
 				});
 				setPoetSlidingWindowUpdated(true);
@@ -289,9 +305,13 @@ function Index() {
 	
 	// poetSlidingWindow updated useEffect
 	useEffect(() => {
-		if (poetSlidingWindowUpdated && hasMore && poetSlidingWindow.length > 0) {
+		//if (poetSlidingWindowUpdated && hasMore && poetSlidingWindow.length > 0) {
+		if (poetSlidingWindowUpdated && poetSlidingWindow.length > 0) {
 			setPoetSlidingWindowUpdated(false);
-			console.log("poetSlidingWindow updated useEffect CALLING setupObserver -- poetSlidingWindow indexes ", poetSlidingWindow[0].pid, "-", poetSlidingWindow[poetSlidingWindow.length-1].pid);
+			console.log("useEffect poetSlidingWindow updated CALLING setupObserver --  backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
+			console.log("                                    -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
+			//console.log("    indexes          ", Array.from(poetSlidingWindow.keys()).join(", "));
+			console.log("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
 			setupObserver();
 		}
 	}, [poetSlidingWindow, poetSlidingWindowUpdated, hasMore, setupObserver]);
@@ -354,6 +374,7 @@ function Index() {
 		setFetcherData(null);
 		setFetchDirection('forward');
 		setPoetSlidingWindow([]);
+		setWindowIndices({ backwardIndex: 1, forwardIndex: 24 });
 
 		// Update currentDbQuery
 		setCurrentDbQuery(query);
