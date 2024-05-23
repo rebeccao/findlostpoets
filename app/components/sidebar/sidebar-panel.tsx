@@ -1,5 +1,5 @@
 import { sidebarItems } from "~/components/sidebar/sidebar-data";
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { GrFormClose } from "react-icons/gr";
 import CustomCheckbox from "~/components/custom-checkbox";
 import Tooltip from "~/components/tooltip";
@@ -18,6 +18,8 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   onRangeChange,
   performSearch 
 }) => {
+  // Add a ref to the Search by Trait input field
+  const inputRef = useRef<HTMLInputElement>(null);
   const [errorMessages, setErrorMessages] = useState<Record<string, string>>({});
 
   // Handler for changing the searchTrait
@@ -41,7 +43,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     }
 
     // Check if the input is for "Poet Name" and if a number was entered
-    if (selectedTrait.dbField === 'pNam' || selectedTrait.dbField === 'ori') {
+    if (selectedTrait.dbField === 'pNam') {
       if (!isNaN(Number(newSearchTraitValue))) {
           // Prepend the required prefix
           finalValue = `Poet #${newSearchTraitValue}`;
@@ -283,6 +285,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                         name="searchTerm"
                         type="text"
                         placeholder="Enter search term..."
+                        ref={inputRef} 
                         onFocus={(e) => e.target.placeholder = ''} // Clear placeholder on focus
                         onBlur={(e) => {
                           if (e.target.value === '') {
@@ -317,7 +320,10 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                       {searchTrait.searchTraitValue && (
                         <GrFormClose
                           className="absolute right-3 cursor-pointer"
-                          onClick={clearSearchTraitInput}
+                          onClick={() => {
+                            clearSearchTraitInput();
+                            inputRef.current?.focus(); // Focus the input field after clearing
+                          }}
                         />
                       )}
                     </div>
