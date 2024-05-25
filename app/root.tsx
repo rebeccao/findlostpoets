@@ -1,6 +1,6 @@
 // ./app/root.tsx
 
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import ComingSoon from '~/components/coming-soon';
 
 import {
@@ -18,6 +18,17 @@ if (process.env.NODE_ENV === 'production') {
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: "/app/tailwind.css", precedence: 'high' },
+  { rel: "canonical", href: "https://findlostpoets.xyz" },
+  { rel: "icon", href: "/favicon.ico" }
+];
+
+export const meta: MetaFunction = () => [
+  { charset: "utf-8" },
+  { viewport: "width=device-width,initial-scale=1" },
+  { title: "FINDLOSTPOETS" },
+  { description: "FINDLOSTPOETS is a unique platform to explore Murat Pak's LOSTPOETS NFT collection. Browse GEN0 poets, GEN1 poets and their poems. Search poets by traits, rarities and word counts." },
+  { keywords: "lostpoets, Murat, Pak, NFT, poets, poems, poetry, find lost poets, NFT, NFTs" },
+  { author: "0xNosToca" }
 ];
 
 export default function App() {
@@ -26,15 +37,8 @@ export default function App() {
   return (
     <html lang="en">
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>FindLostPoets</title>
-
-        {/* All meta exports on all routes will go here */}
         <Meta />
-        
-        {/* All link exports on all routes will go here */}
-        <Links/>
+        <Links />
       </head>
       <body>
         {/* Conditionally render Coming Soon page or the main Outlet based on environment */}
