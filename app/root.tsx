@@ -24,7 +24,7 @@ export const links: LinksFunction = () => [
 
 export const meta: MetaFunction = () => [
   { charset: "utf-8" },
-  { viewport: "width=device-width,initial-scale=1" },
+  { viewport: "width=device-width,initial-scale=1.0" },
   { title: "FINDLOSTPOETS" },
   { description: "FINDLOSTPOETS is a unique platform to explore Murat Pak's LOSTPOETS NFT collection. Browse GEN0 poets, GEN1 poets and their poems. Search poets by traits, rarities and word counts." },
   { keywords: "lostpoets, Murat, Pak, NFT, poets, poems, poetry, find lost poets, NFT, NFTs" },
