@@ -55,10 +55,8 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
       const availableHeight = viewportHeight - navbarHeight; // Total available height minus the Navbar height
   
       const newImageContainerHeight = `${availableHeight * 0.75}px`; // 75% for the image container
-      //const newTraitsContainerHeight = `${availableHeight * 0.25}px`; // 25% for the traits container
   
       setImageContainerHeight(newImageContainerHeight);
-      //setTraitsContainerHeight(newTraitsContainerHeight); // Assuming you have a state to manage this
     };
   
     window.addEventListener('resize', adjustLayoutHeights);
@@ -150,17 +148,21 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
         {hasPoem && showPoemModal && (
           <Draggable>
             <div 
-              className={`fixed top-14 left-1/2 transform -translate-x-1/2 w-1/2 max-h-[calc(100vh-66px)] border bg-verydarkgray border-darkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50 transition-opacity duration-300 ease-in-out ${showPoemModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+              className={`absolute left-[calc(50%+10px)] w-[calc(50%-40px)] h-[95%] border bg-verydarkgray border-darkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50 transition-opacity duration-300 ease-in-out ${showPoemModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               style={{ cursor: 'move' }}
               onClick={(e) => e.stopPropagation()} // Prevents click from propagating to background
             >
-              <button onClick={togglePoemModal} className="text-lg pt-5 pr-2 pb-2">
-                <GrClose />
-              </button>
-              <div className="text-center overflow-auto max-h-[calc(100vh-110px)] px-2 sm:px-8 lg:px-32">
-                <pre className="whitespace-pre-wrap pb-10" >
-                  {poet.poem}
-                </pre>
+              <div className="flex justify-end px-4 pt-4">
+                <button onClick={togglePoemModal} className="text-lg">
+                  <GrClose />
+                </button>
+              </div>
+              <div className="flex flex-col h-[calc(100%-50px)]">
+                <div className="flex-1 flex justify-center items-center text-center overflow-auto px-8">
+                  <pre className="whitespace-pre-wrap max-h-full">
+                    {poet.poem}
+                  </pre>
+                </div>
               </div>
             </div>
           </Draggable>
