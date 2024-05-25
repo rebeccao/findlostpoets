@@ -6,6 +6,13 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '375px', // Custom breakpoint for small devices like iPhone
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+      },
       colors: {
         offwhite:     '#F7F7F7',
         pearlwhite:   '#E8E8E8',
