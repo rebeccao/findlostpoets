@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { useLoaderData, useFetcher } from '@remix-run/react'
 import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
@@ -424,6 +425,8 @@ function Index() {
 		return (
 			<div>{poetDetailComponent}</div>);
 	}
+
+	const isLargeScreen = useMediaQuery({ minWidth: 1024 });
 	
 	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
 	//const selectedRareTraitLabel = sidebarItems.find(item => item.type === 'sort')?.expandedSidebarItems.find(item => item.dbField === selectedRareTrait)?.title;
@@ -473,7 +476,12 @@ function Index() {
 								<div className="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-4">
 									{/* Poets mapping */}
 									{poetSlidingWindow?.map((poet: Poet, index: number) => (
-										<div key={poet.id} id={`poet-${poet.pid}`} onClick={() => handleShowingPoetDetail(poet)} className="cursor-pointer flex">
+										<div 
+											key={poet.id} 
+											id={`poet-${poet.pid}`} 
+											onClick={isLargeScreen ? () => handleShowingPoetDetail(poet) : undefined } 
+											className="cursor-pointer flex"
+										>
 											<ImageCard 
 												key={poet.pid} 
 												poet={poet}
