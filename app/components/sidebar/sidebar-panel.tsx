@@ -18,8 +18,9 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   onRangeChange,
   performSearch 
 }) => {
-  // Add a ref to the Search by Trait input field
+  
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
   const [errorMessages, setErrorMessages] = useState<Record<string, string>>({});
 
   // Handler for changing the searchTrait
@@ -166,10 +167,12 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   };
 
   const resetSearch = () => {
-    // Set searchTraitValue  to empty string while keeping the current searchTraitKey
-    //if (searchTrait.searchTraitValue !== '') {
-      clearSearchTraitInput();
-    //}
+    // Clear the search term input field and reset its placeholder
+    if (inputRef.current) {
+      inputRef.current.value = '';
+      inputRef.current.placeholder = 'Enter search term...';
+    }
+    clearSearchTraitInput();
 
     // Deselect the selected rare trait, if any
     if (selectedRareTrait) {
@@ -180,6 +183,26 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     if (selectedRangeTrait) {
       onRangeChange(null, undefined, undefined);
     }
+
+    // Reset all range input fields to their placeholders
+    sidebarItems.forEach((sidebarItem) => {
+      sidebarItem.expandedSidebarItems.forEach((item) => {
+        if (inputRefs.current[`min-${item.dbField}`]) {
+          const inputElement = inputRefs.current[`min-${item.dbField}`];
+          if (inputElement) {
+            inputElement.value = '';
+            inputElement.placeholder = item.min || '';
+          }
+        }
+        if (inputRefs.current[`max-${item.dbField}`]) {
+          const inputElement = inputRefs.current[`max-${item.dbField}`];
+          if (inputElement) {
+            inputElement.value = '';
+            inputElement.placeholder = item.max || '';
+          }
+        }
+      });
+    });
 
     const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }], skip: 0 };
     console.log("SidebarPanel: resetSearch dbQuery: ", dbQuery);
@@ -364,6 +387,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                             type="number"
                             pattern="\d"
                             id={`min-${expandedSidebarItem.dbField}-${index}`}
+                            ref={(el) => (inputRefs.current[`min-${expandedSidebarItem.dbField}`] = el)}
                             value={rangeValues[expandedSidebarItem.dbField]?.min || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
                             onKeyDown={(e) => {
@@ -388,6 +412,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                             type="number"
                             pattern="\d"
                             id={`max-${expandedSidebarItem.dbField}-${index}`}
+                            ref={(el) => (inputRefs.current[`max-${expandedSidebarItem.dbField}`] = el)}
                             value={rangeValues[expandedSidebarItem.dbField]?.max || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
                             onKeyDown={(e) => {
