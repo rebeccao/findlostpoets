@@ -91,7 +91,8 @@ function Index() {
 	const [poetCount, setPoetCount] = useState<number | null>(initialData.count);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 
-	const [activatePoetDetail, setActivatePoetDetail] = useState<Poet | null>(null);
+	const isLargeScreen = useMediaQuery({ minWidth: 1024 });
+	const [poetClicked, setPoetClicked] = useState<Poet | null>(null);
 
   const [currentDbQuery, setCurrentDbQuery] = useState<SearchCriteria>({ orderBy: [{ pid: 'asc' }], take: PAGE_SIZE, skip: 0 });
 	const [poetSlidingWindow, setPoetSlidingWindow] = useState<Poet[]>(initialData.poets || []);
@@ -400,11 +401,15 @@ function Index() {
 	const handleShowingPoetDetail = (poet: Poet) => {
 		// Save current scroll position
 		sessionStorage.setItem('lastScrollPosition', window.scrollY.toString());
-		setActivatePoetDetail(poet);		
+		if (isLargeScreen) {
+			setPoetClicked(poet);		
+		}
 	};
 
 	const handleReturnFromPoetDetail = () => {
-    setActivatePoetDetail(null); 						// Clear the active poet detail view
+		if (isLargeScreen) {
+    	setPoetClicked(null); 						// Clear the active poet detail view
+		}
 		// Restore scroll position if available
 		requestAnimationFrame(() => {
 			const lastScrollPosition = sessionStorage.getItem('lastScrollPosition');
@@ -415,18 +420,17 @@ function Index() {
 		});
   };
 	
-	if (activatePoetDetail) {
-		let poetDetailComponent;
-		if (activatePoetDetail.lexCnt === 0) {
-			poetDetailComponent = <PoetDetail poet={activatePoetDetail} hasPoem={false} onReturn={handleReturnFromPoetDetail} />;
-		} else if (activatePoetDetail.lexCnt > 0) { 
-			poetDetailComponent = <PoetDetail poet={activatePoetDetail} hasPoem={true} onReturn={handleReturnFromPoetDetail} />;
-		} 
+	if (poetClicked) {
+		const poetDetailComponent = (
+			<PoetDetail 
+				poet={poetClicked} 
+				hasPoem={poetClicked.lexCnt > 0} 
+				onReturn={handleReturnFromPoetDetail} 
+			/>
+		);
 		return (
 			<div>{poetDetailComponent}</div>);
 	}
-
-	const isLargeScreen = useMediaQuery({ minWidth: 1024 });
 	
 	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
 	//const selectedRareTraitLabel = sidebarItems.find(item => item.type === 'sort')?.expandedSidebarItems.find(item => item.dbField === selectedRareTrait)?.title;
@@ -475,11 +479,12 @@ function Index() {
 							<div className="grid-container">
 								<div className="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-4">
 									{/* Poets mapping */}
+									{/*onClick={isLargeScreen ? () => handleShowingPoetDetail(poet) : undefined } */}
 									{poetSlidingWindow?.map((poet: Poet, index: number) => (
 										<div 
 											key={poet.id} 
 											id={`poet-${poet.pid}`} 
-											onClick={isLargeScreen ? () => handleShowingPoetDetail(poet) : undefined } 
+											onClick={() => handleShowingPoetDetail(poet)} 
 											className="cursor-pointer flex"
 										>
 											<ImageCard 
