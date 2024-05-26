@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useMediaQuery } from 'react-responsive';
 import { useLoaderData, useFetcher } from '@remix-run/react'
 import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
@@ -91,7 +90,6 @@ function Index() {
 	const [poetCount, setPoetCount] = useState<number | null>(initialData.count);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 
-	const isLargeScreen = useMediaQuery({ minWidth: 1024 });
 	const [poetClicked, setPoetClicked] = useState<Poet | null>(null);
 
   const [currentDbQuery, setCurrentDbQuery] = useState<SearchCriteria>({ orderBy: [{ pid: 'asc' }], take: PAGE_SIZE, skip: 0 });
@@ -401,13 +399,13 @@ function Index() {
 	const handleShowingPoetDetail = (poet: Poet) => {
 		// Save current scroll position
 		sessionStorage.setItem('lastScrollPosition', window.scrollY.toString());
-		if (isLargeScreen) {
+		if (window.innerWidth >= 1024) {
 			setPoetClicked(poet);		
 		}
 	};
 
 	const handleReturnFromPoetDetail = () => {
-		if (isLargeScreen) {
+		if (window.innerWidth >= 1024) {
     	setPoetClicked(null); 						// Clear the active poet detail view
 		}
 		// Restore scroll position if available
@@ -479,7 +477,6 @@ function Index() {
 							<div className="grid-container">
 								<div className="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-4">
 									{/* Poets mapping */}
-									{/*onClick={isLargeScreen ? () => handleShowingPoetDetail(poet) : undefined } */}
 									{poetSlidingWindow?.map((poet: Poet, index: number) => (
 										<div 
 											key={poet.id} 
