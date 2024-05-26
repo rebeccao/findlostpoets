@@ -16,7 +16,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
 			</div>
 			{/* Centered Banner */}
 			<div className="flex flex-col items-center mx-auto"> 
-				<div className="text-2xl lg:text-2xl md:text-xl sm:text-base font-[LeagueSpartan-SemiBold]"> 
+				<div className="sm:text-md md:text-xl lg:text-2xl font-[LeagueSpartan-SemiBold]"> 
 					F I N D L O S T P O E T S
 				</div> 
 				<div className="text-xs font-[LeagueSpartan-Regular] -mt-1">
@@ -25,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
       </div>
       <div className="flex items-center justify-center">
         {count !== undefined && (
-          <div className="text-xl font-[LeagueSpartan-Regular] mr-4">
+          <div className="sm:text-sm md:text-xl font-[LeagueSpartan-Regular] mr-4">
             {`Poets Found: ${count}`}
           </div>
         )}
