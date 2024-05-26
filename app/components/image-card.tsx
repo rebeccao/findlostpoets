@@ -106,7 +106,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
           />
         </div>
         <div className="px-4 py-4">
-        <div className="font-medium text-base mb-2">{poet.pNam}</div>
+        <h2 className="font-medium text-base mb-2">{poet.pNam}</h2>
         {/* Responsive grid layout for traits */}
         <div className="grid grid-cols-1 gap-1 w-full">
           <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr]">
