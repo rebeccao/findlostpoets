@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GrClose } from "react-icons/gr";
-import { ImageSize } from './poetdetail';
+import { ImageSize } from './poetmodal';
 import { HiOutlineMagnifyingGlassPlus, HiOutlineMagnifyingGlassMinus } from "react-icons/hi2";
 
 interface ImageModalProps {

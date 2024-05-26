@@ -10,7 +10,7 @@ import Navbar from '~/components/navbar';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import ImageCard from '~/components/image-card';
-import PoetDetail from '~/components/detail/poetdetail';
+import PoetModal from '~/components/modals/poetmodal';
 import ErrorBoundary from '~/components/error-boundary';
 
 const PAGE_SIZE = 24;
@@ -420,7 +420,7 @@ function Index() {
 	
 	if (poetClicked) {
 		const poetDetailComponent = (
-			<PoetDetail 
+			<PoetModal
 				poet={poetClicked} 
 				hasPoem={poetClicked.lexCnt > 0} 
 				onReturn={handleReturnFromPoetDetail} 

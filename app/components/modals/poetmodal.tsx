@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import type { Poet } from '@prisma/client';
 import PoetDetailNavbar from '~/components/navbar-poet-detail';
-import PoetDetailTraits from '~/components/detail/poetdetail-traits';
+import PoetModalTraits from '~/components/modals/poetmodal-traits';
 import ImageModal from './imagemodal'; 
 import { GrClose } from "react-icons/gr";
 
-interface PoetDetailProps {
+interface PoetModalProps {
   poet: Poet;
   hasPoem: boolean;
   onReturn: () => void;
@@ -15,7 +15,7 @@ interface PoetDetailProps {
 export type ImageSize = '1X' | '2X';
 
 // Display Poet's details. The poem m
-export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps) {
+export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
   const [showPoemModal, setShowPoemModal] = useState(false);
   const [isPoemOverflowing, setIsPoemOverflowing] = useState(false);
   const poemContainerRef = useRef<HTMLDivElement>(null);
@@ -123,7 +123,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
               <div className="flex gap-4 w-full h-auto">
                 {/* First container for traits */}
                 <div className="flex-1 px-4 pb-4">
-                    <PoetDetailTraits poet={poet} />
+                    <PoetModalTraits poet={poet} />
                 </div>
                 {/* Second container for the poem */}
                 <div 
@@ -138,7 +138,7 @@ export default function PoetDetail({ poet, hasPoem, onReturn }: PoetDetailProps)
                 </div>
               </div>
             ) : (
-              <PoetDetailTraits poet={poet} />
+              <PoetModalTraits poet={poet} />
             )}
           </div>
           )}
