@@ -7,11 +7,11 @@ export default {
   theme: {
     extend: {
       screens: {
-        'xs': '375px', // Custom breakpoint for small devices like iPhone
-        'sm': '640px',
+        'sm': '640px',    // Custom breakpoint for small devices like iPhone
         'md': '768px',
         'lg': '1024px',
         'xl': '1280px',
+        '2xl': '1536px',  // Holonick's screen 2560x1440
       },
       colors: {
         offwhite:     '#F7F7F7',

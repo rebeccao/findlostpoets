@@ -470,7 +470,7 @@ function Index() {
 							)}
 
 							<div className="grid-container">
-								<div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-6 gap-4">
+								<div className="grid grid-cols-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-4">
 									{/* Poets mapping */}
 									{poetSlidingWindow?.map((poet: Poet, index: number) => (
 										<div key={poet.id} id={`poet-${poet.pid}`} onClick={() => handleShowingPoetDetail(poet)} className="cursor-pointer flex">
