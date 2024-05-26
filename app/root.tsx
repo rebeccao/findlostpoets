@@ -39,7 +39,7 @@ export default function App() {
       <head>
         <Meta />
         <Links />
-        <title>FINDLOSTPOETS - Discover and Explore Murat Pak's LOSTPOETS NFT Collection</title>
+        <title>FINDLOSTPOETS - Explore Murat Pak's LOSTPOETS NFT Collection</title>
       </head>
       <body>
         {/* Conditionally render Coming Soon page or the main Outlet based on environment */}
