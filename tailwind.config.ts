@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       screens: {
-        'sm': '640px',    // Custom breakpoint for small devices like iPhone
+        'xs': '375px',    // Custom breakpoint for small devices like iPhone
+        'sm': '640px',    
         'md': '768px',
         'lg': '1024px',
         'xl': '1280px',
