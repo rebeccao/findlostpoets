@@ -26,7 +26,7 @@ export const links: LinksFunction = () => [
 export const meta: MetaFunction = () => [
   { charset: "utf-8" },
   { name: "viewport", content: "width=device-width,initial-scale=1.0" },
-  { name: "description", content: "FINDLOSTPOETS - Explore Murat Pak's LOSTPOETS NFT collection. Browse and search Poets, their Poems and their traits." },
+  { name: "description", content: "FINDLOSTPOETS - Explore Pak's LOSTPOETS NFT collection. Browse and search Poets, their Poems and their traits." },
   { name: "keywords", content: "lostpoets, Murat, Pak, NFT, poets, poems, poetry, find lost poets, NFT, NFTs" },
   { name: "author", content: "0xNosToca" }
 ];
@@ -39,7 +39,7 @@ export default function App() {
       <head>
         <Meta />
         <Links />
-        <title>FINDLOSTPOETS - Explore Murat Pak's LOSTPOETS NFT Collection</title>
+        <title>FINDLOSTPOETS - Explore Pak's LOSTPOETS NFT Collection</title>
       </head>
       <body>
         {/* Conditionally render Coming Soon page or the main Outlet based on environment */}
