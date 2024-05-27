@@ -11,6 +11,7 @@ import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import ImageCard from '~/components/image-card';
 import PoetModal from '~/components/modals/poetmodal';
+import PoemModal from '~/components/modals/poemmodal';
 import ErrorBoundary from '~/components/error-boundary';
 
 const PAGE_SIZE = 24;
@@ -90,7 +91,8 @@ function Index() {
 	const [poetCount, setPoetCount] = useState<number | null>(initialData.count);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 
-	const [poetClicked, setPoetClicked] = useState<Poet | null>(null);
+	const [showPoetModal, setShowPoetModal] = useState<Poet | null>(null);
+	const [showPoemModal, setShowPoemModal] = useState<string | null>(null);
 
   const [currentDbQuery, setCurrentDbQuery] = useState<SearchCriteria>({ orderBy: [{ pid: 'asc' }], take: PAGE_SIZE, skip: 0 });
 	const [poetSlidingWindow, setPoetSlidingWindow] = useState<Poet[]>(initialData.poets || []);
@@ -399,15 +401,11 @@ function Index() {
 	const handleShowingPoetDetail = (poet: Poet) => {
 		// Save current scroll position
 		sessionStorage.setItem('lastScrollPosition', window.scrollY.toString());
-		if (window.innerWidth >= 1024) {
-			setPoetClicked(poet);		
-		}
+		window.innerWidth >= 1024 ? setShowPoetModal(poet) : setShowPoemModal(poet.poem);
 	};
 
 	const handleReturnFromPoetDetail = () => {
-		if (window.innerWidth >= 1024) {
-    	setPoetClicked(null); 						// Clear the active poet detail view
-		}
+		window.innerWidth >= 1024 ? setShowPoetModal(null) : setShowPoemModal(null);
 		// Restore scroll position if available
 		requestAnimationFrame(() => {
 			const lastScrollPosition = sessionStorage.getItem('lastScrollPosition');
@@ -418,16 +416,27 @@ function Index() {
 		});
   };
 	
-	if (poetClicked) {
-		const poetDetailComponent = (
-			<PoetModal
-				poet={poetClicked} 
-				hasPoem={poetClicked.lexCnt > 0} 
-				onReturn={handleReturnFromPoetDetail} 
-			/>
-		);
+	if (showPoetModal) {
 		return (
-			<div>{poetDetailComponent}</div>);
+			<div>
+				<PoetModal
+					poet={showPoetModal} 
+					hasPoem={showPoetModal.lexCnt > 0} 
+					onReturn={handleReturnFromPoetDetail} 
+				/>
+			</div>
+		);
+	}
+
+	if (showPoemModal) {
+		return (
+			<div>
+				<PoemModal
+					poem={showPoemModal} 
+					onReturn={handleReturnFromPoetDetail} 
+				/>
+			</div>
+		);
 	}
 	
 	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
