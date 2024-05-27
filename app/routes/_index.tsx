@@ -237,7 +237,9 @@ function Index() {
 			}
 		}
 	}, [currentDbQuery, poetSlidingWindow, fetchMorePoets, fetcher.state]);
-/*
+
+	// Reset Observers useEffect - Reset the observers after returning from the Poet or Poem Modal views.
+	// Otherwise the scrolling will no longer work. 
 	useEffect(() => {
 		console.log("forwardSentinelRef.current useEffect");
     if (forwardSentinelRef.current && backwardSentinelRef.current) {
@@ -245,7 +247,7 @@ function Index() {
         backwardGlobalObserver.current?.observe(backwardSentinelRef.current);
     }
 	}, [forwardSentinelRef.current, backwardSentinelRef.current]);		
-*/
+
 	// InitialData useEffect
 	useEffect(() => {
 		if (initialData.poets.length > 0) {
