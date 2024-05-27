@@ -25,6 +25,8 @@ export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
   const [imageSize, setImageSize] = useState<ImageSize>('1X');
   const [containerDimensions, setContainerDimensions] = useState({ height: '75vh', width: '50%' });
 
+  const draggableRef = useRef<HTMLDivElement>(null);
+
   const [imageContainerHeight, setImageContainerHeight] = useState(() => {
     const navbarHeight = 56; // Assuming navbar height is known and fixed
     const initialViewportHeight = window.innerHeight;
@@ -146,8 +148,9 @@ export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
 
         {/* Poem modal */}
         {hasPoem && showPoemModal && (
-          <Draggable>
+          <Draggable nodeRef={draggableRef}>
             <div 
+              ref={draggableRef}
               className={`absolute left-[calc(50%+10px)] w-[calc(50%-40px)] h-[95%] border bg-verydarkgray border-darkgray text-pearlwhite rounded-3xl px-4 pb-4 z-50 transition-opacity duration-300 ease-in-out ${showPoemModal ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               style={{ cursor: 'move' }}
               onClick={(e) => e.stopPropagation()} // Prevents click from propagating to background
