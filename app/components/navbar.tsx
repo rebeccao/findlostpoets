@@ -53,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
 						<div className="text-sm mt-2 font-[LeagueSpartan-Light]">
 							POETS FOUND:
 						</div>
-						<div className="text-lg -mt-1 font-[LeagueSpartan-Regular]">
+						<div className="text-md -mt-1 font-[LeagueSpartan-Regular]">
 							{count}
 						</div>
 					</div>
