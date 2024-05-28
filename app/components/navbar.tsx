@@ -30,8 +30,8 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
   };
 
 	const dropdownStyles = {
-    backgroundColor: 'bg-lightmedgray',
-    textColor: 'text-closetoblack'
+    backgroundColor: 'bg-darkgray',
+    textColor: 'text-pearlwhite'
   };
 
   return (
