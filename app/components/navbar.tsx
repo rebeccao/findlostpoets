@@ -111,7 +111,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
             <div className={`absolute right-0 top-full mt-2 w-52 ${dropdownStyles.backgroundColor} ${dropdownStyles.textColor} rounded-xl z-50`}>
               <div className="p-3 flex justify-between items-center">
 								<span className="font-bold">Version Number:</span>
-								<span>1.0.0</span>
+								<span>0.1.0</span>
 							</div>
 							<div className="border-t border-naughtygray hidden"></div>
               <div className="p-3 cursor-pointer" onClick={openReleaseNotes} hidden>
