@@ -104,6 +104,9 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
             (UNOFFICIAL)
           </div> 
         </div>
+        {/* The Information icon has a dropdown that lists various information items. The */}
+        {/* dropdown is added on top of a viewport sized transparent over-lay that allows */}
+        {/* clicking anywhere on the view to dismiss the dropdown without activating PoetModals. */}
 			  <div className="relative flex items-center justify-center">
           <button 
             onClick={toggleDropdown} 
