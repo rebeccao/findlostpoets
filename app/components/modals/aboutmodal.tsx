@@ -28,7 +28,7 @@ const AboutModal: React.FC<AboutModalProps> = ({ onClose, backgroundColor, textC
           <p>
             Then the night before the Gen1 release, I used the unpublished OpenSea Refresh API to refresh the entire collection and take one final snapshot of Gen0. Little did I know, this would be the last hurrah for Gen0 data on OpenSea. Poof! It was gone. To my surprise, my Python generated LostPoets spreadsheet became the sole keeper of Gen0 data. So then I added the Gen1 data using Manifold's API to create the master spreadsheet. And on 22-Nov-22 the master spreadsheet was frozen.         </p>
           <p>
-            Now, with this master source of LostPoets data in hand, I knew it needed to be visualized. I studied website frameworks and was amazed by how far UX/UI had evolved in the last decade. I decided on a framework and database. Then with the help and guidance of ChatGPT, we developed FindLostPoets.
+            Now, with this master source of LostPoets data in hand, I knew it needed to be visualized. I studied website frameworks and was amazed by how far UX/UI had evolved in the last decade. I decided on a framework and database. Then with the help of ChatGPT, FindLostPoets was born.
           </p>
           <p>
             So, here we are, with a visual collection of LostPoets data. Ready to be explored. Enjoy the journey!
