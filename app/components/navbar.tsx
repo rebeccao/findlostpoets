@@ -1,11 +1,42 @@
-import React from 'react';
+// navbar.tsx
+import React, { useState } from 'react';
 import { NavbarProps } from '~/routes/_index';
-import { PiListMagnifyingGlassLight } from "react-icons/pi";  
+import { PiListMagnifyingGlassLight, PiListLight } from "react-icons/pi"; 
+import { GoChevronDown } from "react-icons/go";
+import ReleaseNotesModal from '~/components/modals/releasenotesmodal';
+import HelpModal from '~/components/modals/helpmodal';
+import AboutModal from '~/components/modals/aboutmodal';
 
 const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, count }) => {
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [isReleaseNotesOpen, setIsReleaseNotesOpen] = useState(false);
+	const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+	const openReleaseNotes = () => {
+    setIsReleaseNotesOpen(true);
+  };
+
+	const openHelp = () => {
+    setIsHelpOpen(true);
+  };
+
+  const openAbout = () => {
+    setIsAboutOpen(true);
+  };
+
+	const dropdownStyles = {
+    backgroundColor: 'bg-lightmedgray',
+    textColor: 'text-closetoblack'
+  };
+
   return (
     <header className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
-      {/* Small Screen Layout */}
+      {/* Small and Medium Screen Layout */}
       <div className="flex xl:hidden items-center justify-between w-full relative">
         <div className="flex items-start">
           <button 
@@ -38,7 +69,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
       	</div>
       </div>
 
-      {/* Medium and Larger Screen Layout */}
+      {/* Larger Screen Layout */}
       <div className="hidden xl:flex items-center justify-between w-full relative">
         <div className="flex items-center ml-3">
           <button 
@@ -50,7 +81,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
           </button>
 					{count !== undefined && (
           <div className="flex flex-col items-center ml-5">
-						<div className="text-sm mt-2 font-[LeagueSpartan-Light]">
+						<div className="text-xs mt-2 font-[LeagueSpartan-Light]">
 							POETS FOUND:
 						</div>
 						<div className="text-md -mt-1 font-[LeagueSpartan-Regular]">
@@ -67,10 +98,48 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
             (UNOFFICIAL)
           </div> 
         </div>
-        <div className="flex items-center justify-center invisible">
-          {/* Placeholder to keep the structure */}
-        </div>
-      </div>
+       {/* <div className="flex items-center justify-center"> */}
+			 <div className="relative flex items-center justify-center">
+          <button 
+            onClick={toggleDropdown} 
+            className="relative flex items-center justify-center h-14 w-14 hover-grow"
+            aria-label='Menu'
+          >
+            <PiListLight size={40} className="cursor-pointer" />
+          </button>
+          {isDropdownOpen && (
+            <div className={`absolute right-0 top-full mt-2 w-52 ${dropdownStyles.backgroundColor} ${dropdownStyles.textColor} rounded-xl z-50`}>
+              <div className="p-3 flex justify-between items-center">
+								<span className="font-bold">Version Number:</span>
+								<span>1.0.0</span>
+							</div>
+							<div className="border-t border-naughtygray hidden"></div>
+              <div className="p-3 cursor-pointer" onClick={openReleaseNotes} hidden>
+								<div className="flex justify-between items-center">
+									<h2 className="font-bold">Release Notes</h2>
+									<GoChevronDown />
+								</div>
+							</div>
+							<div className="border-t border-naughtygray"></div>
+							<div className="p-3 cursor-pointer" onClick={openHelp}>
+								<div className="flex justify-between items-center">
+									<h2 className="font-bold">Help</h2>
+									<GoChevronDown />
+								</div>
+							</div>
+							<div className="border-t border-naughtygray"></div>
+							<div className="p-3 cursor-pointer" onClick={openAbout}>
+								<div className="flex justify-between items-center">
+									<h2 className="font-bold">About</h2>
+									<GoChevronDown />
+								</div>
+							</div>
+            </div>
+          )}
+					{isReleaseNotesOpen && <ReleaseNotesModal onClose={() => setIsReleaseNotesOpen(false)} backgroundColor={dropdownStyles.backgroundColor} textColor={dropdownStyles.textColor} />}
+      		{isAboutOpen && <AboutModal onClose={() => setIsAboutOpen(false)} backgroundColor={dropdownStyles.backgroundColor} textColor={dropdownStyles.textColor} />}
+				</div>
+			</div>
     </header>
   );
 });
