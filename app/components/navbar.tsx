@@ -43,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
   return (
     <header ref={navbarRef} className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
       {/* Small and Medium Screen Layout */}
-      <div className="flex xl:hidden items-center justify-between w-full relative">
+      <div className="flex md:hidden items-center justify-between w-full relative">
         <div className="flex items-start">
           <button 
             onClick={toggleSidebar} 
@@ -76,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
       </div>
 
       {/* Larger Screen Layout */}
-      <div className="hidden xl:flex items-center justify-between w-full relative">
+      <div className="hidden md:flex items-center justify-between w-full relative">
         <div className="flex items-center ml-3">
           <button 
             onClick={toggleSidebar} 
