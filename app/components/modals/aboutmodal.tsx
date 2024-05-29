@@ -3,13 +3,11 @@ import BaseModal from '~/components/modals/baseinfomodal';
 
 interface AboutModalProps {
   onClose: () => void;
-  backgroundColor: string;
-  textColor: string;
 }
 
-const AboutModal: React.FC<AboutModalProps> = ({ onClose, backgroundColor, textColor }) => {
+const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
   return (
-    <BaseModal onClose={onClose} title="About" backgroundColor={backgroundColor} textColor={textColor}>
+    <BaseModal onClose={onClose} title="About">
       <p>
         A couple years ago I decided to learn Python. I stumbled on a blog that used OpenSea's API to gather data about the MEEBIT collection. Naturally, I thought, "Why not do the same for LostPoets?" So, I dove in, collected all the OpenSea LostPoets Gen0 data, and created the spreadsheet. Initially, my grand strategy was to leverage this data to acquire the Poets with the rarest traits. But ultimately, I shared the spreadsheet with Pak's Discord group because I wanted to help those who shared my passion of finding Poets with rare traits.
       </p>

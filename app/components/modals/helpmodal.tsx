@@ -4,13 +4,11 @@ import { PiListMagnifyingGlassLight, PiListLight } from "react-icons/pi";
 
 interface HelpModalProps {
   onClose: () => void;
-  backgroundColor: string;
-  textColor: string;
 }
 
-const HelpModal: React.FC<HelpModalProps> = ({ onClose, backgroundColor, textColor }) => {
+const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
   return (
-    <BaseModal onClose={onClose} title="Help" backgroundColor={backgroundColor} textColor={textColor}>
+    <BaseModal onClose={onClose} title="Help">
       <p className="mb-4">
       <span className="font-light text-xl">FINDLOSTPOETS</span> lets you discover poets from Murat Pak's Lostpoets NFT collection and explore their details.
       </p>
