@@ -120,27 +120,27 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
               <div className="fixed inset-0 z-40 bg-transparent pointer-events-auto" onClick={closeDropdown}></div>
               <div className={`absolute z-50 right-0 top-full mt-2 w-52 ${dropdownStyles.backgroundColor} ${dropdownStyles.textColor} rounded-xl pointer-events-auto`}>
                 <div className="p-3 flex justify-between items-center">
-                  <span className="font-medium">Version Number:</span>
+                  <span className="font-normal">Version Number:</span>
                   <span>0.1.0</span>
                 </div>
                 <div className="border-t border-naughtygray hidden"></div>
                 <div className="p-3 cursor-pointer" onClick={openReleaseNotes} hidden>
                   <div className="flex justify-between items-center">
-                    <h2 className="font-medium">Release Notes</h2>
+                    <h2 className="font-normal">Release Notes</h2>
                     <GoChevronDown />
                   </div>
                 </div>
                 <div className="border-t border-naughtygray"></div>
                 <div className="p-3 cursor-pointer" onClick={openHelp}>
                   <div className="flex justify-between items-center">
-                    <h2 className="font-medium">Help</h2>
+                    <h2 className="font-normal">Help</h2>
                     <GoChevronDown />
                   </div>
                 </div>
                 <div className="border-t border-naughtygray"></div>
                 <div className="p-3 cursor-pointer" onClick={openAbout}>
                   <div className="flex justify-between items-center">
-                    <h2 className="font-medium">About</h2>
+                    <h2 className="font-normal">About</h2>
                     <GoChevronDown />
                   </div>
                 </div>
