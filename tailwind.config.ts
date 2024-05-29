@@ -43,7 +43,10 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Arial', 'Helvetica'],
+        sans: ['Inter', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'], // Base font family. Root.tsx always uses the first.
+        roboto: ['Roboto', 'sans-serif'],
+        helvetica: ['Helvetica', 'sans-serif'],
+        arial: ['Arial', 'sans-serif'],
       },
       spacing: {
         'navbar': '56px',      // custom spacing for navbar height

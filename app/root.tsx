@@ -20,7 +20,8 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: "/app/tailwind.css", precedence: 'high' },
   { rel: "canonical", href: "https://findlostpoets.xyz" },
   { rel: "icon", href: "/favicon.ico" },
-  { rel: "apple-touch-icon", href: "/apple-touch-icon.png" }
+  { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap" },
+  { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" },
 ];
 
 export const meta: MetaFunction = () => [
@@ -41,7 +42,8 @@ export default function App() {
         <Links />
         <title>FINDLOSTPOETS - Explore Pak's LOSTPOETS NFT Collection</title>
       </head>
-      <body>
+      {/* Use the first font in tailwind.config.ts fontFamily */}
+      <body className="font-sans">
         {/* Conditionally render Coming Soon page or the main Outlet based on environment */}
         {isProduction ? <ComingSoon /> : <Outlet />}
         <h1 className="screenreader-only">FINDLOSTPOETS: Browse Poets, Poems and Traits</h1>

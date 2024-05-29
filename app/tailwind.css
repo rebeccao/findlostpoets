@@ -49,11 +49,8 @@
   padding-right: 1.5rem; /* Ensure padding to the right is sufficient to not overlap text */
 }
 
-@font-face {
-  font-family: 'JosefinSans-Bold';
-  src: url('/fonts/JosefinSans-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
+body {
+  @apply font-sans;
 }
 
 @font-face {

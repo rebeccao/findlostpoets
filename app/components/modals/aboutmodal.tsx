@@ -14,12 +14,12 @@ const AboutModal: React.FC<AboutModalProps> = ({ onClose, backgroundColor, textC
       <div className={`p-10 rounded-xl shadow-lg w-[70vw] max-w-5xl h-3/4 overflow-y-auto ${backgroundColor} ${textColor}`}>
 
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">About</h2>
+          <h2 className="text-2xl font-medium">About</h2>
           <button onClick={onClose} aria-label="Close">
             <GrClose size={24} />
           </button>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-4 font-extralight">
           <p>
             A couple years ago I decided to learn Python. I stumbled on a blog that used OpenSea's API to gather data about the MEEBIT collection. Naturally, I thought, "Why not do the same for LostPoets?" So, I dove in, collected all the OpenSea LostPoets Gen0 data, and created the spreadsheet. Initially, my grand strategy was to leverage this data to acquire the Poets with the rarest traits. But ultimately, I shared the spreadsheet with Pak's Discord group because I wanted to help those who shared my passion of finding Poets with rare traits.
           </p>
