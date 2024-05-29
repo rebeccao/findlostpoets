@@ -35,11 +35,6 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
     setIsAboutOpen(true);
   };
 
-	const dropdownStyles = {
-    backgroundColor: 'bg-darkgray',
-    textColor: 'text-pearlwhite'
-  };
-
   return (
     <header ref={navbarRef} className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
       {/* Small and Medium Screen Layout */}
@@ -118,7 +113,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
           {isDropdownOpen && (
             <>
               <div className="fixed inset-0 z-40 bg-transparent pointer-events-auto" onClick={closeDropdown}></div>
-              <div className={`absolute z-50 right-0 top-full mt-2 w-52 ${dropdownStyles.backgroundColor} ${dropdownStyles.textColor} rounded-xl pointer-events-auto`}>
+              <div className={`absolute z-50 right-0 top-full mt-2 w-52 bg-darkgray text-pearlwhite rounded-xl pointer-events-auto`}>
                 <div className="p-3 flex justify-between items-center">
                   <span className="font-normal">Version Number:</span>
                   <span>0.1.0</span>
@@ -147,9 +142,9 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
               </div>
             </>
           )}
-					{isReleaseNotesOpen && <ReleaseNotesModal onClose={() => setIsReleaseNotesOpen(false)} backgroundColor={dropdownStyles.backgroundColor} textColor={dropdownStyles.textColor} />}
-      		{isHelpOpen && <HelpModal onClose={() => setIsHelpOpen(false)} backgroundColor={dropdownStyles.backgroundColor} textColor={dropdownStyles.textColor} />}
-          {isAboutOpen && <AboutModal onClose={() => setIsAboutOpen(false)} backgroundColor={dropdownStyles.backgroundColor} textColor={dropdownStyles.textColor} />}
+					{isReleaseNotesOpen && <ReleaseNotesModal onClose={() => setIsReleaseNotesOpen(false)} />}
+      		{isHelpOpen && <HelpModal onClose={() => setIsHelpOpen(false)} />}
+          {isAboutOpen && <AboutModal onClose={() => setIsAboutOpen(false)} />}
 				</div>
 			</div>
     </header>
