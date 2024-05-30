@@ -169,7 +169,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   const resetSearch = () => {
     // Clear the search term input field and reset its placeholder
     if (inputRef.current) {
-      inputRef.current.value = '';
+      //inputRef.current.value = '';
       inputRef.current.placeholder = 'Enter search term...';
     }
     clearSearchTraitInput();
