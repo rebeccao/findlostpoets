@@ -37,6 +37,9 @@ export default {
       placeholderColor: {
         mediumgray:   '#9E9E9E',
       },
+      transitionDuration: {
+        '400': '400ms',
+      },
       variants: {
         extend: {
             placeholderColor: ['focus', 'hover'],

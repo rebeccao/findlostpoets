@@ -132,7 +132,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
           <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div><span className="text-xs font-light">{rarityCount !== undefined && rarityTraitLabel ? rarityTraitLabel : "Poet ID:"}</span></div>
           <div><span className="text-xs font-light">Age:</span></div>
-          <div><span className="text-xs font-light">Influence:</span></div>
+          <div><span className="text-xs font-light">Influ:</span></div>
           <div><span className="text-xs font-light">Rewrites:</span></div>
           <div><span className="text-sm font-medium">{rarityCount !== undefined ? rarityCount : poet.pid}</span></div>
           <div><span className="text-sm font-medium">{poet.age}</span></div>

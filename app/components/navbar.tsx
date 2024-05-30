@@ -16,7 +16,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
   const navbarRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+    setIsDropdownOpen((prev) => !prev);
   };
 
   const closeDropdown = () => {
@@ -105,43 +105,50 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
 			  <div className="relative flex items-center justify-center">
           <button 
             onClick={toggleDropdown} 
-            className="relative flex items-center justify-center h-14 w-14 hover-grow"
+            className="relative flex items-center justify-center h-14 w-14"
             aria-label='Menu'
           >
             <PiListLight size={40} className="cursor-pointer" />
           </button>
-          {isDropdownOpen && (
-            <>
-              <div className="fixed inset-0 z-40 bg-transparent pointer-events-auto" onClick={closeDropdown}></div>
-              <div className={`absolute z-50 right-0 top-full mt-2 w-52 bg-darkgray text-pearlwhite rounded-xl pointer-events-auto`}>
-                <div className="p-3 flex justify-between items-center">
-                  <span className="font-normal">Version Number:</span>
-                  <span>0.1.0</span>
-                </div>
-                <div className="border-t border-naughtygray hidden"></div>
-                <div className="p-3 cursor-pointer" onClick={openReleaseNotes} hidden>
-                  <div className="flex justify-between items-center">
-                    <h2 className="font-normal">Release Notes</h2>
-                    <GoChevronDown />
-                  </div>
-                </div>
-                <div className="border-t border-naughtygray"></div>
-                <div className="p-3 cursor-pointer" onClick={openHelp}>
-                  <div className="flex justify-between items-center">
-                    <h2 className="font-normal">Help</h2>
-                    <GoChevronDown />
-                  </div>
-                </div>
-                <div className="border-t border-naughtygray"></div>
-                <div className="p-3 cursor-pointer" onClick={openAbout}>
-                  <div className="flex justify-between items-center">
-                    <h2 className="font-normal">About</h2>
-                    <GoChevronDown />
-                  </div>
-                </div>
+          <div
+            className={`fixed inset-0 z-40 bg-transparent pointer-events-auto transition-opacity duration-300 ${
+              isDropdownOpen ? 'opacity-100' : 'opacity-0'
+            }`}
+            onClick={closeDropdown}
+            style={{ pointerEvents: isDropdownOpen ? 'auto' : 'none' }}
+          ></div>
+          <div
+            className={`absolute z-50 right-0 top-full mt-2 w-52 bg-darkgray text-pearlwhite rounded-xl pointer-events-auto transition-all duration-400 ease-out transform ${
+              isDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+            }`}
+          >
+            <div className="p-3 flex justify-between items-center">
+              <span className="font-normal">Version Number:</span>
+              <span>0.1.0</span>
+            </div>
+            <div className="border-t border-naughtygray hidden"></div>
+            <div className="p-3 cursor-pointer" onClick={openReleaseNotes} hidden>
+              <div className="flex justify-between items-center">
+                <h2 className="font-normal">Release Notes</h2>
+                <GoChevronDown />
               </div>
-            </>
-          )}
+            </div>
+            <div className="border-t border-naughtygray"></div>
+            <div className="p-3 cursor-pointer" onClick={openHelp}>
+              <div className="flex justify-between items-center">
+                <h2 className="font-normal">Help</h2>
+                <GoChevronDown />
+              </div>
+            </div>
+            <div className="border-t border-naughtygray"></div>
+            <div className="p-3 cursor-pointer" onClick={openAbout}>
+              <div className="flex justify-between items-center">
+                <h2 className="font-normal">About</h2>
+                <GoChevronDown />
+              </div>
+            </div>
+          </div>
+          
 					{isReleaseNotesOpen && <ReleaseNotesModal onClose={() => setIsReleaseNotesOpen(false)} />}
       		{isHelpOpen && <HelpModal onClose={() => setIsHelpOpen(false)} />}
           {isAboutOpen && <AboutModal onClose={() => setIsAboutOpen(false)} />}
