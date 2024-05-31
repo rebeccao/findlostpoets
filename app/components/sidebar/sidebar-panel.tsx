@@ -278,7 +278,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   return (
     <div className="flex flex-col h-full relative border bg-verydarkgray border-darkgray">
       <div className="flex-grow overflow-y-auto scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
-        <div className="pt-4 pb-4">
+        <div className="pt-4 pb-4 font-light">
           {sidebarItems.map((sidebarItem, index) => {
             return (
               <React.Fragment key={sidebarItem.title}>
@@ -293,7 +293,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                     <select
                       id="traitSelect"  
                       name="traitSelect"
-                      className="form-select block w-2/5 mb-0 mr-2 text-sm py-2 px-2 rounded-lg font-medium text-pearlwhite focus:outline-none bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray flex-grow" 
+                      className="form-select block w-2/5 mb-0 mr-2 text-sm py-2 px-2 rounded-lg text-pearlwhite focus:outline-none bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray flex-grow" 
                       onChange={(e) => handleSearchTraitChange(e.target.value)}
                       aria-label="Select a trait"
                     >
@@ -443,13 +443,13 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
         {/* Buttons Container */}
         <div className="sticky bottom-0 p-4 flex justify-center space-x-2">
           <button
-            className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-davysgray border-naughtygray hover:bg-darkgray hover:border-charcoalgray"// Lighter for secondary clear action
+            className="w-1/4 p-2 rounded-lg shadow-sm text-white border bg-davysgray border-naughtygray hover:bg-darkgray hover:border-charcoalgray"// Lighter for secondary clear action
             onClick={handleSearchClick}
           >
             Search
           </button>
           <button
-            className="w-1/4 p-2 rounded-lg shadow-sm font-medium text-white border bg-charcoalgray border-gunmetalgray hover:bg-darkgray hover:border-charcoalgray" // Darker for primary action
+            className="w-1/4 p-2 rounded-lg shadow-sm text-white border bg-charcoalgray border-gunmetalgray hover:bg-darkgray hover:border-charcoalgray" // Darker for primary action
             onClick={resetSearch} // Assuming this resets all search inputs
           >
             Clear
