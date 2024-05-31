@@ -10,7 +10,7 @@ interface BaseModalProps {
 const BaseModal: React.FC<BaseModalProps> = ({ onClose, title, children}) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-      <div className={`relative px-5 pb-10 rounded-xl shadow-lg w-[70vw] max-w-5xl h-3/4 overflow-y-auto bg-darkgray text-pearlwhite`}>
+      <div className={`relative px-5 pb-10 rounded-xl shadow-lg w-[70vw] max-w-5xl h-3/4 overflow-y-auto border bg-darkgray border-deepgray text-pearlwhite`}>
         <div className="sticky top-0 bg-inherit flex justify-between items-center z-10 py-4">
           <h2 className="text-2xl font-normal">{title}</h2>
           <button onClick={onClose} aria-label="Close">

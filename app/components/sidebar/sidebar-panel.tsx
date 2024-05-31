@@ -404,7 +404,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                                   e.target.placeholder = expandedSidebarItem.min || ''; // Restore placeholder if input is empty
                               }
                             }}
-                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic border placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
+                            className="form-input text-xs p-2 text-center w-[70px] rounded-lg placeholder-italic border placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                           />
                           <span>-</span> {/* Dash */}
                           {/* Max Input */}
@@ -429,7 +429,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                                   e.target.placeholder = expandedSidebarItem.max || ''; // Restore placeholder if input is empty
                               }
                             }}
-                            className="form-input text-xs py-2 pl-4 text-right w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
+                            className="form-input text-xs p-2 text-center w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                           />
                         </div>
                       </div>
