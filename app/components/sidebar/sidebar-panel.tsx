@@ -278,7 +278,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   return (
     <div className="flex flex-col h-full relative border bg-verydarkgray border-darkgray">
       <div className="flex-grow overflow-y-auto scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
-        <div className="pt-4 pb-4 font-light">
+        <div className="pt-4 pb-4 font-normal">
           {sidebarItems.map((sidebarItem, index) => {
             return (
               <React.Fragment key={sidebarItem.title}>
@@ -293,7 +293,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                     <select
                       id="traitSelect"  
                       name="traitSelect"
-                      className="form-select block w-2/5 mb-0 mr-2 text-sm py-2 px-2 rounded-lg text-pearlwhite focus:outline-none bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray flex-grow" 
+                      className="form-select block w-[40%] flex-shrink-0 flex-grow-0 flex-basis-[40%] mr-2 text-sm py-2 px-2 rounded-lg text-pearlwhite focus:outline-none bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray" 
                       onChange={(e) => handleSearchTraitChange(e.target.value)}
                       aria-label="Select a trait"
                     >
@@ -302,20 +302,21 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                       ))}
                     </select>
                     {/* Single search box */}
-                    <div className="relative flex items-center">
+                    <div className="relative flex items-center w-[60%] flex-shrink-0 flex-grow-0 flex-basis-[60%] pr-3">
                       <input
                         id="searchTerm"  
                         name="searchTerm"
                         type="text"
                         placeholder="Enter search term..."
                         ref={inputRef} 
+                        value={searchTrait.searchTraitValue}
+                        className="form-input block w-full py-2 text-sm rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                         onFocus={(e) => e.target.placeholder = ''} // Clear placeholder on focus
                         onBlur={(e) => {
                           if (e.target.value === '') {
                               e.target.placeholder = "Enter search term..."; // Restore placeholder if input is empty
                           }
                         }}
-                        value={searchTrait.searchTraitValue}
                         onChange={(e) => {
                           const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey);
                           if (selectedTrait) {
@@ -332,7 +333,6 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                             handleSearchClick(); // Call the search handler when Enter key is pressed
                           }
                         }}
-                        className="form-input block placeholder-italic placeholder-mediumgray flex-grow w-3/5 text-sm py-2 px-4 rounded-lg text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                       />
                       {errorMessages[searchTrait.searchTraitKey] && (
                         <FloatingError
