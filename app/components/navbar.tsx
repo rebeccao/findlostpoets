@@ -149,9 +149,28 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
             </div>
           </div>
           
-					{isReleaseNotesOpen && <ReleaseNotesModal onClose={() => setIsReleaseNotesOpen(false)} />}
-      		{isHelpOpen && <HelpModal onClose={() => setIsHelpOpen(false)} />}
-          {isAboutOpen && <AboutModal onClose={() => setIsAboutOpen(false)} />}
+					<div
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-500 ${
+              isReleaseNotesOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <ReleaseNotesModal onClose={() => setIsReleaseNotesOpen(false)} isOpen={isReleaseNotesOpen} />
+          </div>
+          <div
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-500 ${
+              isHelpOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <HelpModal onClose={() => setIsHelpOpen(false)} isOpen={isHelpOpen} />
+          </div>
+          <div
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-500 ${
+              isAboutOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <AboutModal onClose={() => setIsAboutOpen(false)} isOpen={isAboutOpen} />
+          </div>
+
 				</div>
 			</div>
     </header>
