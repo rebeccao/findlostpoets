@@ -5,7 +5,6 @@ import { json } from '@remix-run/node'
 import { prisma } from '~/utils/prisma.server'
 import debounce from 'lodash/debounce';
 import type { Poet } from '@prisma/client';
-import '~/tailwind.css';
 import Navbar from '~/components/navbar';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import { sidebarItems } from '~/components/sidebar/sidebar-data';

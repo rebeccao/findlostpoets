@@ -5,3 +5,13 @@ export default {
     autoprefixer: {},
   }
 };
+
+
+// postcss.config.js using CommonJS syntax
+//module.exports = {
+//  plugins: {
+//    tailwindcss: {},
+//    autoprefixer: {},
+//  },
+//};
+

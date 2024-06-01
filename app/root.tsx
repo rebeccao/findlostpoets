@@ -1,6 +1,7 @@
 // ./app/root.tsx
 
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import stylesheet from "~/tailwind.css?url";
 import ComingSoon from '~/components/coming-soon';
 
 import {
@@ -17,7 +18,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: "/app/tailwind.css", precedence: 'high' },
+  { rel: "stylesheet", href: stylesheet, precedence: 'high' },
   { rel: "canonical", href: "https://findlostpoets.xyz" },
   { rel: "icon", href: "/favicon.ico" },
   { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap" },
