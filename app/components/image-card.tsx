@@ -81,18 +81,6 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     const poem = poet.poem || '';       // Ensure poet.poem is defined
     const formattedPoem = poem.substring(0, 16).replace(/\n+/g, ' ').trim() + (poem.length > 16 ? "..." : '');
 
-    useEffect(() => {
-      if (typeof window !== 'undefined') {
-        console.log('Client:', formattedPoem);
-        //console.log('Client poet.poem:', poet.poem);
-      }
-    }, [poet.poem]);
-    
-    if (typeof window === 'undefined') {
-      console.log('Server:', formattedPoem);
-      //console.log('Server poet.poem:', poet.poem);
-    }
-
     return (
       <div ref={ref} data-pid={poet.pid} className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
         <div className="relative w-full pb-[100%] mb-2">
