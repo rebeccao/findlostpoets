@@ -57,7 +57,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		let dbQuery: SearchCriteria = { orderBy: [{ pid: 'asc' }], skip: 0, take:PAGE_SIZE }; // query on first load
 		
 		const searchQuery = url.searchParams.get("query");
-		customLog('++++++  Index loader: Received searchQuery:', searchQuery);
+		customLog('IndexLoader', '++++++  Index loader: Received searchQuery:', searchQuery);
 
 		if (searchQuery) {
 			try {
@@ -118,7 +118,7 @@ function Index() {
     const data = fetcher.data as LoaderData | undefined;
   
     if (data) {
-			customLog("useEffect fetcher.data");
+			console.log("useEffect fetcher.data");
 			if ('error' in data && data.error) {
 				// Log the detailed error message if available or provide a generic error message
 				console.error("Error fetching poets:", data.detail || 'Unknown error occurred.');
@@ -151,17 +151,17 @@ function Index() {
 
 		setCurrentDbQuery(newQuery);
 		setFetchDirection(direction);
-		//customLog("        --> fetchMorePoets direction = ", direction, "newQuery = ", JSON.stringify(newQuery, null, 2));
-		customLog("        --> fetchMorePoets direction = ", direction, "newQuery = ", newQuery);
+		//console.log("        --> fetchMorePoets direction = ", direction, "newQuery = ", JSON.stringify(newQuery, null, 2));
+		console.log("        --> fetchMorePoets direction = ", direction, "newQuery = ", newQuery);
 
 		if (forwardGlobalObserver.current) {
 			forwardGlobalObserver.current.disconnect(); // Temporarily disconnect
-			//customLog("fetchMorePoets --- forwardGlobalObserver.current.disconnect() = ", forwardGlobalObserver.current);
+			//console.log("fetchMorePoets --- forwardGlobalObserver.current.disconnect() = ", forwardGlobalObserver.current);
 		}
 
 		if (backwardGlobalObserver.current) {
 			backwardGlobalObserver.current.disconnect(); // Temporarily disconnect
-			//customLog("fetchMorePoets --- backwardGlobalObserver.current.disconnect() = ", backwardGlobalObserver.current);
+			//console.log("fetchMorePoets --- backwardGlobalObserver.current.disconnect() = ", backwardGlobalObserver.current);
 		}
 	
 		const queryString = JSON.stringify(newQuery);
@@ -172,8 +172,8 @@ function Index() {
 	// setupObserver callback
 	const setupObserver = useCallback(() => {
 		if (poetSlidingWindow.length > 0) {
-			customLog("********  setupObserver  fetchDirection = ", fetchDirection);
-			customLog("******************************************************************************************************************************************");
+			console.log("********  setupObserver  fetchDirection = ", fetchDirection);
+			console.log("******************************************************************************************************************************************");
 			
 			// Disconnect the current global observers if they exist
 			if (backwardGlobalObserver.current) {
@@ -188,30 +188,30 @@ function Index() {
 					if (entry.isIntersecting && fetcher.state !== 'loading') {
 						if (entry.target === forwardSentinelRef.current && poetSlidingWindow.length > 0 && hasMore) {
 							
-							customLog("observerCallback -- isIntersecting forwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target =", entry.target?.getAttribute('data-pid'), "-- backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "-- forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
-							customLog("                 -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
+							console.log("observerCallback -- isIntersecting forwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target =", entry.target?.getAttribute('data-pid'), "-- backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "-- forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
+							console.log("                 -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
 							let nextSkip = currentDbQuery.skip + PAGE_SIZE;
 							// Switched directions from backward to forward, set nextSkip to end of poetSlidingWindow
 							if (fetchDirection === 'backward') {
-								customLog("                -- #####  (fetchDirection === backward ######");
+								console.log("                -- #####  (fetchDirection === backward ######");
 								nextSkip = currentDbQuery.skip + (3 * PAGE_SIZE);
-								customLog("                -- (fetchDirection switched to backward - nextSkip = currentDbQuery.skip + (3 * PAGE_SIZE) = ", nextSkip = currentDbQuery.skip + (3 * PAGE_SIZE));
+								console.log("                -- (fetchDirection switched to backward - nextSkip = currentDbQuery.skip + (3 * PAGE_SIZE) = ", nextSkip = currentDbQuery.skip + (3 * PAGE_SIZE));
 							}
-							customLog("                 -- currentDbQuery.skip = ", currentDbQuery.skip, "nextSkip = ", nextSkip);
+							console.log("                 -- currentDbQuery.skip = ", currentDbQuery.skip, "nextSkip = ", nextSkip);
 							fetchMorePoets('forward', nextSkip); // Fetch next page
 
 						} else if (entry.target === backwardSentinelRef.current && poetSlidingWindow[0].pid !== 1 && poetSlidingWindow.length > 0) {
 
-							customLog("observerCallback -- isIntersecting backwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target =", entry.target?.getAttribute('data-pid'), "-- backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "-- forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
-							customLog("                 -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
+							console.log("observerCallback -- isIntersecting backwardSentinel -- fetchDirection=", fetchDirection, "-- entry.target =", entry.target?.getAttribute('data-pid'), "-- backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "-- forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
+							console.log("                 -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
 							//const firstPoetIndexOriginal = poetSlidingWindow[0].pid; 
 							const firstPoetIndex = windowIndices.backwardIndex;
-							//customLog("                 -- firstPoetIndexOriginal = ", firstPoetIndexOriginal, "firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
-							customLog("                 -- firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
+							//console.log("                 -- firstPoetIndexOriginal = ", firstPoetIndexOriginal, "firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
+							console.log("                 -- firstPoetIndex = ", firstPoetIndex, "currentDbQuery.skip = ", currentDbQuery.skip);
 							const newFirstPoetIndex = firstPoetIndex - PAGE_SIZE;
 							if (newFirstPoetIndex > 0) {
 								const backwardSkip = newFirstPoetIndex - 1;
-								customLog("                 -- backwardSkip = ", backwardSkip);
+								console.log("                 -- backwardSkip = ", backwardSkip);
 								fetchMorePoets('backward', backwardSkip); // Fetch page to append at beginning of poetSlidingWindow
 							}
 						}
@@ -241,7 +241,7 @@ function Index() {
 	// Reset Observers useEffect - Reset the observers after returning from the Poet or Poem Modal views.
 	// Otherwise the scrolling will no longer work. 
 	useEffect(() => {
-		customLog("forwardSentinelRef.current useEffect");
+		console.log("forwardSentinelRef.current useEffect");
     if (forwardSentinelRef.current && backwardSentinelRef.current) {
         forwardGlobalObserver.current?.observe(forwardSentinelRef.current);
         backwardGlobalObserver.current?.observe(backwardSentinelRef.current);
@@ -255,8 +255,8 @@ function Index() {
       // and if globalObserver is initialized 
       if (!forwardGlobalObserver.current && initialData.poets.length === PAGE_SIZE) {
 				setCurrentDbQuery({ ...currentDbQuery, skip: PAGE_SIZE, take: PAGE_SIZE });		// Update current query skip
-				customLog("useEffect InitialData CALLING setupObserver setupObserver forward, currentDbQuery = ", currentDbQuery);
-				customLog("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
+				console.log("useEffect InitialData CALLING setupObserver setupObserver forward, currentDbQuery = ", currentDbQuery);
+				console.log("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
 				setupObserver();
       }
     }
@@ -269,7 +269,7 @@ function Index() {
 			const poetsArray = fetcherData.poets || []; // Default to an empty array if undefined
 
 			if (poetsArray.length > 0) {
-				customLog("useEffect Append fetcherData -- poetsArray.length =", poetsArray.length);
+				console.log("useEffect Append fetcherData -- poetsArray.length =", poetsArray.length);
 				setHasMore(poetsArray.length == PAGE_SIZE);
 				setPoetSlidingWindow((prevPoets) => {
 					let updatedPoets: Poet[] = [];
@@ -307,9 +307,9 @@ function Index() {
 	useEffect(() => {
 		if (poetSlidingWindowUpdated && poetSlidingWindow.length > 0) {
 			setPoetSlidingWindowUpdated(false);
-			customLog("useEffect poetSlidingWindow updated CALLING setupObserver --  backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
-			customLog("                                    -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
-			customLog("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
+			console.log("useEffect poetSlidingWindow updated CALLING setupObserver --  backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
+			console.log("                                    -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
+			console.log("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
 			setupObserver();
 		}
 	}, [poetSlidingWindow, poetSlidingWindowUpdated, setupObserver]);
@@ -355,7 +355,7 @@ function Index() {
 
 		// Update currentDbQuery
 		setCurrentDbQuery(query);
-		customLog('**************************** performSearch: query));', JSON.stringify(query, null, 2));
+		console.log('**************************** performSearch: query));', JSON.stringify(query, null, 2));
 		
 		const queryString = JSON.stringify(query);
   	const dbQueryString = new URLSearchParams({ query: queryString }).toString();
@@ -367,7 +367,7 @@ function Index() {
 	// Callback from SidebarPanel when the user selects a searchTrait and sets its value
 	const handleSearchTraitChange = useCallback((searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => {
     setSearchTrait(searchTraitState);
-		customLog("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
+		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
   }, []);
 
 	// Callback from SidebarPanel when the user selects the rare trait checkbox
