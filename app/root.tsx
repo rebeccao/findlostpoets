@@ -12,10 +12,15 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+// Save the original console.log
+const originalConsoleLog = console.log;
+
+// Define your custom logging function
 export const customLog = (context: string, ...args: any[]) => {
-  const enabledContexts = ['IndexLoader'];
-  if (enabledContexts.includes(context)) {
-    console.log(...args);
+  const enabledContexts = ['IndexLoader']; // Only enable logging for IndexLoader in production
+  if (process.env.NODE_ENV !== 'production' || enabledContexts.includes(context)) {
+    // Use the original console.log to avoid being silenced by the override
+    originalConsoleLog(`[${context}]`, ...args);
   }
 };
 
