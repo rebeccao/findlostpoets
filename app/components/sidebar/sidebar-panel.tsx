@@ -6,6 +6,7 @@ import Tooltip from "~/components/tooltip";
 import type { SidebarProps, SearchCriteria } from "~/routes/_index";
 import type { ExpandedSidebarItem } from "~/components/sidebar/sidebar-data";
 import { FloatingError } from "~/components/floating-error";
+import { customLog } from '~/root';
 
 const SidebarPanel: React.FC<SidebarProps> = React.memo(({ 
   searchTrait,
@@ -141,14 +142,14 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   };
 
   const handleRareTraitChange = (selectedDbField: string) => {
-    console.log("Changing rare trait to:", selectedDbField);
+    customLog("Changing rare trait to:", selectedDbField);
     // Directly call the onRareTraitChange prop with the dbField of the clicked checkbox
     onRareTraitChange(selectedDbField); // This function expects a single string or null
   };
 
   // Update for checkbox change to also clear or set active trait
   const handleRangeCheckboxChange = (selectedDbField: string) => {
-    console.log("Changing range trait to:", selectedDbField);
+    customLog("Changing range trait to:", selectedDbField);
     if (selectedRangeTrait === selectedDbField) {
       onRangeTraitSelect(null); // Deselect if the same trait is clicked again
     } else {
@@ -205,7 +206,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     });
 
     const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }], skip: 0 };
-    console.log("SidebarPanel: resetSearch dbQuery: ", dbQuery);
+    customLog("SidebarPanel: resetSearch dbQuery: ", dbQuery);
     performSearch(dbQuery);
   };
 
@@ -271,7 +272,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
       dbQuery.orderBy = [{ pid: 'asc' }];
     }
   
-    console.log("SidebarPanel: handleSearchClick dbQuery: ", dbQuery);
+    customLog("SidebarPanel: handleSearchClick dbQuery: ", dbQuery);
     performSearch(dbQuery);
   };
 

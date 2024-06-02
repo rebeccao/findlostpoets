@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { Poet } from '@prisma/client'
+import { customLog } from '~/root';
 
 interface ImageCardProps {
   poet: Poet;
@@ -45,13 +46,13 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     // that the images are preloaded and ready to be displayed once they are fully loaded.
     // Added this useEffect to fix images not loading when the placeholder was introduced.
     useEffect(() => {
-      //console.log('Gen1 Image URL:', imageUrl);
+      //customLog('Gen1 Image URL:', imageUrl);
     
       const img = new Image();
       img.src = imageUrl;
       img.onload = () => {
         setGen1ImageLoaded(true);
-        //console.log('Gen1 image loaded successfully.');
+        //customLog('Gen1 image loaded successfully.');
       };
       /* Commenting this out. For some weird reason, the error was being triggered but the images are loading just fine.
       img.onerror = (e) => {

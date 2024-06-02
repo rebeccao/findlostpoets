@@ -17,7 +17,6 @@ if (process.env.NODE_ENV === 'production') {
     })  //.$extends(withAccelerate());
     
     global.__db.$connect()
-    console.log("New Prisma connect")
   }
   prisma = global.__db
 }
