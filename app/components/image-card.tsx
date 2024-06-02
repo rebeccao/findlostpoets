@@ -109,7 +109,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
           />
         </div>
         <div className="px-4 py-4">
-          <h2 className="font-medium text-base mb-2">{poet.pNam}</h2>
+          <h2 className="font-normal text-base mb-2">{poet.pNam}</h2>
           {/* Responsive grid layout for traits */}
           <div className="grid grid-cols-1 gap-1 w-full">
             <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr]">
@@ -117,34 +117,34 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
             <div><span className="text-xs font-light">Breed:</span></div>
             <div><span className="text-xs font-light">Polarity:</span></div>
             <div><span className="text-xs font-light">Words:</span></div>
-            <div><span className="text-sm font-medium">{poet.ori.substring(0, 6) + (poet.ori.length > 6 ? "... " : '')}</span></div>
-            <div><span className="text-sm font-medium">{poet.brd}</span></div>
-            <div><span className="text-sm font-medium">{poet.pol}</span></div>
-            <div><span className="text-sm font-medium">{poet.wrdCnt}</span></div>
+            <div><span className="text-sm font-normal">{poet.ori.substring(0, 6) + (poet.ori.length > 6 ? "... " : '')}</span></div>
+            <div><span className="text-sm font-normal">{poet.brd}</span></div>
+            <div><span className="text-sm font-normal">{poet.pol}</span></div>
+            <div><span className="text-sm font-normal">{poet.wrdCnt}</span></div>
             </div>
             <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr]">
             <div><span className="text-xs font-light">Latent:</span></div>
             <div><span className="text-xs font-light">Genre:</span></div>
             <div><span className="text-xs font-light">Ego:</span></div>
             <div><span className="text-xs font-light">Lexicon:</span></div>
-            <div><span className="text-sm font-medium">{poet.lat}</span></div>
-            <div><span className="text-sm font-medium">{poet.gen}</span></div>
-            <div><span className="text-sm font-medium">{poet.ego}</span></div>
-            <div><span className="text-sm font-medium">{poet.lexCnt}</span></div>
+            <div><span className="text-sm font-normal">{poet.lat}</span></div>
+            <div><span className="text-sm font-normal">{poet.gen}</span></div>
+            <div><span className="text-sm font-normal">{poet.ego}</span></div>
+            <div><span className="text-sm font-normal">{poet.lexCnt}</span></div>
             </div>
             <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr]">
             <div><span className="text-xs font-light">{rarityCount !== undefined && rarityTraitLabel ? rarityTraitLabel : "Poet ID:"}</span></div>
             <div><span className="text-xs font-light">Age:</span></div>
             <div><span className="text-xs font-light">Influ:</span></div>
             <div><span className="text-xs font-light">Rewrites:</span></div>
-            <div><span className="text-sm font-medium">{rarityCount !== undefined ? rarityCount : poet.pid}</span></div>
-            <div><span className="text-sm font-medium">{poet.age}</span></div>
-            <div><span className="text-sm font-medium">{poet.infl}</span></div>
-            <div><span className="text-sm font-medium">{poet.rewrCnt}</span></div>
+            <div><span className="text-sm font-normal">{rarityCount !== undefined ? rarityCount : poet.pid}</span></div>
+            <div><span className="text-sm font-normal">{poet.age}</span></div>
+            <div><span className="text-sm font-normal">{poet.infl}</span></div>
+            <div><span className="text-sm font-normal">{poet.rewrCnt}</span></div>
             </div>
           </div>
           <div className="mt-3 text-sm font-light">
-            Poem: <span className="font-medium text-base ml-2">{formattedPoem}</span>
+            Poem: <span className="font-normal text-base ml-2">{formattedPoem}</span>
           </div>
         </div>
       </div>

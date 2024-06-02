@@ -15,12 +15,11 @@ import {
 // Save the original console.log
 const originalConsoleLog = console.log;
 
-// Define your custom logging function
+// Custom logging function to log one console.log in the production environment
 export const customLog = (context: string, ...args: any[]) => {
   const enabledContexts = ['IndexLoader']; // Only enable logging for IndexLoader in production
   if (process.env.NODE_ENV !== 'production' || enabledContexts.includes(context)) {
-    // Use the original console.log to avoid being silenced by the override
-    originalConsoleLog(`[${context}]`, ...args);
+    originalConsoleLog(`[${context}]`, ...args);      // Use the original console.log to avoid being silenced by the override
   }
 };
 
@@ -31,7 +30,8 @@ if (process.env.NODE_ENV === 'production') {
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet, precedence: 'high' },
   { rel: "canonical", href: "https://findlostpoets.xyz" },
-  { rel: "icon", href: "/favicon.ico" },
+  { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+  { rel: "icon", href: "/favicon.png", type: "image/png" },
   { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap" },
   { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" },
 ];
