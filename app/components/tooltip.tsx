@@ -12,21 +12,21 @@ const Tooltip: React.FC<TooltipProps> = ({ children, content }) => {
 
   return (
     <div
-      className="relative flex items-center"
+      className="relative flex items-center cursor-help"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
       tabIndex={0} // Ensure the whole area is focusable
       onFocus={() => setShow(true)}
       onBlur={() => setShow(false)}
     >
-      <div className="flex items-center cursor-pointer">
+      <div className="flex items-center">
         <div className="mr-2">{children}</div>
-        <span className="ml-1 text-gray-500 hover:text-gray-900">
+        <span className="ml-1 text-mediumgray">
           <IoIosInformationCircleOutline className="h-4 w-4" />
         </span>
       </div>
       {show && (
-        <div className="absolute z-10 w-48 p-2 mt-2 text-sm text-white bg-gray-600 rounded-md shadow-lg">
+        <div className="absolute z-10 w-48 p-2 mt-2 text-sm text-white bg-charcoalgray rounded-md shadow-lg">
           {content}
         </div>
       )}
