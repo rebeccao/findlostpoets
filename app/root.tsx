@@ -14,7 +14,7 @@ import {
 
 export const customLog = (context: string, ...args: any[]) => {
   const enabledContexts = ['IndexLoader'];
-  if (process.env.NODE_ENV !== 'production' || enabledContexts.includes(context)) {
+  if (enabledContexts.includes(context)) {
     console.log(...args);
   }
 };
