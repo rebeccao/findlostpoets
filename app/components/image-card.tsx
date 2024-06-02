@@ -140,9 +140,9 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
           <div><span className="text-sm font-medium">{poet.rewrCnt}</span></div>
           </div>
         </div>
-        {(poet.poem || poet.wrdCnt > 0) && (
-        <div className="mt-3 text-sm  font-light">Poem:
-          <span className="font-medium text-base ml-2">{poet.poem ? poet.poem.substring(0, 16) + (poet.poem.length > 16 ? "..." : '') : ''}</span>
+        {poet.poem  && (
+        <div className="mt-3 text-sm  font-light">
+          Poem: <span className="font-medium text-base ml-2">{poet.poem.substring(0, 16) + (poet.poem.length > 16 ? "..." : '')}</span>
         </div>
         )}
         </div>
