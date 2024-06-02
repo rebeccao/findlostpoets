@@ -77,22 +77,8 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
         img2.src = '';
       };
     }, [imageUrl, poet.g0Url, poet.pNam]);  
-
-    useEffect(() => {
-      if (typeof window !== 'undefined') {
-        console.log('Client poet.poem:', poet.poem);
-      }
-    }, [poet.poem]);
     
-    if (typeof window === 'undefined') {
-      console.log('Server poet.poem:', poet.poem);
-    }
-    
-    // Ensure poet.poem is defined
-    const poem = poet.poem || '';
-
-    // Split the poem into lines
-    const poemLines = poem.split('\n');
+    const poem = poet.poem || '';       // Ensure poet.poem is defined
 
     return (
       <div ref={ref} data-pid={poet.pid} className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
@@ -156,19 +142,8 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
             <div><span className="text-sm font-medium">{poet.rewrCnt}</span></div>
             </div>
           </div>
-          {/*<div className="mt-3 text-sm font-light">
-            Poem: <span className="font-medium text-base ml-2">{poem.substring(0, 16) + (poem.length > 16 ? "..." : '')}</span>
-        </div>*/}
           <div className="mt-3 text-sm font-light">
-            Poem:
-            <span className="font-medium text-base ml-2">
-              {poemLines.map((line, index) => (
-                <span key={index}>
-                  {line}
-                  {index < poemLines.length - 1 && <br />}
-                </span>
-              ))}
-            </span>
+            Poem: <span className="font-medium text-base ml-2">{poem.substring(0, 16).replace(/\n/g, ' ') + (poem.length > 16 ? "..." : '')}</span>
           </div>
         </div>
       </div>
