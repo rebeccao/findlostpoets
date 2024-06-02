@@ -153,8 +153,11 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
             <div><span className="text-sm font-medium">{poet.rewrCnt}</span></div>
             </div>
           </div>
-          <div className="mt-3 text-sm font-light">
+          {/*<div className="mt-3 text-sm font-light">
             Poem: <span className="font-medium text-base ml-2">{poem.substring(0, 16) + (poem.length > 16 ? "..." : '')}</span>
+        </div>*/}
+          <div className="mt-3 text-sm font-light">
+            Poem: <span className="font-medium text-base ml-2" dangerouslySetInnerHTML={{ __html: poem.replace(/\n/g, '<br />').substring(0, 16) + (poem.length > 16 ? "..." : '') }} />
           </div>
         </div>
       </div>
