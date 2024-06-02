@@ -77,6 +77,16 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
         img2.src = '';
       };
     }, [imageUrl, poet.g0Url, poet.pNam]);  
+
+    useEffect(() => {
+      if (typeof window !== 'undefined') {
+        console.log('Client poet.poem:', poet.poem);
+      }
+    }, [poet.poem]);
+    
+    if (typeof window === 'undefined') {
+      console.log('Server poet.poem:', poet.poem);
+    }
     
     // Ensure poet.poem is defined
     const poem = poet.poem || '';
