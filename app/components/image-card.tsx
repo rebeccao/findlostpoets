@@ -91,6 +91,9 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     // Ensure poet.poem is defined
     const poem = poet.poem || '';
 
+    // Split the poem into lines
+    const poemLines = poem.split('\n');
+
     return (
       <div ref={ref} data-pid={poet.pid} className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
         <div className="relative w-full pb-[100%] mb-2">
@@ -157,7 +160,15 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
             Poem: <span className="font-medium text-base ml-2">{poem.substring(0, 16) + (poem.length > 16 ? "..." : '')}</span>
         </div>*/}
           <div className="mt-3 text-sm font-light">
-            Poem: <span className="font-medium text-base ml-2" dangerouslySetInnerHTML={{ __html: poem.replace(/\n/g, '<br />').substring(0, 16) + (poem.length > 16 ? "..." : '') }} />
+            Poem:
+            <span className="font-medium text-base ml-2">
+              {poemLines.map((line, index) => (
+                <span key={index}>
+                  {line}
+                  {index < poemLines.length - 1 && <br />}
+                </span>
+              ))}
+            </span>
           </div>
         </div>
       </div>
