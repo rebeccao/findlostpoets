@@ -143,7 +143,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
             </div>
           </div>
           <div className="mt-3 text-sm font-light">
-            Poem: <span className="font-medium text-base ml-2">{poem.substring(0, 16).replace(/\n/g, ' ') + (poem.length > 16 ? "..." : '')}</span>
+            Poem: <span className="font-medium text-base ml-2">{poem.substring(0, 16).replace(/\n/g, ' ').trim() + (poem.length > 16 ? "..." : '')}</span>
           </div>
         </div>
       </div>
