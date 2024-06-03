@@ -2,7 +2,7 @@
 
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
-//import ComingSoon from '~/components/coming-soon';
+import MaintenancePage from '~/components/maintenancepage';
 
 import {
   Links,
@@ -45,7 +45,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function App() {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isMaintenanceMode = process.env.NODE_ENV === 'production';
 
   return (
     <html lang="en">
@@ -56,9 +56,8 @@ export default function App() {
       </head>
       {/* Use the first font in tailwind.config.ts fontFamily */}
       <body className="font-sans">
-        {/* Conditionally render Coming Soon page or the main Outlet based on environment */}
-        {/*{isProduction ? <ComingSoon /> : <Outlet />}*/}
-        <Outlet />
+        {/* Conditionally render Maintenance page or the main Outlet based on maintenance mode */}
+        {isMaintenanceMode ? <MaintenancePage /> : <Outlet />}
         <h1 className="screenreader-only">FINDLOSTPOETS: Browse Poets, Poems and Traits</h1>
 
         {/* Manages scroll position for client-side transitions */}
