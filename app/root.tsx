@@ -2,7 +2,6 @@
 
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
-import MaintenancePage from '~/components/maintenancepage';
 
 import {
   Links,
@@ -56,8 +55,7 @@ export default function App() {
       </head>
       {/* Use the first font in tailwind.config.ts fontFamily */}
       <body className="font-sans">
-        {/* Conditionally render Maintenance page or the main Outlet based on maintenance mode */}
-        {isMaintenanceMode ? <MaintenancePage /> : <Outlet />}
+        <Outlet />
         <h1 className="screenreader-only">FINDLOSTPOETS: Browse Poets, Poems and Traits</h1>
 
         {/* Manages scroll position for client-side transitions */}
