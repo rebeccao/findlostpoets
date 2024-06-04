@@ -118,7 +118,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
             style={{ pointerEvents: isDropdownOpen ? 'auto' : 'none' }}
           ></div>
           <div
-            className={`absolute z-50 right-0 top-full mt-2 w-52 bg-darkgray text-pearlwhite rounded-xl pointer-events-auto transition-all duration-400 ease-out transform ${
+            className={`absolute z-50 right-0 top-full mt-2 w-52 border bg-gunmetalgray border-davysgray text-pearlwhite rounded-xl pointer-events-auto transition-all duration-400 ease-out transform ${
               isDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
             }`}
           >
@@ -126,14 +126,14 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
               <span className="font-normal">Version Number:</span>
               <span>0.1.0</span>
             </div>
-            <div className="border-t border-naughtygray hidden"></div>
+            <div className="border-t border-davysgray hidden"></div>
             <div className="p-3 cursor-pointer" onClick={openReleaseNotes} hidden>
               <div className="flex justify-between items-center">
                 <h2 className="font-normal">Release Notes</h2>
                 <GoChevronDown />
               </div>
             </div>
-            <div className="border-t border-naughtygray"></div>
+            <div className="border-t border-davysgray"></div>
             <div className="p-3 cursor-pointer" onClick={openHelp}>
               <div className="flex justify-between items-center">
                 <h2 className="font-normal">Help</h2>
