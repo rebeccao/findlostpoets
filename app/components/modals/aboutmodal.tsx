@@ -16,7 +16,7 @@ const AboutModal: React.FC<AboutModalProps> = ({ onClose, isOpen }) => {
         For the first year of LostPoets, two Origins were dropped daily. Names were given, poems were written, but OpenSea could not update the names in the Origin families unless a manual refresh was done. Frustrated, I found an unpublished OpenSea API and periodically used it to refresh the entire collection of 28,170 LostPoets. Hah!
       </p>
       <p>
-      Then the night before the Gen1 release, I used the unpublished OpenSea Refresh API to refresh the entire collection and take one final snapshot of Gen0. Little did I know, this would be the last hurrah for Gen0 data on OpenSea. Poof! Just like that, the Gen0 image, the traits and the poems disappeared.
+      Then the night before the Gen1 release, I used the unpublished OpenSea Refresh API to refresh the entire collection and take one final snapshot of Gen0. Little did I know, this would be the last hurrah for Gen0 data on OpenSea. Poof! Just like that, the Gen0 images, the traits and the poems disappeared.
       </p>
       <p>
         To my surprise, my Python generated LostPoets spreadsheet became the sole keeper of Gen0 data. So then I added the Gen1 data using Manifold's API to create the master spreadsheet and on 22-Nov-22 the LostPoets master spreadsheet was frozen.
@@ -25,7 +25,7 @@ const AboutModal: React.FC<AboutModalProps> = ({ onClose, isOpen }) => {
         Now, with this master source of LostPoets data in hand, I knew it needed to be visualized. I studied website frameworks and was amazed by how far UX/UI had evolved in the last decade. I decided on a framework and database. Then with the help of ChatGPT, FindLostPoets was born.
       </p>
       <p>
-        So, here we are, with a visual collection of LostPoets data. Ready to be explored. Enjoy the journey of finding LostPoets!
+        So, here we are, with a visual collection of this incredible data ready to be explored. Enjoy the journey of finding LostPoets!
       </p>
     </BaseModal>
   );

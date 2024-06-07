@@ -21,9 +21,9 @@ export const sidebarItems: SidebarItem[] = [
     details: 'Choose the Search Trait from the dropdown below.',
     type: 'traitSearch',
     expandedSidebarItems: [
+      { title: 'Poet Name', dbField: 'pNam', inputType: 'text', validationType: 'alphanumeric' },
       { title: 'Origin', dbField: 'ori', inputType: 'text', validationType: 'alphanumeric' },
       { title: 'Latent', dbField: 'lat', inputType: 'text', validationType: 'alphanumeric' },
-      { title: 'Poet Name', dbField: 'pNam', inputType: 'text', validationType: 'alphanumeric' },
       { title: 'Breed', dbField: 'brd', inputType: 'text', validationType: 'alpha' },
       { title: 'Age', dbField: 'age', inputType: 'number', validationType: 'decimal', min: '0.00', max: '1.00' },
       { title: 'Genre', dbField: 'gen', inputType: 'text', validationType: 'alpha' },
