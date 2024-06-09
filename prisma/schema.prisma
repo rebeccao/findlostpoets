@@ -8,35 +8,32 @@ datasource db {
 }
 
 model Poet {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  age     Float?
-  ageCnt  Float?
-  brd     String?
-  brdCnt  Float?
-  ego     String?
-  egoCnt  Float?
-  g0ThUrl String
-  g0Url   String
-  g1Url   String
-  gen     String?
-  genCnt  Float?
-  infl    String
-  lat     String?
-  latCnt  Float?
-  lexCnt  Int
-  named   Boolean?
-  oAddr   String?
-  oNam    String?
-  ori     String
-  oriCnt  Float?
+  pid     Int      @id @map("_id")  // Use pid as the _id field and as the primary key
   pNam    String
-  pid     Int      @unique   
-  poem    String?
-  pol     String?
-  polCnt  Float?
+  ori     String
+  oriCnt  Int?
+  lat     String?
+  latCnt  Int?
+  class   String
   prim    Int
-  rewrCnt Int
+  infl    String
+  brd     String?
+  brdCnt  Int?
+  age     Float?
+  ageCnt  Int?
+  gen     String?
+  genCnt  Int?
+  pol     String?
+  polCnt  Int?
+  ego     String?
+  egoCnt  Int?
   wrdCnt  Int
+  lexCnt  Int
+  rewrCnt Int
+  named   Boolean?
+  poem    String?
+  g1Url   String
+  g0Url   String
 
   @@index([brdCnt, brd])
   @@index([egoCnt, ego])

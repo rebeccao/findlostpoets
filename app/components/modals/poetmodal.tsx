@@ -103,7 +103,7 @@ export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
 
   return (
     <div className="flex flex-col h-screen overflow-y-auto" onClick={handlePoemModalBackgroundClick}>
-      <PoetDetailNavbar poetName={poet.pNam} className="navbar" onReturn={onReturn} />
+      <PoetDetailNavbar poetClass={poet.class} poetName={poet.pNam} className="navbar" onReturn={onReturn} />
       <div className="flex flex-1 relative bg-closetoblack items-center">
         {/* Main content container for images and traits */}
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full mx-auto my-4 overflow-y-auto">
@@ -131,7 +131,7 @@ export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
                 <div 
                   onClick={isPoemOverflowing ? togglePoemModal : undefined}
                   ref={poemContainerRef}
-                  className={`flex-1 flex flex-col justify-start items-center text-center text-pearlwhite px-4 pb-4 overflow-y-auto max-h-28 ${
+                  className={`flex-1 flex flex-col justify-start items-center text-center font-normal text-pearlwhite px-4 pb-4 overflow-y-auto max-h-28 ${
                     isPoemOverflowing ? 'cursor-pointer' : 'cursor-default'
                   }`}
                   aria-label="Click to toggle poem details"

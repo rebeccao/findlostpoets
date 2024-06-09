@@ -8,10 +8,12 @@ import type { ExpandedSidebarItem } from "~/components/sidebar/sidebar-data";
 import { FloatingError } from "~/components/floating-error";
 
 const SidebarPanel: React.FC<SidebarProps> = React.memo(({ 
+  selectedClasses,
   searchTrait,
   selectedRareTrait, 
   selectedRangeTrait,
-  rangeValues, 
+  rangeValues,
+  onClassChange, 
   onSearchTraitChange, 
   onRareTraitChange, 
   onRangeTraitSelect,
@@ -47,7 +49,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     if (selectedTrait.dbField === 'pNam') {
       if (!isNaN(Number(newSearchTraitValue))) {
           // Prepend the required prefix
-          finalValue = `Poet #${newSearchTraitValue}`;
+          finalValue = `#${newSearchTraitValue}`;
       } else {
           isValidInput = /^[a-z0-9# ]+$/i.test(newSearchTraitValue);
       }
@@ -140,6 +142,14 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     onSearchTraitChange(updatedSearchTrait);
   };
 
+  const handleClassChange = (selectedDbField: string) => {
+    console.log("Changing class to:", selectedDbField);
+    const updatedClasses = selectedClasses?.includes(selectedDbField)
+        ? selectedClasses.filter(field => field !== selectedDbField)
+        : [...(selectedClasses || []), selectedDbField];
+    onClassChange(updatedClasses);  // Pass the updated array
+  };
+
   const handleRareTraitChange = (selectedDbField: string) => {
     console.log("Changing rare trait to:", selectedDbField);
     // Directly call the onRareTraitChange prop with the dbField of the clicked checkbox
@@ -174,6 +184,11 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     }
     clearSearchTraitInput();
 
+    // Deselect the selected classes, if any
+    if (selectedClasses) {
+      onClassChange([]);
+    }
+
     // Deselect the selected rare trait, if any
     if (selectedRareTrait) {
       onRareTraitChange(null);
@@ -185,6 +200,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     }
 
     // Reset all range input fields to their placeholders
+    // ToDo: Confirm this works
     sidebarItems.forEach((sidebarItem) => {
       sidebarItem.expandedSidebarItems.forEach((item) => {
         if (inputRefs.current[`min-${item.dbField}`]) {
@@ -218,7 +234,8 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     // Search By Trait
     if (searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) { // Ensure zero is considered a valid number
       const searchValue = searchTrait.searchTraitValue;
-      if (!isNaN(Number(searchValue))) {
+      // ToDo: Confirm this works
+      if (searchTrait.searchTraitKey === 'age') {
         whereConditions.push({
           [searchTrait.searchTraitKey]: { equals: Number(searchValue) }
         });
@@ -236,7 +253,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
       whereConditions.push({ [selectedRareTrait]: { gt: 0 } });
       orderByConditions.push({ [selectedRareTrait]: 'asc' });
       orderByConditions.push({ [trait]: 'asc' });                // sort the actual trait after sorting the trait count
-      orderByConditions.push({ ['pid']: 'asc' });                // sort the actual trait after sorting the trait count
+      orderByConditions.push({ ['pid']: 'asc' });                // Ensure sorting by pid
     }
 
     // Sort By Range Trait
@@ -256,19 +273,37 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
       if (Object.keys(rangeCondition).length > 0) {
           whereConditions.push({ [selectedRangeTrait]: rangeCondition });
           orderByConditions.push({ [selectedRangeTrait]: 'asc' }); 
-          orderByConditions.push({ 'pid': 'asc' }); 
+          orderByConditions.push({ 'pid': 'asc' });             // Ensure sorting by pid
       }
-  }
+    }
+
+    // Sort By Classes
+    if (selectedClasses && selectedClasses.length > 0) {
+      whereConditions.push({ class: { in: selectedClasses } }); // Use 'in' to match any of the selected classes
+      orderByConditions.push({ pid: 'asc' });                   // Ensure sorting by pid             
+    }
   
     if (whereConditions.length > 0) {
       dbQuery.where = { AND: whereConditions };
     }
+
+    // Ensure only one { pid: 'asc' } in orderByConditions
+    const uniqueOrderByConditions: { [key: string]: 'asc' | 'desc' }[] = [];
+    const seenOrderByKeys = new Set<string>();
+
+    for (const condition of orderByConditions) {
+        const key = Object.keys(condition)[0];
+        if (!seenOrderByKeys.has(key)) {
+            uniqueOrderByConditions.push(condition);
+            seenOrderByKeys.add(key);
+        }
+    }
   
-    if (orderByConditions.length > 0) {
-      dbQuery.orderBy = orderByConditions;
+    if (uniqueOrderByConditions.length > 0) {
+      dbQuery.orderBy = uniqueOrderByConditions;
     } else {
-      // Apply default orderBy if no other orderBy conditions are specified
-      dbQuery.orderBy = [{ pid: 'asc' }];
+        // Apply default orderBy if no other orderBy conditions are specified
+        dbQuery.orderBy = [{ pid: 'asc' }];
     }
   
     console.log("SidebarPanel: handleSearchClick dbQuery: ", dbQuery);
@@ -278,7 +313,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   return (
     <div className="flex flex-col h-full relative border bg-verydarkgray border-darkgray">
       <div className="flex-grow overflow-y-auto scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
-        <div className="pt-4 pb-4 font-normal">
+        <div className="pt-4 pb-4 font-light">
           {sidebarItems.map((sidebarItem, index) => {
             return (
               <React.Fragment key={sidebarItem.title}>
@@ -287,6 +322,22 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                     <span>{sidebarItem.title}</span>
                   </Tooltip>
                 </div>
+                {sidebarItem.type === "class" && (
+                  <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded w-full">
+                    <div className="grid grid-cols-3 gap-4 w-full">
+                      {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => (
+                        <div key={`${sidebarItem.title}-${index}`} className="flex items-center cursor-pointer">
+                          <CustomCheckbox
+                            id={`class-${expandedSidebarItem.dbField}-${index}`}
+                            checked={selectedClasses?.includes(expandedSidebarItem.dbField) || false}
+                            onChange={() => handleClassChange(expandedSidebarItem.dbField)}
+                            label={expandedSidebarItem.title!}
+                          />
+                        </div>
+                      ))} 
+                    </div>
+                  </div>
+                )}
                 {sidebarItem.type === "traitSearch" && (
                   <div className="relative flex items-center py-2 pr-3 pl-6 w-full">
                     {/* Dropdown for selecting traits */}
@@ -441,7 +492,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
           })}
         </div>
         {/* Buttons Container */}
-        <div className="sticky bottom-0 p-4 flex justify-center space-x-2">
+        <div className="sticky bottom-0 p-4 font-light flex justify-center space-x-2">
           <button
             className="w-1/4 p-2 rounded-lg shadow-sm text-white border bg-davysgray border-naughtygray hover:bg-darkgray hover:border-charcoalgray"// Lighter for secondary clear action
             onClick={handleSearchClick}

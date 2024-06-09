@@ -10,7 +10,7 @@ import SidebarPanel from '~/components/sidebar/sidebar-panel';
 import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import ImageCard from '~/components/image-card';
 import PoetModal from '~/components/modals/poetmodal';
-import PoemModal from '~/components/modals/poemmodal';
+import PoemModalMobile from '~/components/modals/poemmodal';
 import ErrorBoundary from '~/components/error-boundary';
 import { customLog } from '~/root';
 
@@ -25,10 +25,12 @@ export interface NavbarProps {
 }
 
 export interface SidebarProps {
+	selectedClasses: string[] | null;
 	searchTrait: Record<string, string | number>;
 	selectedRareTrait: string | null; 
 	selectedRangeTrait: string | null; 
 	rangeValues: Record<string, { min?: number; max?: number }>;
+	onClassChange: (selectedDbField: string[]) => void; 
 	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => void;
 	onRareTraitChange: (selectedDbField: string | null) => void;
 	onRangeTraitSelect: (selectedDbField: string | null) => void; 
@@ -321,6 +323,7 @@ function Index() {
 	const toggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), [setSidebarOpen]);
 
 	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
+	const [selectedClasses, setSelectedClasses] = useState<string[] | null>(null);
 	const [searchTrait, setSearchTrait] = useState<{ searchTraitKey: string; searchTraitValue: string | number }>({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
 	const [selectedRareTrait, setSelectedRareTrait] = useState<string | null>(null);
 	const [selectedRangeTrait, setSelectedRangeTrait] = useState<string | null>(null);
@@ -363,6 +366,11 @@ function Index() {
 		// Use fetcher.load to initiate the request to fetch poets and count
 		fetcher.load(`?index&${dbQueryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
   };
+
+	// Callback from SidebarPanel when the user selects the class checkbox
+	const handleClassChange = useCallback((updatedClasses: string[]) => {
+    setSelectedClasses(updatedClasses);
+	}, []);
 
 	// Callback from SidebarPanel when the user selects a searchTrait and sets its value
 	const handleSearchTraitChange = useCallback((searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => {
@@ -433,7 +441,7 @@ function Index() {
 	if (showPoemModal) {
 		return (
 			<div>
-				<PoemModal
+				<PoemModalMobile
 					poem={showPoemModal} 
 					onReturn={handleReturnFromPoetDetail} 
 				/>
@@ -452,10 +460,12 @@ function Index() {
 				{sidebarOpen && (
 					<section className="fixed left-0 top-14 bottom-0 w-80 z-5 h-[calc(100vh-56px)]">
 						<SidebarPanel
+							selectedClasses={selectedClasses}
 							searchTrait={searchTrait}
 							selectedRareTrait={selectedRareTrait}
 							selectedRangeTrait={selectedRangeTrait}
 							rangeValues={rangeValues}
+							onClassChange={handleClassChange} 
 							onSearchTraitChange={handleSearchTraitChange}
 							onRareTraitChange={handleRareTraitChange}
 							onRangeTraitSelect={handleRangeTraitSelect}
@@ -490,7 +500,7 @@ function Index() {
 									{/* Poets mapping */}
 									{poetSlidingWindow?.map((poet: Poet, index: number) => (
 										<div 
-											key={poet.id} 
+											key={poet.pid} 
 											id={`poet-${poet.pid}`} 
 											onClick={() => handleShowingPoetDetail(poet)} 
 											className="cursor-pointer flex"

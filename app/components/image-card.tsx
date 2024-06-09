@@ -45,7 +45,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     // that the images are preloaded and ready to be displayed once they are fully loaded.
     // Added this useEffect to fix images not loading when the placeholder was introduced.
     useEffect(() => {
-      //console.log('Gen1 Image URL:', imageUrl);
+      //console.log('imageUrl:', imageUrl);
     
       const img = new Image();
       img.src = imageUrl;
@@ -109,7 +109,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
           />
         </div>
         <div className="px-4 py-4">
-          <h2 className="font-normal text-base mb-2">{poet.pNam}</h2>
+        <h2 className="font-normal text-base mb-2"><span className="text-sm font-light">{poet.class}: </span>{poet.pNam}</h2>
           {/* Responsive grid layout for traits */}
           <div className="grid grid-cols-1 gap-1 w-full">
             <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr]">

@@ -11,11 +11,21 @@ export type ExpandedSidebarItem = {
 export type SidebarItem = {
   title: string;
   details: string;
-  type: 'traitSearch' | 'sort' | 'range';
+  type: 'class' | 'traitSearch' | 'sort' | 'range';
   expandedSidebarItems: ExpandedSidebarItem[];
 }
 
 export const sidebarItems: SidebarItem[] = [
+  {
+    title: 'Sort By Class',
+    details: 'Click any combination.',
+    type: 'class',
+    expandedSidebarItems: [
+      { title: 'Origin', dbField: 'origin', inputType: 'text' },   // Mongodb field name for class
+      { title: 'Poet', dbField: 'poet', inputType: 'text' },
+      { title: 'Ghost', dbField: 'ghost', inputType: 'text' },
+    ]
+  },
   {
     title: 'Search By Trait',
     details: 'Choose the Search Trait from the dropdown below.',
