@@ -33,6 +33,7 @@ export default {
         darkgray:     '#212121',
         verydarkgray: '#1A1A1A',
         closetoblack: '#141414',
+        deepCrimson:  '#990000',
       },
       placeholderColor: {
         mediumgray:   '#9E9E9E',

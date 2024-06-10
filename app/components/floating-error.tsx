@@ -26,7 +26,7 @@ export const FloatingError: React.FC<FloatingErrorProps> = ({ message, onClose }
   if (!visible) return null;
 
   return (
-    <div ref={ref} className="absolute z-20 left-5 top-full mt-2 p-2 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md">
+    <div ref={ref} className="absolute z-20 left-5 font-normal top-full mt-2 p-2 bg-lightmedgray border-l-4 border-deepCrimson text-verydarkgray rounded-md">
       {message}
     </div>
   );

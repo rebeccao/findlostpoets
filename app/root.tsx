@@ -31,6 +31,7 @@ export const links: LinksFunction = () => [
   { rel: "canonical", href: "https://findlostpoets.xyz" },
   { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
   { rel: "icon", href: "/favicon.png", type: "image/png" },
+  { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon-180x180.png" },
   { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap" },
   { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" },
 ];

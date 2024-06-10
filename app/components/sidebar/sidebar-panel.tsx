@@ -48,6 +48,11 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     let isValidInput = true;
     let finalValue: string | number = newSearchTraitValue;  // finalValue can be string or number
 
+    // Perform type-specific validation if a validation type is specified
+    if (selectedTrait.validationType) {
+      isValidInput = validateSearchTraitInput(selectedTrait.validationType, newSearchTraitValue, selectedTrait);
+    }
+
     // Check if the input is for "Poet Name" and if a number was entered
     if (selectedTrait.dbField === 'pNam') {
       if (!isNaN(Number(newSearchTraitValue))) {
@@ -360,6 +365,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                       name="traitSelect"
                       className="form-select block w-[40%] flex-shrink-0 flex-grow-0 flex-basis-[40%] mr-2 text-sm py-2 px-2 rounded-lg text-pearlwhite focus:outline-none bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray" 
                       onChange={(e) => handleSearchTraitChange(e.target.value)}
+                      value={searchTrait.searchTraitKey}
                       aria-label="Select a trait"
                     >
                       {sidebarItem.expandedSidebarItems.map((item, idx) => (
@@ -407,7 +413,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                       )}
                       {searchTrait.searchTraitValue && (
                         <GrFormClose
-                          className="absolute right-3 cursor-pointer"
+                          className="absolute right-4 cursor-pointer"
                           onClick={() => {
                             clearSearchTraitInput();
                             inputRef.current?.focus(); // Focus the input field after clearing

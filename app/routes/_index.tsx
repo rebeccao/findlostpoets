@@ -322,7 +322,7 @@ function Index() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const toggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), [setSidebarOpen]);
 
-	const initialTraitDbField = sidebarItems[0].expandedSidebarItems[0].dbField;
+	const initialTraitDbField = sidebarItems.find(item => item.type === "traitSearch")?.expandedSidebarItems[0].dbField || '';
 	const [selectedClasses, setSelectedClasses] = useState<string[] | null>(null);
 	const [searchTrait, setSearchTrait] = useState<{ searchTraitKey: string; searchTraitValue: string | number }>({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
 	const [selectedRareTrait, setSelectedRareTrait] = useState<string | null>(null);
@@ -487,9 +487,8 @@ function Index() {
 
 							{/* Display error state */}
 							{fetchError && (
-								<div className="flex flex-col justify-start min-h-screen">
-									<div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
-										<p className="font-bold">Error</p>
+								<div className="flex flex-col justify-start min-h-screen p-4">
+									<div className="rounded-md bg-lightmedgray border-l-4 border-deepCrimson text-verydarkgray px-6 py-8" role="alert">
 										<p>{fetchError}</p>
 									</div>
 								</div>
