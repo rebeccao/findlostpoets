@@ -27,6 +27,23 @@
   transform: scale(1.15);
 }
 
+.hanging-indent {
+  text-indent: -1em;  /* Adjust this value to match the bullet's margin */
+  padding-left: 1em;  /* Adjust this value to match the bullet's margin */
+}
+
+.list-dash {
+  list-style-type: none;
+}
+
+.list-dash li::before {
+  content: "-";
+  /*padding-right: 0.25em; /* Adjust the spacing as needed */
+  font-size: 0.8em; /* Adjust the size as needed */
+  display: inline-block;
+  width: 1em; /* Adjust the width to align properly */
+}
+
 .screenreader-only {
   position: absolute;
   width: 1px;

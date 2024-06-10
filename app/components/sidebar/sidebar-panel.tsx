@@ -20,6 +20,14 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   onRangeChange,
   performSearch 
 }) => {
+
+  const egoMapping: { [key: string]: string } = {
+    'I': 'I', 'i': 'I', '1': 'I',
+    'II': 'II', 'ii': 'II', '2': 'II',
+    'III': 'III', 'iii': 'III', '3': 'III',
+    'IV': 'IV', 'iv': 'IV', '4': 'IV',
+    'V': 'V', 'v': 'V', '5': 'V'
+  };
   
   const inputRef = useRef<HTMLInputElement>(null);
   const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
@@ -39,11 +47,6 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   const handleSearchTraitValueChange = (newSearchTraitValue: string, selectedTrait: ExpandedSidebarItem) => {
     let isValidInput = true;
     let finalValue: string | number = newSearchTraitValue;  // finalValue can be string or number
-
-    // Perform type-specific validation if a validation type is specified
-    if (selectedTrait.validationType) {
-      isValidInput = validateSearchTraitInput(selectedTrait.validationType, newSearchTraitValue, selectedTrait);
-    }
 
     // Check if the input is for "Poet Name" and if a number was entered
     if (selectedTrait.dbField === 'pNam') {
@@ -200,7 +203,6 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     }
 
     // Reset all range input fields to their placeholders
-    // ToDo: Confirm this works
     sidebarItems.forEach((sidebarItem) => {
       sidebarItem.expandedSidebarItems.forEach((item) => {
         if (inputRefs.current[`min-${item.dbField}`]) {
@@ -230,11 +232,23 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     let dbQuery: SearchCriteria = { skip: 0 };
     let whereConditions: any[] = [];
     let orderByConditions: SearchCriteria['orderBy'] = [];
+
+    // If set, map searchTrait.searchTraitKey === 'ego' to the correct value 
+    if (searchTrait.searchTraitKey === 'ego') {
+      const finalValue = egoMapping[searchTrait.searchTraitValue] || searchTrait.searchTraitValue;
+      const updatedSearchTrait = {
+        searchTraitKey: searchTrait.searchTraitKey.toString(),
+        searchTraitValue: finalValue,
+      };
+      onSearchTraitChange(updatedSearchTrait);
+
+      // Update searchTrait.searchTraitValue to the converted value
+      searchTrait.searchTraitValue = finalValue;
+    }
   
     // Search By Trait
     if (searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) { // Ensure zero is considered a valid number
       const searchValue = searchTrait.searchTraitValue;
-      // ToDo: Confirm this works
       if (searchTrait.searchTraitKey === 'age') {
         whereConditions.push({
           [searchTrait.searchTraitKey]: { equals: Number(searchValue) }

@@ -24,10 +24,16 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
             <PiListMagnifyingGlassLight size={34} className="mr-4 mb-2" /> Search
           </h3>
           <p>
-            Click the Search icon to open the search panel. Here you can search poets by trait, sort poets by rarest traits, and search poets by trait ranges.
+            Click the Search icon to open the search panel. Here you can search poets by class, trait or trait ranges, and also sort poets by the rarest traits. Combine multiple selections to narrow the results even further.
           </p>
         </div>
         <div className="px-6">
+          <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
+            <h4 className="text-md font-normal mb-2">Search By Class</h4>
+            <p className="mb-4">
+            Select one or more of the three checkboxes (Origin, Poet, and Ghost), then click the Search button. The poets will be displayed in ascending order based on Poet Number.
+            </p>
+          </div>
           <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
             <h4 className="text-md font-normal">Search By Trait</h4>
             <p>
@@ -37,7 +43,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
               {[
                 { label: "Origin", value: "EOS" },
                 { label: "Latent", value: "GBRB" },
-                { label: "Poet Name", value: "Poet #15713" },
+                { label: "Poet Name", value: "#15713" },
                 { label: "Age", value: "0.35" },
                 { label: "Ego", value: "II" },
               ].map((item, index) => (
