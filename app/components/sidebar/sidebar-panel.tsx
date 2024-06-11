@@ -15,7 +15,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   selectedClasses,
   selectedNamedTrait,
   onSearchTraitChange, 
-  onRareTraitChange, 
+  onRareTraitSelect, 
   onRangeTraitSelect,
   onRangeChange,
   onClassChange, 
@@ -152,10 +152,10 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     onSearchTraitChange(updatedSearchTrait);
   };
 
-  const handleRareTraitChange = (selectedDbField: string) => {
+  const handleRareTraitSelect = (selectedDbField: string) => {
     console.log("Changing rare trait to:", selectedDbField);
-    // Directly call the onRareTraitChange prop with the dbField of the clicked checkbox
-    onRareTraitChange(selectedDbField); // This function expects a single string or null
+    // Directly call the onRareTraitSelect prop with the dbField of the clicked checkbox
+    onRareTraitSelect(selectedDbField); // This function expects a single string or null
   };
 
   // Update for checkbox change to also clear or set active trait
@@ -201,14 +201,9 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     }
     clearSearchTraitInput();
 
-    // Deselect the selected classes, if any
-    if (selectedClasses) {
-      onClassChange([]);
-    }
-
     // Deselect the selected rare trait, if any
     if (selectedRareTrait) {
-      onRareTraitChange(null);
+      onRareTraitSelect(null);
     }
 
     // Reset the selected range trait and clear min/max values
@@ -235,6 +230,14 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
         }
       });
     });
+
+    // Deselect the selected classes, if any
+    if (selectedClasses) {
+      onClassChange([]);
+    }
+
+    // Deselect the selected named trait
+    onNamedTraitSelect(null);
 
     const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }], skip: 0 };
     console.log("SidebarPanel: resetSearch dbQuery: ", dbQuery);
@@ -430,7 +433,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                           <CustomCheckbox
                             id={`sort-${expandedSidebarItem.dbField}-${index}`}
                             checked={selectedRareTrait === expandedSidebarItem.dbField}
-                            onChange={() => handleRareTraitChange(expandedSidebarItem.dbField)}
+                            onChange={() => handleRareTraitSelect(expandedSidebarItem.dbField)}
                             label={expandedSidebarItem.title!}
                           />
                         </div>

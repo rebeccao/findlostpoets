@@ -46,6 +46,22 @@ export default {
             placeholderColor: ['focus', 'hover'],
         },
       },
+      keyframes: {
+        'loading-dots': {
+          '0%, 100%': { opacity: 0 },
+          '50%': { opacity: 1 },
+        },
+      },
+      animation: {
+        'loading-dots-1': 'loading-dots 1s infinite',
+        'loading-dots-2': 'loading-dots 1s infinite 0.2s',
+        'loading-dots-3': 'loading-dots 1s infinite 0.4s',
+        'loading-dots-4': 'loading-dots 1s infinite 0.6s',
+        'loading-dots-5': 'loading-dots 1s infinite 0.8s',
+        'loading-dots-6': 'loading-dots 1s infinite 1s',
+        'loading-dots-7': 'loading-dots 1s infinite 1.2s',
+        'loading-dots-8': 'loading-dots 1s infinite 1.4s',
+      },
       fontFamily: {
         sans: ['Inter', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'], // Base font family. Root.tsx always uses the first.
         roboto: ['Roboto', 'sans-serif'],

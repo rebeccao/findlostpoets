@@ -1,7 +1,9 @@
 // ./app/root.tsx
-
+import { useEffect, useState } from "react";
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
+import { checkServerStatus } from "~/utils/check-server-status";
+import Loading from "~/components/loading"; 
 
 import {
   Links,
@@ -45,7 +47,16 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function App() {
-  const isMaintenanceMode = process.env.NODE_ENV === 'production';
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    const checkStatus = async () => {
+      const serverUp = await checkServerStatus(window.location.origin);
+      setIsLoading(!serverUp);
+    };
+
+    checkStatus();
+  }, []);
 
   return (
     <html lang="en">
@@ -56,7 +67,7 @@ export default function App() {
       </head>
       {/* Use the first font in tailwind.config.ts fontFamily */}
       <body className="font-sans">
-        <Outlet />
+        {isLoading ? <Loading /> : <Outlet />}
         <h1 className="screenreader-only">FINDLOSTPOETS: Browse Poets, Poems and Traits</h1>
 
         {/* Manages scroll position for client-side transitions */}

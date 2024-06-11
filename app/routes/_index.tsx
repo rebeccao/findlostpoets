@@ -32,7 +32,7 @@ export interface SidebarProps {
 	selectedClasses: string[] | null;
 	selectedNamedTrait: boolean | null;
 	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => void;
-	onRareTraitChange: (selectedDbField: string | null) => void;
+	onRareTraitSelect: (selectedDbField: string | null) => void;
 	onRangeTraitSelect: (selectedDbField: string | null) => void; 
 	onRangeChange: (selectedDbField: string | null, min?: number, max?: number) => void;
 	onClassChange: (selectedDbField: string[]) => void; 
@@ -377,7 +377,7 @@ function Index() {
   }, []);
 
 	// Callback from SidebarPanel when the user selects the rare trait checkbox
-  const handleRareTraitChange = useCallback((selectedDbField: string | null) => {
+  const handleRareTraitSelect = useCallback((selectedDbField: string | null) => {
 		// Toggle selection: if the same trait is selected again, deselect it; otherwise, update the selection
 		setSelectedRareTrait(prev => (prev === selectedDbField ? null : selectedDbField));
 		// Reset searchButtonPressed to false to clear rarityTraitLabel and rarityCount until next search
@@ -476,7 +476,7 @@ function Index() {
 							selectedClasses={selectedClasses}
 							selectedNamedTrait={selectedNamedTrait}
 							onSearchTraitChange={handleSearchTraitChange}
-							onRareTraitChange={handleRareTraitChange}
+							onRareTraitSelect={handleRareTraitSelect}
 							onRangeTraitSelect={handleRangeTraitSelect}
 							onRangeChange={handleRangeChange}
 							onClassChange={handleClassChange} 
