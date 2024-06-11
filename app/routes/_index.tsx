@@ -25,16 +25,18 @@ export interface NavbarProps {
 }
 
 export interface SidebarProps {
-	selectedClasses: string[] | null;
 	searchTrait: Record<string, string | number>;
 	selectedRareTrait: string | null; 
 	selectedRangeTrait: string | null; 
 	rangeValues: Record<string, { min?: number; max?: number }>;
-	onClassChange: (selectedDbField: string[]) => void; 
+	selectedClasses: string[] | null;
+	selectedNamedTrait: boolean | null;
 	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => void;
 	onRareTraitChange: (selectedDbField: string | null) => void;
 	onRangeTraitSelect: (selectedDbField: string | null) => void; 
 	onRangeChange: (selectedDbField: string | null, min?: number, max?: number) => void;
+	onClassChange: (selectedDbField: string[]) => void; 
+	onNamedTraitSelect: (selectedDbField: boolean | null) => void; 
 	performSearch: (dbQuery: SearchCriteria) => void;
 }
 
@@ -323,11 +325,12 @@ function Index() {
 	const toggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), [setSidebarOpen]);
 
 	const initialTraitDbField = sidebarItems.find(item => item.type === "traitSearch")?.expandedSidebarItems[0].dbField || '';
-	const [selectedClasses, setSelectedClasses] = useState<string[] | null>(null);
 	const [searchTrait, setSearchTrait] = useState<{ searchTraitKey: string; searchTraitValue: string | number }>({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
 	const [selectedRareTrait, setSelectedRareTrait] = useState<string | null>(null);
 	const [selectedRangeTrait, setSelectedRangeTrait] = useState<string | null>(null);
 	const [rangeValues, setRangeValues] = useState<Record<string, { min?: number; max?: number }>>({});
+	const [selectedClasses, setSelectedClasses] = useState<string[] | null>(null);
+	const [selectedNamedTrait, setSelectedNamedTrait] = useState<boolean | null>(null);
 
 	// searchButtonPressed is used to conditionally control displaying the Rare Trait count on the ImageCard 
 	const [searchButtonPressed, setSearchButtonPressed] = useState(false);
@@ -367,11 +370,6 @@ function Index() {
 		fetcher.load(`?index&${dbQueryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
   };
 
-	// Callback from SidebarPanel when the user selects the class checkbox
-	const handleClassChange = useCallback((updatedClasses: string[]) => {
-    setSelectedClasses(updatedClasses);
-	}, []);
-
 	// Callback from SidebarPanel when the user selects a searchTrait and sets its value
 	const handleSearchTraitChange = useCallback((searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => {
     setSearchTrait(searchTraitState);
@@ -404,6 +402,17 @@ function Index() {
 			setSelectedRangeTrait(null);
 			setRangeValues({});
 		}
+	}, []);
+
+	// Callback from SidebarPanel when the user selects the class checkbox
+	const handleClassChange = useCallback((updatedClasses: string[]) => {
+    setSelectedClasses(updatedClasses);
+	}, []);
+
+	// Callback from SidebarPanel when the user selects the named checkbox
+	const handleNamedTraitSelect = useCallback((selectedDbField: boolean | null) => {
+		// Toggle selection: if the same trait is selected again, deselect it; otherwise, update the selection
+		setSelectedNamedTrait(prev => (prev === selectedDbField ? null : selectedDbField));
 	}, []);
 
 	/*************** PoetDetails logic ****************/
@@ -460,16 +469,18 @@ function Index() {
 				{sidebarOpen && (
 					<section className="fixed left-0 top-14 bottom-0 w-80 z-5 h-[calc(100vh-56px)]">
 						<SidebarPanel
-							selectedClasses={selectedClasses}
 							searchTrait={searchTrait}
 							selectedRareTrait={selectedRareTrait}
 							selectedRangeTrait={selectedRangeTrait}
 							rangeValues={rangeValues}
-							onClassChange={handleClassChange} 
+							selectedClasses={selectedClasses}
+							selectedNamedTrait={selectedNamedTrait}
 							onSearchTraitChange={handleSearchTraitChange}
 							onRareTraitChange={handleRareTraitChange}
 							onRangeTraitSelect={handleRangeTraitSelect}
 							onRangeChange={handleRangeChange}
+							onClassChange={handleClassChange} 
+							onNamedTraitSelect={handleNamedTraitSelect}
 							performSearch={performSearch} 
 						/>
 					</section>

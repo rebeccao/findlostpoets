@@ -11,21 +11,11 @@ export type ExpandedSidebarItem = {
 export type SidebarItem = {
   title: string;
   details: string;
-  type: 'class' | 'traitSearch' | 'sort' | 'range';
+  type: 'traitSearch' | 'sort' | 'range' | 'class' | 'named';
   expandedSidebarItems: ExpandedSidebarItem[];
 }
 
 export const sidebarItems: SidebarItem[] = [
-  {
-    title: 'Search By Class',
-    details: 'Click any combination.',
-    type: 'class',
-    expandedSidebarItems: [
-      { title: 'Origin', dbField: 'origin', inputType: 'text' },   // Mongodb field name for class
-      { title: 'Poet', dbField: 'poet', inputType: 'text' },
-      { title: 'Ghost', dbField: 'ghost', inputType: 'text' },
-    ]
-  },
   {
     title: 'Search By Trait',
     details: 'Choose the Search Trait from the dropdown below.',
@@ -61,6 +51,25 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Rewrites', dbField: 'rewrCnt', inputType: 'number', min: "1", max: "89" }, 
       { title: 'Prime Number', dbField: 'prim', inputType: 'number', min: "2", max: "835399" }, 
       { title: 'Poet Number', dbField: 'pid', inputType: 'number', min: '1', max: '28170' },
+    ]
+  },
+  {
+    title: 'Search By Class',
+    details: 'Click any combination.',
+    type: 'class',
+    expandedSidebarItems: [
+      { title: 'Origin', dbField: 'origin', inputType: 'text' },   // Mongodb choices for class
+      { title: 'Poet', dbField: 'poet', inputType: 'text' },
+      { title: 'Ghost', dbField: 'ghost', inputType: 'text' },
+    ]
+  },
+  {
+    title: 'Search By Named',
+    details: 'Click either one to select or none for all.',
+    type: 'named',
+    expandedSidebarItems: [ 
+      { title: 'Named', dbField: 'True', inputType: 'text' },     // Mongodb choices for named
+      { title: 'No Name', dbField: 'False', inputType: 'text' }
     ]
   },
 ];

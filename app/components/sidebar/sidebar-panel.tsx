@@ -8,16 +8,18 @@ import type { ExpandedSidebarItem } from "~/components/sidebar/sidebar-data";
 import { FloatingError } from "~/components/floating-error";
 
 const SidebarPanel: React.FC<SidebarProps> = React.memo(({ 
-  selectedClasses,
   searchTrait,
   selectedRareTrait, 
   selectedRangeTrait,
   rangeValues,
-  onClassChange, 
+  selectedClasses,
+  selectedNamedTrait,
   onSearchTraitChange, 
   onRareTraitChange, 
   onRangeTraitSelect,
   onRangeChange,
+  onClassChange, 
+  onNamedTraitSelect,
   performSearch 
 }) => {
 
@@ -150,14 +152,6 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     onSearchTraitChange(updatedSearchTrait);
   };
 
-  const handleClassChange = (selectedDbField: string) => {
-    console.log("Changing class to:", selectedDbField);
-    const updatedClasses = selectedClasses?.includes(selectedDbField)
-        ? selectedClasses.filter(field => field !== selectedDbField)
-        : [...(selectedClasses || []), selectedDbField];
-    onClassChange(updatedClasses);  // Pass the updated array
-  };
-
   const handleRareTraitChange = (selectedDbField: string) => {
     console.log("Changing rare trait to:", selectedDbField);
     // Directly call the onRareTraitChange prop with the dbField of the clicked checkbox
@@ -182,6 +176,21 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     } else {
       onRangeChange(selectedDbField, rangeValues[selectedDbField]?.min, numericValue);
     }
+  };
+
+  const handleClassChange = (selectedDbField: string) => {
+    console.log("Changing class to:", selectedDbField);
+    const updatedClasses = selectedClasses?.includes(selectedDbField)
+        ? selectedClasses.filter(field => field !== selectedDbField)
+        : [...(selectedClasses || []), selectedDbField];
+    onClassChange(updatedClasses);  // Pass the updated array
+  };
+  
+  const handleNamedTraitChange = (selectedDbField: string) => {
+    console.log("Changing named trait to:", selectedDbField);
+    // Convert the string to a boolean
+    const booleanValue = selectedDbField === 'True';
+    onNamedTraitSelect(booleanValue); // This function expects a boolean or null
   };
 
   const resetSearch = () => {
@@ -275,7 +284,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
       orderByConditions.push({ ['pid']: 'asc' });                // Ensure sorting by pid
     }
 
-    // Sort By Range Trait
+    // Search By Range Trait
     if (selectedRangeTrait && rangeValues[selectedRangeTrait]) {
       interface RangeCondition {
         gte?: number;
@@ -295,11 +304,17 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
           orderByConditions.push({ 'pid': 'asc' });             // Ensure sorting by pid
       }
     }
-
-    // Sort By Classes
+    
+    // Search By Classes
     if (selectedClasses && selectedClasses.length > 0) {
       whereConditions.push({ class: { in: selectedClasses } }); // Use 'in' to match any of the selected classes
       orderByConditions.push({ pid: 'asc' });                   // Ensure sorting by pid             
+    }
+    
+    // Search By Named Trait
+    if (selectedNamedTrait !== null) {
+      whereConditions.push({ ['named']: { equals: selectedNamedTrait } });
+      orderByConditions.push({ ['pid']: 'asc' });               // Ensure sorting by pid
     }
   
     if (whereConditions.length > 0) {
@@ -332,31 +347,15 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   return (
     <div className="flex flex-col h-full relative border bg-verydarkgray border-darkgray">
       <div className="flex-grow overflow-y-auto scrollbar scrollbar-onyxgray scrollbar-track-charcoalgray">
-        <div className="pt-4 pb-4 font-light">
+        <div className="pt-1 pb-4 font-light">
           {sidebarItems.map((sidebarItem, index) => {
             return (
               <React.Fragment key={sidebarItem.title}>
-                <div className="flex items-center px-4 pt-4 pb-1 sans text-gainsboro text-base">
+                <div className="flex items-center px-4 pt-3 pb-1 sans text-gainsboro text-base">
                   <Tooltip content={sidebarItem.details}>
                     <span>{sidebarItem.title}</span>
                   </Tooltip>
                 </div>
-                {sidebarItem.type === "class" && (
-                  <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded w-full">
-                    <div className="grid grid-cols-3 gap-4 w-full">
-                      {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => (
-                        <div key={`${sidebarItem.title}-${index}`} className="flex items-center cursor-pointer">
-                          <CustomCheckbox
-                            id={`class-${expandedSidebarItem.dbField}-${index}`}
-                            checked={selectedClasses?.includes(expandedSidebarItem.dbField) || false}
-                            onChange={() => handleClassChange(expandedSidebarItem.dbField)}
-                            label={expandedSidebarItem.title!}
-                          />
-                        </div>
-                      ))} 
-                    </div>
-                  </div>
-                )}
                 {sidebarItem.type === "traitSearch" && (
                   <div className="relative flex items-center py-2 pr-3 pl-6 w-full">
                     {/* Dropdown for selecting traits */}
@@ -475,7 +474,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                                   e.target.placeholder = expandedSidebarItem.min || ''; // Restore placeholder if input is empty
                               }
                             }}
-                            className="form-input text-xs p-2 text-center w-[70px] rounded-lg placeholder-italic border placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
+                            className="form-input text-sm p-1 text-center w-[70px] rounded-lg placeholder-italic border placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                           />
                           <span>-</span> {/* Dash */}
                           {/* Max Input */}
@@ -500,13 +499,48 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                                   e.target.placeholder = expandedSidebarItem.max || ''; // Restore placeholder if input is empty
                               }
                             }}
-                            className="form-input text-xs p-2 text-center w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
+                            className="form-input text-sm p-1 text-center w-[70px] rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                           />
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
+                {sidebarItem.type === "class" && (
+                  <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded w-full">
+                    <div className="grid grid-cols-3 gap-3 w-full">
+                      {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => (
+                        <div key={`${sidebarItem.title}-${index}`} className="flex items-center cursor-pointer">
+                          <CustomCheckbox
+                            id={`class-${expandedSidebarItem.dbField}-${index}`}
+                            checked={selectedClasses?.includes(expandedSidebarItem.dbField) || false}
+                            onChange={() => handleClassChange(expandedSidebarItem.dbField)}
+                            label={expandedSidebarItem.title!}
+                          />
+                        </div>
+                      ))} 
+                    </div>
+                  </div>
+                )}
+                {sidebarItem.type === "named" && (
+                  <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded w-full">
+                    <div className="grid grid-cols-3 gap-3 w-full">
+                      {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => {
+                        const isChecked = selectedNamedTrait === (expandedSidebarItem.dbField === 'True');
+                        return (
+                          <div key={`${sidebarItem.title}-${index}`} className="flex items-center cursor-pointer">
+                            <CustomCheckbox
+                              id={`named-${expandedSidebarItem.dbField}-${index}`}
+                              checked={isChecked}
+                              onChange={() => handleNamedTraitChange(expandedSidebarItem.dbField)}
+                              label={expandedSidebarItem.title!}
+                            />
+                          </div>
+                        );
+                      })} 
+                    </div>
+                  </div>
+                )}              
               </React.Fragment>
             );
           })}
