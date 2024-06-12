@@ -13,6 +13,7 @@ import PoetModal from '~/components/modals/poetmodal';
 import PoemModalMobile from '~/components/modals/poemmodal';
 import ErrorBoundary from '~/components/error-boundary';
 import { customLog } from '~/root';
+import Loading from '~/components/loading'; 
 
 const PAGE_SIZE = 24;
 const BUFFER_SIZE = PAGE_SIZE * 3;
@@ -94,6 +95,7 @@ function Index() {
 	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [poetCount, setPoetCount] = useState<number | null>(initialData.count);
 	const [hasMore, setHasMore] = useState<boolean>(true);
+	const [loading, setLoading] = useState(true);
 
 	const [showPoetModal, setShowPoetModal] = useState<Poet | null>(null);
 	const [showPoemModal, setShowPoemModal] = useState<string | null>(null);
@@ -263,6 +265,7 @@ function Index() {
 				console.log("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
 				setupObserver();
       }
+			setLoading(false); // Set loading to false when initial data is loaded
     }
 	}, [initialData.poets, currentDbQuery, setupObserver]); // Depends on the initial poets list.
 
@@ -457,6 +460,12 @@ function Index() {
 			</div>
 		);
 	}
+
+	/*************** Loading logic ****************/
+
+	if (loading) {
+    return <Loading />; // Render Loading component if loading is true
+  }
 	
 	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
 	//const selectedRareTraitLabel = sidebarItems.find(item => item.type === 'sort')?.expandedSidebarItems.find(item => item.dbField === selectedRareTrait)?.title;
