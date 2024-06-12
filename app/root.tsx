@@ -51,11 +51,14 @@ export default function App() {
   
   useEffect(() => {
     const checkStatus = async () => {
+      console.log("Checking server status...");
       const serverUp = await checkServerStatus(window.location.origin);
+      console.log(`Server status: ${serverUp ? "up" : "down"}`);
       setIsLoading(!serverUp);
     };
 
-    checkStatus();
+    // Add a 2 second delay before checking server status to simulate server start-up time
+    setTimeout(checkStatus, 2000); 
   }, []);
 
   return (

@@ -7,6 +7,7 @@ export async function checkServerStatus(url: string, timeout = 5000): Promise<bo
     clearTimeout(id);
     return response.ok;
   } catch (error) {
+    console.error("Server status check failed:", error);
     return false;
   }
 }
