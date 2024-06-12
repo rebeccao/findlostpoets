@@ -24,7 +24,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
             <PiListMagnifyingGlassLight size={34} className="mr-4 mb-2" /> Search
           </h3>
           <p>
-            Click the Search icon to open and close the search panel. Here you can search poets by trait, trait rarities, trait ranges, class or named. Searches display poets in ascending order based on Poet Number. The count of the resulting poets for each search is displayed in the upper left corner of the page.  Combine multiple search selections to narrow the results even further.
+            Click the Search icon to open and close the search panel. Here you can search poets by trait, trait rarities, trait ranges, class or named. Searches display poets in ascending order based on Poet Number. The count of the resulting poets for each search is displayed in the upper left corner of the page. Combine multiple search selections to narrow the results even further.
           </p>
         </div>
         <div className="px-6">
