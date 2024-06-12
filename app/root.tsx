@@ -50,15 +50,19 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    const checkStatus = async () => {
+    const checkStatus = () => {
       console.log("Checking server status...");
-      const serverUp = await checkServerStatus(window.location.origin);
-      console.log(`Server status: ${serverUp ? "up" : "down"}`);
-      setIsLoading(!serverUp);
+      checkServerStatus(window.location.origin, 5000, (isUp) => {
+        console.log(`Server status: ${isUp ? "up" : "down"}`);
+        if (!isUp) {
+          setTimeout(checkStatus, 1000); // Retry after 1 second
+        } else {
+          setIsLoading(false);
+        }
+      });
     };
 
-    // Add a 2 second delay before checking server status to simulate server start-up time
-    setTimeout(checkStatus, 2000); 
+    checkStatus();
   }, []);
 
   return (
