@@ -1,7 +1,11 @@
 // ./app/components/loading.tsx
-export default function Loading() {
+interface LoadingProps {
+  showLoading: boolean;
+}
+
+const Loading: React.FC<LoadingProps> = ({ showLoading }) => {
   return (
-    <div className="flex justify-center items-center h-screen bg-closetoblack">
+    <div className={`flex justify-center items-center h-screen bg-closetoblack transition-opacity duration-3000 ease-out ${showLoading ? 'opacity-100' : 'opacity-0'}`}>
       <div className="font-light  text-center text-pearlwhite">
         <div className="text-center text-pearlwhite text-2xl">
           <span className="inline-block animate-loading-dots-1">L</span>
@@ -20,3 +24,5 @@ export default function Loading() {
     </div>
   );
 }
+
+export default Loading;
