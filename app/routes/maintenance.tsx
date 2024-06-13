@@ -1,8 +1,9 @@
 import { LinksFunction, MetaFunction } from "@remix-run/node";
 import { Links, Meta, Scripts, ScrollRestoration } from "@remix-run/react";
+import stylesheet from "~/tailwind.css?url";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: "/styles/tailwind.css" },
+  { rel: "stylesheet", href: stylesheet, precedence: 'high' },
   { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
 ];
 
