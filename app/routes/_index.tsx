@@ -261,10 +261,11 @@ function Index() {
 				setCurrentDbQuery({ ...currentDbQuery, skip: PAGE_SIZE, take: PAGE_SIZE });		// Update current query skip
 				console.log("useEffect InitialData CALLING setupObserver setupObserver forward, currentDbQuery = ", currentDbQuery);
 				console.log("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
+				console.log("InitialData useEffect calling setupObserver");
 				setupObserver();
       }
     }
-	}, [initialData.poets, currentDbQuery, setupObserver]); // Depends on the initial poets list.
+	}, [initialData.poets, currentDbQuery]); // Depends on the initial poets list.
 
 	// Append fetcherData useEffect
 	useEffect(() => {
@@ -314,9 +315,10 @@ function Index() {
 			console.log("useEffect poetSlidingWindow updated CALLING setupObserver --  backwardSentinelRef =",  backwardSentinelRef.current?.getAttribute('data-pid'), "forwardSentinelRef =",  forwardSentinelRef.current?.getAttribute('data-pid'));
 			console.log("                                    -- windowIndices.backwardIndex =", windowIndices.backwardIndex, "windowIndices.forwardIndex =", windowIndices.forwardIndex);
 			console.log("    poetSlidingWindow", poetSlidingWindow.map(poet => poet.pid).join(", "));
+			console.log("poetSlidingWindow updated useEffect calling setupObserver");
 			setupObserver();
 		}
-	}, [poetSlidingWindow, poetSlidingWindowUpdated, setupObserver]);
+	}, [poetSlidingWindow, poetSlidingWindowUpdated]);
 
 
 	/*************** SidebarPanel callback logic ****************/
@@ -417,6 +419,14 @@ function Index() {
 
 	/*************** PoetDetails logic ****************/
 
+	// useEffect to resolve the issue with the infinite scrolling not occurring after returning from the PoetModal
+	useEffect(() => {
+    if (showPoetModal === null && showPoemModal === null) {
+			console.log("Fix Infinite Scroll Breaking useEffect calling setupObserver");
+      setupObserver();
+    }
+  }, [showPoetModal, showPoemModal]);
+
 	const handleShowingPoetDetail = (poet: Poet) => {
 		// Save current scroll position
 		sessionStorage.setItem('lastScrollPosition', window.scrollY.toString());
@@ -457,7 +467,6 @@ function Index() {
 			</div>
 		);
 	}
-
 
 	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
 	//const selectedRareTraitLabel = sidebarItems.find(item => item.type === 'sort')?.expandedSidebarItems.find(item => item.dbField === selectedRareTrait)?.title;

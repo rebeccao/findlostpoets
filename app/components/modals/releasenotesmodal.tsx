@@ -47,7 +47,7 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
             </ol>
           </li>
           <li className="pl-2 mb-1 hanging-indent">
-            <span className="font-normal">Known Issue:</span> The hosting server for FINDLOSTPOETS is a free Heroku plan. Because it's free, it idles the server after 30 minutes of not being used. Once the server is idle, the next user will experience a long startup time (~15 seconds) for the server. I spent time investigating adding a Loading... screen during the long startup but it's more complicated than worth the effort, plus going to a paid plan eliminates the issue.
+            <span className="font-normal">Known Issue:</span> FINDLOSTPOETS uses a free plan on Heroku as the hosting server. A limitation of this plan is that the server idles after 30 minutes of inactivity, resulting in a long startup time of approximately 15 seconds for the next user. I considered adding a "Loading..." screen to indicate the delay, but the implementation is complex and not worth the effort, especially since upgrading to a paid plan will eliminate the issue.
           </li>
         </ul>
       </div>
