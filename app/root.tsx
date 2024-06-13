@@ -2,7 +2,7 @@
 import type { LinksFunction, MetaFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node"; 
 import stylesheet from "~/tailwind.css?url";
-import { Links, Meta, Outlet,  Scripts, ScrollRestoration } from "@remix-run/react";
+import { Links, Meta, Outlet,  Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 
 // Save the original console.log
 const originalConsoleLog = console.log;
@@ -43,10 +43,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (isMaintenance && url.pathname !== "/maintenance") {
     return redirect("/maintenance");
   }
-  return null;
+  return { isMaintenance };
 };
 
 export default function App() {
+  const { isMaintenance } = useLoaderData<{ isMaintenance: boolean }>();
+
   return (
     <html lang="en">
       <head>
@@ -55,7 +57,7 @@ export default function App() {
         <title>FINDLOSTPOETS - Explore LOSTPOETS NFT Collection</title>
       </head>
       {/* Use the first font in tailwind.config.ts fontFamily */}
-      <body className="font-sans">
+      <body className={`font-sans ${isMaintenance ? 'bg-closetoblack min-h-screen flex items-center justify-center' : ''}`}>
         <Outlet />
         {/*<h1 className="screenreader-only">FINDLOSTPOETS: Browse Poets, Poems and Traits</h1>*/}
 
