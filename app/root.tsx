@@ -1,8 +1,8 @@
 // ./app/root.tsx
-import type { LinksFunction, MetaFunction, LoaderFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node"; 
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
-import { Links, Meta, Outlet,  Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
+import { Links, Meta, Outlet,  Scripts, ScrollRestoration } from "@remix-run/react";
+import MaintenancePage from '~/components/maintenance-page';
 
 // Save the original console.log
 const originalConsoleLog = console.log;
@@ -37,17 +37,8 @@ export const meta: MetaFunction = () => [
   { name: "author", content: "0xNosToca" }
 ];
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const url = new URL(request.url);
-  const isMaintenance = process.env.MAINTENANCE_MODE === 'true';
-  if (isMaintenance && url.pathname !== "/maintenance") {
-    return redirect("/maintenance");
-  }
-  return { isMaintenance };
-};
-
 export default function App() {
-  const { isMaintenance } = useLoaderData<{ isMaintenance: boolean }>();
+  const isMaintenanceMode = process.env.MAINTENANCE_MODE === 'true';
 
   return (
     <html lang="en">
@@ -57,8 +48,9 @@ export default function App() {
         <title>FINDLOSTPOETS - Explore LOSTPOETS NFT Collection</title>
       </head>
       {/* Use the first font in tailwind.config.ts fontFamily */}
-      <body className={`font-sans ${isMaintenance ? 'bg-closetoblack min-h-screen flex items-center justify-center' : ''}`}>
-        <Outlet />
+      <body className="font-sans">
+        {/* Conditionally render Maintenance page or the main Outlet based on maintenance mode */}
+        {isMaintenanceMode ? <MaintenancePage /> : <Outlet />}
         {/*<h1 className="screenreader-only">FINDLOSTPOETS: Browse Poets, Poems and Traits</h1>*/}
 
         {/* Manages scroll position for client-side transitions */}
