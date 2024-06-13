@@ -1,14 +1,8 @@
 // ./app/root.tsx
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction, LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node"; 
 import stylesheet from "~/tailwind.css?url";
-
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
+import { Links, Meta, Outlet,  Scripts, ScrollRestoration } from "@remix-run/react";
 
 // Save the original console.log
 const originalConsoleLog = console.log;
@@ -43,8 +37,15 @@ export const meta: MetaFunction = () => [
   { name: "author", content: "0xNosToca" }
 ];
 
+export const loader: LoaderFunction = async () => {
+  const isMaintenance = process.env.MAINTENANCE_MODE === 'true';
+  if (isMaintenance) {
+    return redirect("/maintenance");
+  }
+  return null;
+};
+
 export default function App() {
-  
   return (
     <html lang="en">
       <head>
