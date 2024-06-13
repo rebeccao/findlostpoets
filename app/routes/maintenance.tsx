@@ -20,11 +20,11 @@ export default function Maintenance() {
         <Meta />
         <Links />
       </head>
-      <body className="font-sans">
-        <div className="text-center flex items-center justify-center min-h-screen bg-closetoblack ">
+      <body className="font-sans bg-closetoblack min-h-screen flex items-center justify-center">
+        <div className="text-center">
           <h1 className="text-4xl font-bold text-pearlwhite">FINDLOSTPOETS</h1>
-          <h2 className="text-4xl font-bold text-pearlwhite">Down for Release Upgrade</h2>
-          <h2 className="mt-4 text-lg text-pearlwhite">Be back shortly.</h2>
+          <h1 className="text-2xl font-bold text-pearlwhite">Down for Release Upgrade</h1>
+          <h2 className="mt-4 text-xl text-pearlwhite">Be back shortly.</h2>
         </div>
         <ScrollRestoration />
         <Scripts />
