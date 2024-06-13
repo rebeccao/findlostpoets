@@ -57,7 +57,7 @@ export default function App() {
       {/* Use the first font in tailwind.config.ts fontFamily */}
       <body className="font-sans">
         <Outlet />
-        <h1 className="screenreader-only">FINDLOSTPOETS: Browse Poets, Poems and Traits</h1>
+        {/*<h1 className="screenreader-only">FINDLOSTPOETS: Browse Poets, Poems and Traits</h1>*/}
 
         {/* Manages scroll position for client-side transitions */}
         {/* If you use a nonce-based content security policy for scripts, you must provide the `nonce` prop. Otherwise, omit the nonce prop as shown here. */}
