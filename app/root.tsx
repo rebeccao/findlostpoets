@@ -37,9 +37,10 @@ export const meta: MetaFunction = () => [
   { name: "author", content: "0xNosToca" }
 ];
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request }) => {
+  const url = new URL(request.url);
   const isMaintenance = process.env.MAINTENANCE_MODE === 'true';
-  if (isMaintenance) {
+  if (isMaintenance && url.pathname !== "/maintenance") {
     return redirect("/maintenance");
   }
   return null;
