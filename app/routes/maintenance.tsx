@@ -23,8 +23,8 @@ export default function Maintenance() {
       <body className="font-sans bg-closetoblack min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-pearlwhite">FINDLOSTPOETS</h1>
-          <h1 className="text-2xl font-bold text-pearlwhite">Down for Release Upgrade</h1>
-          <h2 className="mt-4 text-xl text-pearlwhite">Be back shortly.</h2>
+          <h2 className="mt-4 text-2xl font-bold text-pearlwhite">Down for Release Upgrade</h2>
+          <h3 className="mt-4 text-xl text-pearlwhite">Be back shortly</h3>
         </div>
         <ScrollRestoration />
         <Scripts />
