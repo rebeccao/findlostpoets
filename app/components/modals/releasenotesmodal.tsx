@@ -23,8 +23,8 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
           <li className="pl-2 mb-1 hanging-indent">
             <span className="font-normal">New features</span> 
             <ol className="list-dash list-inside ml-8">
-              <li>Search by Class: Origin, Poet and Ghost.</li>
-              <li>Search by Named: Named or No Name.</li>
+              <li><span className="font-normal">Search by Class:</span> Origin, Poet and Ghost.</li>
+              <li><span className="font-normal">Search by Named:</span> Named or No Name.</li>
             </ol>
           </li>
           <li className="pl-2 mb-1 hanging-indent">
@@ -36,18 +36,23 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
             </ol>
           </li>
           <li className="pl-2 mb-1 hanging-indent">
-            <span className="font-normal">Prettied up UI:</ span> Changed fonts and colors of error messages.
+            <span className="font-normal">UI Improvements:</ span> Changed fonts throughout. Changed the colors of error messages.
           </li>
           <li className="pl-2 mb-1 hanging-indent">
-            <span className="font-normal">And of course, bug fixes :)</span>
+            <span className="font-normal">Bug fixes:</span>
             <ol className="list-dash list-inside ml-8">
-              <li>Search by Trait: Ego search now supports the following inputs: 'I', 'II', 'III', 'IV', 'V', 'i', 'ii', 'iii', 'iv', 'v', '1', '2', '3', '4', '5'.</li>
-              <li>Sidebar Panel Tooltips: Added a slight hoover delay to prevent the Tooltip modal from instantly appearing.</li>
-              <li>Asset support: Added apple-touch-icon to links.</li>
+              <li><span className="font-normal">Search by Trait:</span> Ego search now supports the following inputs: 'I', 'II', 'III', 'IV', 'V', 'i', 'ii', 'iii', 'iv', 'v', '1', '2', '3', '4', '5'.</li>
+              <li><span className="font-normal">Sidebar Panel Tooltips:</span> Added a slight hover delay to prevent the Tooltip modal from instantly appearing.</li>
+              <li><span className="font-normal">Asset support:</span> Added apple-touch-icon to links.</li>
             </ol>
           </li>
           <li className="pl-2 mb-1 hanging-indent">
-            <span className="font-normal">Known Issue:</span> FINDLOSTPOETS uses a free plan on Heroku as the hosting server. A limitation of this plan is that the server idles after 30 minutes of inactivity, resulting in a long startup time of approximately 15 seconds for the next user. I considered adding a "Loading..." screen to indicate the delay, but the implementation is complex and not worth the effort, especially since upgrading to a paid plan will eliminate the issue.
+            <span className="font-normal">Known Issues:</span> 
+            <ol className="list-dash list-inside ml-8">
+              <li><span className="font-normal">Slow app startup:</span> FINDLOSTPOETS uses a free plan on Heroku for hosting. The server idles after 30 minutes of inactivity, leading to a long startup time for the next user (about 15 seconds). Adding a "Loading..." screen is complex, and upgrading to a paid plan will solve this issue.</li>
+              <li><span className="font-normal">UI glitches:</span> Scrolling involves loading new pages of poets and currently can cause glitches, like flashing content. This will be addressed in future releases.</li>
+              <li><span className="font-normal">Gen1 image zooming:</span> Clicking any Poet to show details, then clicking the Gen1 image to zoom. Gen0 and Gen1 images are displayed in 1024x1024 frames. The Gen1 image can be zoomed to 2048x2048, enabling scrolling to view the entire image. Currently, the image is clipped in zoomed mode limiting the scroll area.</li>
+            </ol>
           </li>
         </ul>
       </div>
