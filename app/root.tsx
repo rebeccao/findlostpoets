@@ -1,7 +1,7 @@
 // ./app/root.tsx
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction, LoaderFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css?url";
-import { Links, Meta, Outlet,  Scripts, ScrollRestoration } from "@remix-run/react";
+import { Links, Meta, Outlet,  Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import MaintenancePage from '~/components/maintenance-page';
 
 // Save the original console.log
@@ -37,8 +37,14 @@ export const meta: MetaFunction = () => [
   { name: "author", content: "0xNosToca" }
 ];
 
+export const loader: LoaderFunction = () => {
+  return {
+    isMaintenanceMode: process.env.MAINTENANCE_MODE === 'true'
+  };
+};
+
 export default function App() {
-  const isMaintenanceMode = process.env.MAINTENANCE_MODE === 'true';
+  const { isMaintenanceMode } = useLoaderData<{ isMaintenanceMode: boolean }>();
 
   return (
     <html lang="en">
