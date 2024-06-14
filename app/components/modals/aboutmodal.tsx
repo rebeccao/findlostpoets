@@ -25,7 +25,7 @@ const AboutModal: React.FC<AboutModalProps> = ({ onClose, isOpen }) => {
         With this master source of LostPoets data in hand, I knew it needed to be visualized. I studied website frameworks and was amazed by how far UX/UI had evolved in the last decade. I decided on a framework and database. Then with the help of ChatGPT, FINDLOSTPOETS was born.
       </p>
       <p>
-        So, here we are, with a visual collection of this incredible data ready to be explored. Enjoy the journey of finding LostPoets!
+        One final migration of Manifold's Gen1 metadata and here we are, with a visual collection of this incredible data ready to be explored. Enjoy the journey of finding LostPoets!
       </p>
     </BaseModal>
   );

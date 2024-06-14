@@ -47,4 +47,6 @@ model Poet {
   @@index([ego, pid])
   @@index([pol, pid])
   @@index([pNam, pid])
+  @@index([named, pid])
+  @@index([class, pid])
 }
