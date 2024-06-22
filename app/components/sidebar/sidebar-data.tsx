@@ -28,6 +28,8 @@ export const sidebarItems: SidebarItem[] = [
       { title: 'Age', dbField: 'age', inputType: 'number', validationType: 'decimal', min: '0.00', max: '1.00' },
       { title: 'Genre', dbField: 'gen', inputType: 'text', validationType: 'alpha' },
       { title: 'Ego', dbField: 'ego', inputType: 'text', validationType: 'enum', enumValues: ['I', 'II', 'III', 'IV', 'V', 'i', 'ii', 'iii', 'iv', 'v', '1', '2', '3', '4', '5'] },
+      { title: 'Owner Name', dbField: 'oNam', inputType: 'text', validationType: 'alphanumeric' },
+      { title: 'Owner Address', dbField: 'oAddr', inputType: 'text', validationType: 'alphanumeric' },
     ]
   },
   {

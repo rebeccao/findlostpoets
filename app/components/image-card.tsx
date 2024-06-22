@@ -144,7 +144,13 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
             </div>
           </div>
           <div className="mt-3 text-sm font-light">
-            Poem: <span className="font-normal text-base ml-2">{formattedPoem}</span>
+            {formattedPoem.length > 0 || poet.wrdCnt > 0 ? (
+              <>
+                  Poem: <span className="font-normal text-base ml-2">{formattedPoem}</span>
+              </>
+            ) : (
+                ''
+            )}
           </div>
         </div>
       </div>
