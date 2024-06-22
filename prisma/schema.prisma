@@ -10,6 +10,9 @@ datasource db {
 model Poet {
   pid     Int      @id @map("_id")  // Use pid as the _id field and as the primary key
   pNam    String
+  listed  Boolean?
+  oNam    String?
+  oAddr   String
   ori     String
   oriCnt  Int?
   lat     String?
@@ -39,6 +42,10 @@ model Poet {
   @@index([egoCnt, ego])
   @@index([ageCnt, age])
   @@index([genCnt, gen])
+  @@index([pNam, pid])
+  @@index([listed, pid])
+  @@index([oNam, pid])
+  @@index([oAddr, pid])
   @@index([ori, pid])
   @@index([lat, pid])
   @@index([brd, pid])
@@ -46,7 +53,6 @@ model Poet {
   @@index([gen, pid])
   @@index([ego, pid])
   @@index([pol, pid])
-  @@index([pNam, pid])
   @@index([named, pid])
   @@index([class, pid])
 }
