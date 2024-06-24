@@ -20,8 +20,9 @@ const DATABASE_SIZE = 28170;
 
 export interface NavbarProps {
   toggleSidebar: () => void;
-	className?: string;  // Optional string for CSS classes
-	count?: number;      // Optional count to display search count after performSearch
+	className?: string;  								// Optional string for CSS classes
+	count?: number;   				   				// Optional count to display poet count after performSearch
+	searchCriteriaArray: string[];			// Optional search criteria string
 }
 
 export interface SidebarProps {
@@ -334,6 +335,8 @@ function Index() {
 	const [selectedClasses, setSelectedClasses] = useState<string[] | null>(null);
 	const [selectedNamedTrait, setSelectedNamedTrait] = useState<boolean | null>(null);
 
+	const [navbarSearchCriteriaArray, setNavbarSearchCriteriaArray] = useState<string[]>([]); 
+
 	// searchButtonPressed is used to conditionally control displaying the Rare Trait count on the ImageCard 
 	const [searchButtonPressed, setSearchButtonPressed] = useState(false);
 
@@ -349,9 +352,14 @@ function Index() {
 		setPoetCount(null);
 		if (query.where !== undefined) {			// All user searches include where:, start at the beginning
 			query.skip = 0
+			// Clear and then set the search criteria string that will be displayed in the navbar
+			setNavbarSearchCriteriaArray([]);
+			formatSearchCriteriaArray();
 		} else {															// User pressed Clear button, skip to a random place in the DB 
 			const newPage = (Math.floor(Math.random() * (DATABASE_SIZE-100)/PAGE_SIZE));
 			query.skip = (newPage - 1) * PAGE_SIZE;
+			// Clear the search criteria string that will be displayed in the navbar
+			setNavbarSearchCriteriaArray([]);
 		}
 
 		// Reset all state
@@ -371,6 +379,44 @@ function Index() {
 		// Use fetcher.load to initiate the request to fetch poets and count
 		fetcher.load(`?index&${dbQueryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
   };
+
+	const formatSearchCriteriaArray = () => {
+		setNavbarSearchCriteriaArray([]);
+		sidebarItems.map((sidebarItem, index) => {
+			// Search By Trait
+			if (sidebarItem.type === "traitSearch" && searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) {
+				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey); 
+				setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${searchTrait.searchTraitValue}`]);
+			}
+
+			// Sort By Rare Trait
+			if (sidebarItem.type === "sort" && selectedRareTrait) {
+				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === selectedRareTrait); 
+				setNavbarSearchCriteriaArray(prev => [...prev, `Rarest ${selectedTrait?.title}`]);
+			}
+
+			// Search By Range Trait
+			if (sidebarItem.type === "range" && selectedRangeTrait) {
+				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === selectedRangeTrait); 
+				const selectedRange = rangeValues[selectedRangeTrait] || {};
+				const min = selectedRange.min ?? selectedTrait?.min;
+ 		 		const max = selectedRange.max ?? selectedTrait?.max;
+				setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${min}-${max}`]);
+			}
+
+			// Search By Classes
+			if (sidebarItem.type === "class" && selectedClasses && selectedClasses.length > 0) {
+				const classString = selectedClasses.map(str => str.charAt(0).toUpperCase() + str.slice(1)).join('|');
+				setNavbarSearchCriteriaArray(prev => [...prev, `${classString}`]);
+			}
+
+			// Search By Named Trait
+			if (sidebarItem.type === "named" && selectedNamedTrait !== null) {
+				setNavbarSearchCriteriaArray(prev => [...prev, `${selectedNamedTrait ? "Named" : "No Name"}`]);
+			}
+		})
+		console.log("Index formatSearchCriteriaArray navbarSearchCriteriaArray - ", navbarSearchCriteriaArray);
+	}
 
 	// Callback from SidebarPanel when the user selects a searchTrait and sets its value
 	const handleSearchTraitChange = useCallback((searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => {
@@ -496,7 +542,7 @@ function Index() {
 					</section>
 				)}
 				<div className="flex flex-col w-full">
-					<Navbar toggleSidebar={toggleSidebar} className="navbar" count={poetCount ? poetCount : undefined} />
+					<Navbar toggleSidebar={toggleSidebar} className="navbar" count={poetCount ? poetCount : undefined} searchCriteriaArray={navbarSearchCriteriaArray} />
 					<div className={`transition-all duration-400 ease-in-out ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 						<div className="mt-4 mb-4 px-4">
 							{/* Display loading state */}

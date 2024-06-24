@@ -26,6 +26,7 @@ const getResizedIPFSUrl = (originalIPFSUrl: string): string => {
 
 const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
   ({ poet, rarityTraitLabel, rarityCount }, ref) => {
+    const divRef = ref as React.Ref<HTMLDivElement>;
     // poet.g0Url is the arweave URL from the metafile and is stored in the MongoDB (1024x1024)
     // poet.g1Url is the ipfs URL from the metafile and is stored in the MongoDB (2048x2048)
     // getResizedIPFSUrl(poet.g1Url) is a Cloudflare worker that fetches the ipfs URL and resizes it to (1024x1024)
@@ -82,7 +83,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
     const formattedPoem = poem.substring(0, 16).replace(/\n+/g, ' ').trim() + (poem.length > 16 ? "..." : '');
 
     return (
-      <div ref={ref} data-pid={poet.pid} className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
+      <div ref={divRef} data-pid={poet.pid} className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded overflow-hidden  bg-darkgray text-gainsboro shadow-lg sans">
         <div className="relative w-full pb-[100%] mb-2">
           {!gen1ImageLoaded && (
             <div className="absolute top-0 left-0 right-0 bottom-0 animate-pulse border bg-darkgray border-charcoalgray"></div>
