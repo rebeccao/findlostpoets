@@ -386,7 +386,12 @@ function Index() {
 			// Search By Trait
 			if (sidebarItem.type === "traitSearch" && searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) {
 				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey); 
-				setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${searchTrait.searchTraitValue}`]);
+				if (selectedTrait?.title === "Owner Wallet") {
+					const address = searchTrait.searchTraitValue.toString();
+					setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${`${address.slice(0, 6)}...${address.slice(-4)}`}`]);
+				} else {
+					setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${searchTrait.searchTraitValue}`]);
+				}
 			}
 
 			// Sort By Rare Trait
