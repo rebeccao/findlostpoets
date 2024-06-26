@@ -7,6 +7,7 @@ import debounce from 'lodash/debounce';
 import type { Poet } from '@prisma/client';
 import Navbar from '~/components/navbar';
 import SidebarPanel from '~/components/sidebar/sidebar-panel';
+import LoadingAnimation from '~/components/loading-animation';
 import { sidebarItems } from '~/components/sidebar/sidebar-data';
 import ImageCard from '~/components/image-card';
 import PoetModal from '~/components/modals/poetmodal';
@@ -551,11 +552,7 @@ function Index() {
 					<div className={`transition-all duration-400 ease-in-out ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 						<div className="mt-4 mb-4 px-4">
 							{/* Display loading state */}
-							{fetcher.state === 'loading' && (
-								<div className="flex flex-col justify-start items-start min-h-screen pt-4 pl-4">
-									<p>Loading...</p>
-								</div>
-							)}
+							{fetcher.state === 'loading' && <LoadingAnimation />}
 
 							{/* Display error state */}
 							{fetchError && (
