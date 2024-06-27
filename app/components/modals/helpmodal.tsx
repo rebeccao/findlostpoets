@@ -31,15 +31,17 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
           <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
             <h4 className="text-md font-normal">Search By Trait</h4>
             <p>
-              Choose the trait you want to search from the dropdown menu: Poet Name, Origin, Latent, Breed, Age, Genre, and Ego. Enter the trait name and hit Return or click the Search button. Examples:
+              Choose the trait you want to search from the dropdown menu: Poet Name, Origin, Latent, Breed, Age, Genre, Ego, Owner and Wallet. Enter the trait information and hit Return or click the Search button. Note: Upper or lower case may be used. Examples:
             </p>
-            <ul className="list-none list-inside m-4 mx-auto w-1/2">
+            <ul className="list-none list-inside m-4 mx-auto w-2/3">
               {[
                 { label: "Poet Name", value: "#27081 or 27081. Selene or selene" },
                 { label: "Origin", value: "EOS or eos" },
                 { label: "Latent", value: "X5WF or x5wf" },
                 { label: "Age", value: "0.35 or .35" },
                 { label: "Ego", value: "II or ii or 2" },
+                { label: "Owner", value: "0xNosToca or 0xnostoca" },
+                { label: "Wallet", value: "0xe31c0a63b4509ede74a80cbe75b8f93b2d3b0ae9" },
               ].map((item, index) => (
                 <li key={index} className="flex">
                   <span className="font-light w-28">{item.label}</span>
