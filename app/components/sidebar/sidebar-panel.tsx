@@ -551,13 +551,13 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
         {/* Buttons Container */}
         <div className="sticky bottom-0 p-4 font-light flex justify-center space-x-2">
           <button
-            className="w-1/4 p-2 rounded-lg shadow-sm text-white border bg-davysgray border-naughtygray hover:bg-darkgray hover:border-charcoalgray"// Lighter for secondary clear action
+            className="w-1/4 p-2 rounded-lg shadow-sm text-pearlwhite border bg-davysgray border-naughtygray hover:bg-darkgray hover:border-charcoalgray"// Lighter for secondary clear action
             onClick={handleSearchClick}
           >
             Search
           </button>
           <button
-            className="w-1/4 p-2 rounded-lg shadow-sm text-white border bg-charcoalgray border-gunmetalgray hover:bg-darkgray hover:border-charcoalgray" // Darker for primary action
+            className="w-1/4 p-2 rounded-lg shadow-sm text-pearlwhite border bg-charcoalgray border-gunmetalgray hover:bg-darkgray hover:border-charcoalgray" // Darker for primary action
             onClick={resetSearch} // Assuming this resets all search inputs
           >
             Clear

@@ -148,7 +148,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
             >
               <div className="p-3 flex justify-between items-center">
                 <span className="font-normal">Version Number:</span>
-                <span>2.0.0</span>
+                <span>1.1.0</span>
               </div>
               <div className="border-t border-darkgray2"></div>
               <div className="p-3 cursor-pointer" onClick={openReleaseNotes}>

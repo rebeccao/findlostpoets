@@ -10,7 +10,7 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
   return (
     <BaseModal onClose={onClose} title="Release Notes" isOpen={isOpen}>
       <div className="space-y-1">
-        <h2 className="text-lg font-light">Release 2.0.0 - Major database update, new features, bug fixes</h2>
+        <h2 className="text-lg font-light">Release 1.1.0 - Major database update, new features, bug fixes</h2>
         <ul className="list-disc list-inside p-4">
           <li className="pl-2 mb-2 hanging-indent">
             <span className="font-normal">Database major update:</span> 

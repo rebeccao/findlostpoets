@@ -18,7 +18,7 @@ export type SidebarItem = {
 export const sidebarItems: SidebarItem[] = [
   {
     title: 'Search By Trait',
-    details: 'Choose the Search Trait from the dropdown below.',
+    details: 'Choose any Search Trait from the dropdown below and enter a search term.',
     type: 'traitSearch',
     expandedSidebarItems: [
       { title: 'Poet Name', dbField: 'pNam', inputType: 'text', validationType: 'alphanumeric' },
@@ -34,7 +34,7 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     title: 'Sort By Rarest',
-    details: 'Sorts the Poets by the rarest trait count. The trait count is displayed in the bottom left corner.',
+    details: 'Select to sort by the rarest trait count. The trait count is displayed in the bottom left corner.',
     type: 'sort',
     expandedSidebarItems: [
       { title: 'Breed', dbField: 'brdCnt', inputType: 'number' },   // Mongodb field name for Breed
@@ -45,7 +45,7 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     title: 'Search By Ranges',
-    details: 'Search Poets by Range.',
+    details: 'Select checkbox and input numbers to search Poets by Range.',
     type: 'range',
     expandedSidebarItems: [     
       { title: 'Lexicon', dbField: 'lexCnt', inputType: 'number', min: "1", max: "255" },        // Mongodb field name for Lexicon
@@ -67,7 +67,7 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     title: 'Search By Named',
-    details: 'Click either one to select or none for all.',
+    details: 'Click either to select or neither to display all.',
     type: 'named',
     expandedSidebarItems: [ 
       { title: 'Named', dbField: 'True', inputType: 'text' },     // Mongodb choices for named

@@ -46,17 +46,17 @@ const Tooltip: React.FC<TooltipProps> = ({ children, content }) => {
       onFocus={handleFocus}
       onBlur={handleBlur}
     >
-      <div className="flex items-center">
-        <div className="mr-2">{children}</div>
+      <div className="mr-2">{children}</div>
+      <div className="relative flex items-center">
         <span className="ml-1 text-mediumgray">
           <IoIosInformationCircleOutline className="h-4 w-4" />
         </span>
+        {show && (
+          <div className="absolute z-10 w-60 p-2 mt-2 text-sm text-pearlwhite bg-charcoalgray rounded-md shadow-lg" style={{ top: '100%', left: '-40%', transform: 'translateX(-40%)'}}>
+            {content}
+          </div>
+        )}
       </div>
-      {show && (
-        <div className="absolute z-10 w-48 p-2 mt-2 text-sm text-white bg-charcoalgray rounded-md shadow-lg">
-          {content}
-        </div>
-      )}
     </div>
   );
 };
