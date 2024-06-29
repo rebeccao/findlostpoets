@@ -387,7 +387,7 @@ function Index() {
 			// Search By Trait
 			if (sidebarItem.type === "traitSearch" && searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) {
 				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey); 
-				if (selectedTrait?.title === "Owner Wallet") {
+				if (selectedTrait?.title === "Wallet") {
 					const address = searchTrait.searchTraitValue.toString();
 					setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${`${address.slice(0, 6)}...${address.slice(-4)}`}`]);
 				} else {

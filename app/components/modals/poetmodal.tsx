@@ -108,7 +108,7 @@ export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
         {/* Main content container for images and traits */}
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full mx-auto my-4 overflow-y-auto">
           {/* Images container */}
-          <div className="flex justify-between items-center  bg-closetoblack" style={{ height: containerDimensions.height, width: containerDimensions.width, margin: '0 auto' }}>
+          <div className="flex justify-between items-center font-thin bg-closetoblack text-pearlwhite" style={{ height: containerDimensions.height, width: containerDimensions.width, margin: '0 auto' }}>
             <div style={{ width: 'calc(50% - 15px)' }} onClick={() => openImageModal(poet.g0Url, '1X')}>  {/* Add right padding to the first image */}
               <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full h-full object-contain" loading="lazy" />
             </div>
