@@ -56,3 +56,10 @@ model Poet {
   @@index([named, pid])
   @@index([class, pid])
 }
+
+model TopCollector {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  count Int
+  oAddr String
+  oNam  String?
+}

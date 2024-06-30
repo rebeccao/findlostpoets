@@ -10,14 +10,6 @@ interface HelpModalProps {
 const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
   return (
     <BaseModal onClose={onClose} title="Help" isOpen={isOpen}>
-      <div className="mb-4">
-        <div className="text-center">
-          <span className="font-light text-xl">FINDLOSTPOETS</span>
-        </div>
-        <div className="text-center">
-          Discover and explore poets from the Lostpoets NFT collection
-        </div>
-      </div>
       <div className="px-6">
         <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
           <h3 className="text-lg font-normal flex items-center">
@@ -90,6 +82,31 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
             </p>
           </div>
         </div>
+      </div>
+      <div className="px-6">
+        <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
+          <h3 className="text-lg font-normal flex items-center">
+            <PiListLight size={34} className="mr-4 mb-2" /> Information 
+          </h3>
+          <p>
+            The Information icon opens and closes a dropdown of different information: 
+          </p>
+          <ul className="list-none list-inside m-4 mx-auto w-2/3">
+            {[
+              { label: "Top 100 Collectors", value: "" },
+              { label: "Help", value: "" },
+              { label: "About", value: "" },
+              { label: "Release Notes", value: "" },
+            ].map((item, index) => (
+              <li key={index} className="flex">
+                <span className="font-light w-35">{item.label}</span>
+                <span className="flex-1 text-left">{item.value}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div className="px-6">
         <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
           <h3 className="text-lg font-normal mb-2">Poet Details</h3>
           <p className="mb-4">

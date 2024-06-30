@@ -6,12 +6,14 @@ import { GoChevronDown } from "react-icons/go";
 import ReleaseNotesModal from '~/components/modals/releasenotesmodal';
 import HelpModal from '~/components/modals/helpmodal';
 import AboutModal from '~/components/modals/aboutmodal';
+import Top100Modal from '~/components/modals/top100modal';
 
 const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, count, searchCriteriaArray }) => {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isReleaseNotesOpen, setIsReleaseNotesOpen] = useState(false);
 	const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isTop100Open, setIsTop100Open] = useState(false);
 
   const navbarRef = useRef<HTMLDivElement>(null);
 
@@ -33,6 +35,10 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
 
   const openAbout = () => {
     setIsAboutOpen(true);
+  };
+
+  const openTop100 = () => {
+    setIsTop100Open(true);
   };
 
   return (
@@ -146,33 +152,38 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
                 isDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
               }`}
             >
-              <div className="p-3 flex justify-between items-center">
-                <span className="font-normal">Version Number:</span>
-                <span>1.1.0</span>
-              </div>
-              <div className="border-t border-darkgray2"></div>
-              <div className="p-3 cursor-pointer" onClick={openReleaseNotes}>
+              <div className="p-3 cursor-pointer" onClick={openTop100}>
                 <div className="flex justify-between items-center">
-                  <h2 className="font-normal">Release Notes</h2>
+                  <h2 className="font-light">Top 100 Collectors</h2>
                   <GoChevronDown />
                 </div>
               </div>
               <div className="border-t border-darkgray2"></div>
               <div className="p-3 cursor-pointer" onClick={openHelp}>
                 <div className="flex justify-between items-center">
-                  <h2 className="font-normal">Help</h2>
+                  <h2 className="font-light">Help</h2>
                   <GoChevronDown />
                 </div>
               </div>
               <div className="border-t border-darkgray2"></div>
               <div className="p-3 cursor-pointer" onClick={openAbout}>
                 <div className="flex justify-between items-center">
-                  <h2 className="font-normal">About</h2>
+                  <h2 className="font-light">About</h2>
                   <GoChevronDown />
                 </div>
               </div>
+              <div className="border-t border-darkgray2"></div>
+              <div className="p-3 cursor-pointer" onClick={openReleaseNotes}>
+                <div className="flex justify-between items-center">
+                  <h2 className="font-light">Release Notes</h2>
+                  <GoChevronDown />
+                </div>
+              </div>
+              <div className="border-t border-darkgray2"></div>
+              <div className="p-1 flex text-xs items-center justify-center">
+                <span className="font-light">Version: 1.1.0</span>
+              </div>
             </div>
-            
             <div
               className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-500 ${
                 isReleaseNotesOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
@@ -193,6 +204,13 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
               }`}
             >
               <AboutModal onClose={() => setIsAboutOpen(false)} isOpen={isAboutOpen} />
+            </div>
+            <div
+              className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-500 ${
+                isTop100Open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+              }`}
+            >
+              <Top100Modal onClose={() => setIsTop100Open(false)} isOpen={isTop100Open} />
             </div>
           </div>
         </div>
