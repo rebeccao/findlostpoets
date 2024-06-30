@@ -8,20 +8,21 @@ interface Collector {
 
 interface Top100ListProps {
   collectors: Collector[];
+  height: string; 
 }
-const Top100List: React.FC<Top100ListProps> = ({ collectors }) => {
+const Top100List: React.FC<Top100ListProps> = ({ collectors, height }) => {
   return (
     <div className="p-4 flex justify-center">
       <div>
         {/* Separate header element */}
         <div className="flex bg-darkgray border border-davysgray">
-          <div className="font-light border-r border-davysgray p-1.5 w-[70px]">Rank</div>
-          <div className="font-light border-r border-davysgray p-1.5 w-[240px]">Owner</div>
-          <div className="font-light border-r border-davysgray p-1.5 w-[420px]">Wallet</div>
-          <div className="font-light border-r border-davysgray p-1.5 w-[100px]"># of Poets</div>
+          <div className="font-light border-r border-davysgray p-1.5 w-[70px] text-center">Rank</div>
+          <div className="font-light border-r border-davysgray p-1.5 w-[240px] text-center">Owner</div>
+          <div className="font-light border-r border-davysgray p-1.5 w-[420px] text-center">Wallet</div>
+          <div className="font-light border-r border-davysgray p-1.5 w-[100px] text-center"># of Poets</div>
         </div>
         {/* Scrollable table body */}
-        <div className="overflow-auto max-h-[calc(75vh-7.5rem)]">
+        <div className={`overflow-y-auto ${height}`}>
           <table className="border-collapse border border-davysgray">
             <tbody>
               {collectors.map((collector, index) => (

@@ -11,7 +11,6 @@ export const loader: LoaderFunction = async () => {
   try {
     // Fetch the precomputed top 100 collectors from the TopCollectors collection
     const topCollectors: TopCollector[] = await prisma.topCollector.findMany();
-    const topCollector = await prisma.topCollector.findFirst();
 
     return json(topCollectors);
   } catch (error) {
@@ -24,15 +23,15 @@ const Top100 = () => {
   const topCollectors = useLoaderData<TopCollector[]>();
 
   return (
-    <div className="border bg-darkgray border-deepgray text-pearlwhite">
+    <div className="min-h-screen flex flex-col justify-center border bg-darkgray border-deepgray text-pearlwhite">
       <div className="text-center items-center pt-8 pb-4">
         <h1 className="text-2xl font-light">Top 100 LostPoets Collectors</h1>
       </div>
-      <div className="font-extralight">
+      <div className="flex-grow font-extralight">
         {topCollectors.length === 0 ? (
-          <p>No collectors found.</p>
+          <p className="text-center">No collectors found.</p>
         ) : (
-          <Top100List collectors={topCollectors} />
+          <Top100List collectors={topCollectors} height="max-h-[calc(100vh-11rem)]" />
         )}
       </div>
     </div>
