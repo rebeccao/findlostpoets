@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useReducer } from 'react';
 import { useLoaderData, useFetcher } from '@remix-run/react'
 import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
@@ -26,22 +26,6 @@ export interface NavbarProps {
 	searchCriteriaArray: string[];			// Optional search criteria string
 }
 
-export interface SidebarProps {
-	searchTrait: Record<string, string | number>;
-	selectedRareTrait: string | null; 
-	selectedRangeTrait: string | null; 
-	rangeValues: Record<string, { min?: number; max?: number }>;
-	selectedClasses: string[] | null;
-	selectedNamedTrait: boolean | null;
-	onSearchTraitChange: (searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => void;
-	onRareTraitSelect: (selectedDbField: string | null) => void;
-	onRangeTraitSelect: (selectedDbField: string | null) => void; 
-	onRangeChange: (selectedDbField: string | null, min?: number, max?: number) => void;
-	onClassChange: (selectedDbField: string[]) => void; 
-	onNamedTraitSelect: (selectedDbField: boolean | null) => void; 
-	performSearch: (dbQuery: SearchCriteria) => void;
-}
-
 export type SearchCriteria = {
   where?: { [key: string]: any };
   skip: number;
@@ -57,7 +41,6 @@ interface LoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-
 	try {
 		const url = new URL(request.url);
 		let dbQuery: SearchCriteria = { orderBy: [{ pid: 'asc' }], skip: 0, take:PAGE_SIZE }; // query on first load
@@ -86,6 +69,64 @@ export const loader: LoaderFunction = async ({ request }) => {
         }, { status: 500 });
 	}
 };
+
+// SidebarPanel states
+interface State {
+  searchTrait: { searchTraitKey: string; searchTraitValue: string | number };
+  selectedRareTrait: string | null;
+  selectedRangeTrait: string | null;
+  rangeValues: Record<string, { min?: number; max?: number }>;
+  selectedClasses: string[] | null;
+  selectedNamedTrait: boolean | null;
+}
+
+// SidebarPanel actions
+type Action =
+  | { type: 'SET_SEARCH_TRAIT'; payload: { searchTraitKey: string; searchTraitValue: string | number } }
+  | { type: 'SET_SELECTED_RARE_TRAIT'; payload: string | null }
+  | { type: 'SET_SELECTED_RANGE_TRAIT'; payload: string | null }
+  | { type: 'SET_RANGE_VALUES'; payload: { key: string; value: { min?: number; max?: number } } }
+  | { type: 'SET_SELECTED_CLASSES'; payload: string[] | null }
+  | { type: 'SET_SELECTED_NAMED_TRAIT'; payload: boolean | null };
+
+const firstTraitDbField = sidebarItems.find(item => item.type === "traitSearch")?.expandedSidebarItems[0].dbField || '';
+const initialState: State = {
+  searchTrait: { searchTraitKey: firstTraitDbField, searchTraitValue: '' },
+  selectedRareTrait: null,
+  selectedRangeTrait: null,
+  rangeValues: {},
+  selectedClasses: null,
+  selectedNamedTrait: null,
+};
+
+// A reducer function to handle all the search states in SidebarPanel
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'SET_SEARCH_TRAIT':
+      return { ...state, searchTrait: action.payload };
+    case 'SET_SELECTED_RARE_TRAIT':
+      return { ...state, selectedRareTrait: action.payload };
+    case 'SET_SELECTED_RANGE_TRAIT':
+      return { ...state, selectedRangeTrait: action.payload };
+			case 'SET_RANGE_VALUES':
+				return {
+					...state,
+					rangeValues: {
+						...state.rangeValues,
+						[action.payload.key]: {
+							...state.rangeValues[action.payload.key],
+							...action.payload.value,
+						},
+					},
+				};
+    case 'SET_SELECTED_CLASSES':
+      return { ...state, selectedClasses: action.payload };
+    case 'SET_SELECTED_NAMED_TRAIT':
+      return { ...state, selectedNamedTrait: action.payload };
+    default:
+      return state;
+  }
+}
 
 function Index() {
 	type Direction = 'forward' | 'backward';
@@ -325,6 +366,7 @@ function Index() {
 
 	/*************** SidebarPanel callback logic ****************/
 
+	const [state, dispatch] = useReducer(reducer, initialState);
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const toggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), [setSidebarOpen]);
 
@@ -385,89 +427,44 @@ function Index() {
 		setNavbarSearchCriteriaArray([]);
 		sidebarItems.map((sidebarItem, index) => {
 			// Search By Trait
-			if (sidebarItem.type === "traitSearch" && searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) {
-				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey); 
+			if (sidebarItem.type === "traitSearch" && state.searchTrait.searchTraitValue || state.searchTrait.searchTraitValue === 0) {
+				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === state.searchTrait.searchTraitKey); 
 				if (selectedTrait?.title === "Wallet") {
-					const address = searchTrait.searchTraitValue.toString();
+					const address = state.searchTrait.searchTraitValue.toString();
 					setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${`${address.slice(0, 6)}...${address.slice(-4)}`}`]);
 				} else {
-					setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${searchTrait.searchTraitValue}`]);
+					setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${state.searchTrait.searchTraitValue}`]);
 				}
 			}
 
 			// Sort By Rare Trait
-			if (sidebarItem.type === "sort" && selectedRareTrait) {
-				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === selectedRareTrait); 
+			if (sidebarItem.type === "sort" && state.selectedRareTrait) {
+				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === state.selectedRareTrait); 
 				setNavbarSearchCriteriaArray(prev => [...prev, `Rarest ${selectedTrait?.title}`]);
 			}
 
 			// Search By Range Trait
-			if (sidebarItem.type === "range" && selectedRangeTrait) {
-				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === selectedRangeTrait); 
-				const selectedRange = rangeValues[selectedRangeTrait] || {};
+			if (sidebarItem.type === "range" && state.selectedRangeTrait) {
+				const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === state.selectedRangeTrait); 
+				const selectedRange = state.rangeValues[state.selectedRangeTrait] || {};
 				const min = selectedRange.min ?? selectedTrait?.min;
  		 		const max = selectedRange.max ?? selectedTrait?.max;
 				setNavbarSearchCriteriaArray(prev => [...prev, `${selectedTrait?.title}:${min}-${max}`]);
 			}
 
 			// Search By Classes
-			if (sidebarItem.type === "class" && selectedClasses && selectedClasses.length > 0) {
-				const classString = selectedClasses.map(str => str.charAt(0).toUpperCase() + str.slice(1)).join('|');
+			if (sidebarItem.type === "class" && state.selectedClasses && state.selectedClasses.length > 0) {
+				const classString = state.selectedClasses.map(str => str.charAt(0).toUpperCase() + str.slice(1)).join('|');
 				setNavbarSearchCriteriaArray(prev => [...prev, `${classString}`]);
 			}
 
 			// Search By Named Trait
-			if (sidebarItem.type === "named" && selectedNamedTrait !== null) {
+			if (sidebarItem.type === "named" && state.selectedNamedTrait !== null) {
 				setNavbarSearchCriteriaArray(prev => [...prev, `${selectedNamedTrait ? "Named" : "No Name"}`]);
 			}
 		})
 		console.log("Index formatSearchCriteriaArray navbarSearchCriteriaArray - ", navbarSearchCriteriaArray);
 	}
-
-	// Callback from SidebarPanel when the user selects a searchTrait and sets its value
-	const handleSearchTraitChange = useCallback((searchTraitState: { searchTraitKey: string; searchTraitValue: string | number }) => {
-    setSearchTrait(searchTraitState);
-		console.log("Index: handleSearchTraitChange searchTraitState: ", searchTraitState);
-  }, []);
-
-	// Callback from SidebarPanel when the user selects the rare trait checkbox
-  const handleRareTraitSelect = useCallback((selectedDbField: string | null) => {
-		// Toggle selection: if the same trait is selected again, deselect it; otherwise, update the selection
-		setSelectedRareTrait(prev => (prev === selectedDbField ? null : selectedDbField));
-		// Reset searchButtonPressed to false to clear rarityTraitLabel and rarityCount until next search
-		setSearchButtonPressed(false);
-	}, []);
-
-	// Callback from SidebarPanel when the user selects the range checkbox
-	const handleRangeTraitSelect = useCallback((selectedDbField: string | null) => {
-		setSelectedRangeTrait(selectedDbField);
-	}, []);
-
-	// Callback from SidebarPanel when the user sets the min and max range values 
-	const handleRangeChange = useCallback((selectedDbField: string | null, min?: number, max?: number) => {
-		if (selectedDbField !== null) {
-			// Update min/max for the specified range trait
-			setRangeValues(prev => ({
-				...prev,
-				[selectedDbField]: { min, max }
-			}));
-		} else {
-			// Reset selected range trait and clear min/max for all traits
-			setSelectedRangeTrait(null);
-			setRangeValues({});
-		}
-	}, []);
-
-	// Callback from SidebarPanel when the user selects the class checkbox
-	const handleClassChange = useCallback((updatedClasses: string[]) => {
-    setSelectedClasses(updatedClasses);
-	}, []);
-
-	// Callback from SidebarPanel when the user selects the named checkbox
-	const handleNamedTraitSelect = useCallback((selectedDbField: boolean | null) => {
-		// Toggle selection: if the same trait is selected again, deselect it; otherwise, update the selection
-		setSelectedNamedTrait(prev => (prev === selectedDbField ? null : selectedDbField));
-	}, []);
 
 	/*************** PoetDetails logic ****************/
 
@@ -530,21 +527,7 @@ function Index() {
 			<div className="flex min-h-screen bg-closetoblack text-pearlwhite">
 				{sidebarOpen && (
 					<section className="fixed left-0 top-14 bottom-0 w-80 z-5 h-[calc(100vh-56px)]">
-						<SidebarPanel
-							searchTrait={searchTrait}
-							selectedRareTrait={selectedRareTrait}
-							selectedRangeTrait={selectedRangeTrait}
-							rangeValues={rangeValues}
-							selectedClasses={selectedClasses}
-							selectedNamedTrait={selectedNamedTrait}
-							onSearchTraitChange={handleSearchTraitChange}
-							onRareTraitSelect={handleRareTraitSelect}
-							onRangeTraitSelect={handleRangeTraitSelect}
-							onRangeChange={handleRangeChange}
-							onClassChange={handleClassChange} 
-							onNamedTraitSelect={handleNamedTraitSelect}
-							performSearch={performSearch} 
-						/>
+						<SidebarPanel state={state} dispatch={dispatch} performSearch={performSearch} />
 					</section>
 				)}
 				<div className="flex flex-col w-full">

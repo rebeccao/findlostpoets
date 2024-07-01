@@ -3,25 +3,34 @@ import React, { useState, useRef } from 'react';
 import { GrFormClose } from "react-icons/gr";
 import CustomCheckbox from "~/components/custom-checkbox";
 import Tooltip from "~/components/tooltip";
-import type { SidebarProps, SearchCriteria } from "~/routes/_index";
+import type { SearchCriteria } from "~/routes/_index";
 import type { ExpandedSidebarItem } from "~/components/sidebar/sidebar-data";
 import { FloatingError } from "~/components/floating-error";
 
-const SidebarPanel: React.FC<SidebarProps> = React.memo(({ 
-  searchTrait,
-  selectedRareTrait, 
-  selectedRangeTrait,
-  rangeValues,
-  selectedClasses,
-  selectedNamedTrait,
-  onSearchTraitChange, 
-  onRareTraitSelect, 
-  onRangeTraitSelect,
-  onRangeChange,
-  onClassChange, 
-  onNamedTraitSelect,
-  performSearch 
-}) => {
+interface State {
+  searchTrait: { searchTraitKey: string; searchTraitValue: string | number };
+  selectedRareTrait: string | null;
+  selectedRangeTrait: string | null;
+  rangeValues: Record<string, { min?: number; max?: number }>;
+  selectedClasses: string[] | null;
+  selectedNamedTrait: boolean | null;
+}
+
+type Action =
+  | { type: 'SET_SEARCH_TRAIT'; payload: { searchTraitKey: string; searchTraitValue: string | number } }
+  | { type: 'SET_SELECTED_RARE_TRAIT'; payload: string | null }
+  | { type: 'SET_SELECTED_RANGE_TRAIT'; payload: string | null }
+  | { type: 'SET_RANGE_VALUES'; payload: { key: string; value: { min?: number; max?: number } } }
+  | { type: 'SET_SELECTED_CLASSES'; payload: string[] | null }
+  | { type: 'SET_SELECTED_NAMED_TRAIT'; payload: boolean | null };
+
+interface SidebarProps {
+  state: State;
+  dispatch: React.Dispatch<Action>;
+  performSearch: (dbQuery: any) => void;
+}
+
+const SidebarPanel: React.FC<SidebarProps> = React.memo(({ state, dispatch, performSearch }) => {
 
   const egoMapping: { [key: string]: string } = {
     'I': 'I', 'i': 'I', '1': 'I',
@@ -42,7 +51,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
       searchTraitKey: newSearchTraitKey,
       searchTraitValue: '',
     };
-    onSearchTraitChange(updatedSearchTrait);
+    dispatch({ type: 'SET_SEARCH_TRAIT', payload: updatedSearchTrait });
   };
 
   // Handler for changing the searchTrait Value
@@ -85,10 +94,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
       }
     }
 
-    onSearchTraitChange({
-      searchTraitKey: selectedTrait.dbField,
-      searchTraitValue:  finalValue,
-    });
+    dispatch({ type: 'SET_SEARCH_TRAIT', payload: { searchTraitKey: selectedTrait.dbField, searchTraitValue: finalValue } });
 
     if (isValidInput || newSearchTraitValue === '') {
       setErrorMessages(prev => ({ ...prev, [selectedTrait.dbField]: "" }));
@@ -145,52 +151,61 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
   const clearSearchTraitInput = () => {
     // Set searchTraitValue  to empty string while keeping the current searchTraitKey
     const updatedSearchTrait = {
-      searchTraitKey: searchTrait.searchTraitKey.toString(),
+      searchTraitKey: state.searchTrait.searchTraitKey.toString(),
       searchTraitValue: '',
     };
-    setErrorMessages(prev => ({ ...prev, [searchTrait.searchTraitKey]: "" }));
-    onSearchTraitChange(updatedSearchTrait);
+    setErrorMessages(prev => ({ ...prev, [state.searchTrait.searchTraitKey]: "" }));
+    dispatch({ type: 'SET_SEARCH_TRAIT', payload: updatedSearchTrait });
   };
 
   const handleRareTraitSelect = (selectedDbField: string) => {
     console.log("Changing rare trait to:", selectedDbField);
-    // Directly call the onRareTraitSelect prop with the dbField of the clicked checkbox
-    onRareTraitSelect(selectedDbField); // This function expects a single string or null
+    // Dispatch SET_SELECTED_RARE_TRAIT with the dbField of the clicked checkbox
+    if (state.selectedRareTrait === selectedDbField) {
+      dispatch({ type: 'SET_SELECTED_RARE_TRAIT', payload: null }); // Deselect if the same trait is clicked again
+    } else {
+      dispatch({ type: 'SET_SELECTED_RARE_TRAIT', payload: selectedDbField });
+    }
   };
 
   // Update for checkbox change to also clear or set active trait
   const handleRangeCheckboxChange = (selectedDbField: string) => {
     console.log("Changing range trait to:", selectedDbField);
-    if (selectedRangeTrait === selectedDbField) {
-      onRangeTraitSelect(null); // Deselect if the same trait is clicked again
+    if (state.selectedRangeTrait === selectedDbField) {
+      dispatch({ type: 'SET_SELECTED_RANGE_TRAIT', payload: null }); // Deselect if the same trait is clicked again
     } else {
-      onRangeTraitSelect(selectedDbField);
+      dispatch({ type: 'SET_SELECTED_RANGE_TRAIT', payload: selectedDbField });
     }
   };
 
   const handleRangeInputChange = (selectedDbField: string, rangeType: 'min' | 'max', value: string) => {
     const numericValue = value === '' ? undefined : Number(value);
-
     if (rangeType === 'min') {
-      onRangeChange(selectedDbField, numericValue, rangeValues[selectedDbField]?.max);
+      dispatch({
+        type: 'SET_RANGE_VALUES',
+        payload: { key: selectedDbField, value: { min: numericValue, max: state.rangeValues[selectedDbField]?.max } }
+      });
     } else {
-      onRangeChange(selectedDbField, rangeValues[selectedDbField]?.min, numericValue);
+      dispatch({
+        type: 'SET_RANGE_VALUES',
+        payload: { key: selectedDbField, value: { min: state.rangeValues[selectedDbField]?.min, max: numericValue } }
+      });
     }
   };
 
   const handleClassChange = (selectedDbField: string) => {
     console.log("Changing class to:", selectedDbField);
-    const updatedClasses = selectedClasses?.includes(selectedDbField)
-        ? selectedClasses.filter(field => field !== selectedDbField)
-        : [...(selectedClasses || []), selectedDbField];
-    onClassChange(updatedClasses);  // Pass the updated array
+    const updatedClasses = state.selectedClasses?.includes(selectedDbField)
+        ? state.selectedClasses.filter(field => field !== selectedDbField)
+        : [...(state.selectedClasses || []), selectedDbField];
+    dispatch({ type: 'SET_SELECTED_CLASSES', payload: updatedClasses });  // Pass the updated array
   };
   
   const handleNamedTraitChange = (selectedDbField: string) => {
     console.log("Changing named trait to:", selectedDbField);
     // Convert the string to a boolean
     const booleanValue = selectedDbField === 'True';
-    onNamedTraitSelect(booleanValue); // This function expects a boolean or null
+    dispatch({ type: 'SET_SELECTED_NAMED_TRAIT', payload: booleanValue });  // This function expects a boolean or null
   };
 
   const resetSearch = () => {
@@ -202,13 +217,17 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     clearSearchTraitInput();
 
     // Deselect the selected rare trait, if any
-    if (selectedRareTrait) {
-      onRareTraitSelect(null);
+    if (state.selectedRareTrait) {
+      dispatch({ type: 'SET_SELECTED_RARE_TRAIT', payload: null });
     }
 
     // Reset the selected range trait and clear min/max values
-    if (selectedRangeTrait) {
-      onRangeChange(null, undefined, undefined);
+    if (state.selectedRangeTrait) {
+      dispatch({ type: 'SET_SELECTED_RANGE_TRAIT', payload: null });
+      // Iterate over the keys in rangeValues and reset their min/max values
+      Object.keys(state.rangeValues).forEach(key => {
+        dispatch({ type: 'SET_RANGE_VALUES', payload: { key, value: { min: undefined, max: undefined } } });
+      });
     }
 
     // Reset all range input fields to their placeholders
@@ -232,12 +251,12 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     });
 
     // Deselect the selected classes, if any
-    if (selectedClasses) {
-      onClassChange([]);
+    if (state.selectedClasses) {
+      dispatch({ type: 'SET_SELECTED_CLASSES', payload: [] });
     }
 
     // Deselect the selected named trait
-    onNamedTraitSelect(null);
+    dispatch({ type: 'SET_SELECTED_NAMED_TRAIT', payload: null });
   };
 
   const resetAndRandomSearch = () => {
@@ -255,69 +274,69 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
     let orderByConditions: SearchCriteria['orderBy'] = [];            
 
     // If set, map searchTrait.searchTraitKey === 'ego' to the correct value 
-    if (searchTrait.searchTraitKey === 'ego') {
-      const finalValue = egoMapping[searchTrait.searchTraitValue] || searchTrait.searchTraitValue;
+    if (state.searchTrait.searchTraitKey === 'ego') {
+      const finalValue = egoMapping[state.searchTrait.searchTraitValue] || state.searchTrait.searchTraitValue;
       const updatedSearchTrait = {
-        searchTraitKey: searchTrait.searchTraitKey.toString(),
+        searchTraitKey: state.searchTrait.searchTraitKey.toString(),
         searchTraitValue: finalValue,
       };
-      onSearchTraitChange(updatedSearchTrait);
+      dispatch({ type: 'SET_SEARCH_TRAIT', payload: updatedSearchTrait });
 
       // Update searchTrait.searchTraitValue to the converted value
-      searchTrait.searchTraitValue = finalValue;
+      state.searchTrait.searchTraitValue = finalValue;
     }
   
     // Search By Trait
-    if (searchTrait.searchTraitValue || searchTrait.searchTraitValue === 0) { // Ensure zero is considered a valid number
-      const searchValue = searchTrait.searchTraitValue;
-      if (searchTrait.searchTraitKey === 'age') {
+    if (state.searchTrait.searchTraitValue || state.searchTrait.searchTraitValue === 0) { // Ensure zero is considered a valid number
+      const searchValue = state.searchTrait.searchTraitValue;
+      if (state.searchTrait.searchTraitKey === 'age') {
         whereConditions.push({
-          [searchTrait.searchTraitKey]: { equals: Number(searchValue) }
+          [state.searchTrait.searchTraitKey]: { equals: Number(searchValue) }
         });
       } else if (searchValue !== '') {
         whereConditions.push({
-          [searchTrait.searchTraitKey]: { equals: searchValue, mode: "insensitive" }
+          [state.searchTrait.searchTraitKey]: { equals: searchValue, mode: "insensitive" }
         });
       }
     }
 
     // Sort By Rare Trait
-    if(selectedRareTrait) {
-      const trait = selectedRareTrait.slice(0, -3);
+    if(state.selectedRareTrait) {
+      const trait = state.selectedRareTrait.slice(0, -3);
 
-      whereConditions.push({ [selectedRareTrait]: { gt: 0 } });
-      orderByConditions.push({ [selectedRareTrait]: 'asc' });
+      whereConditions.push({ [state.selectedRareTrait]: { gt: 0 } });
+      orderByConditions.push({ [state.selectedRareTrait]: 'asc' });
       orderByConditions.push({ [trait]: 'asc' });                // sort the actual trait after sorting the trait count
     }
 
     // Search By Range Trait
-    if (selectedRangeTrait && rangeValues[selectedRangeTrait]) {
+    if (state.selectedRangeTrait && state.rangeValues[state.selectedRangeTrait]) {
       interface RangeCondition {
         gte?: number;
         lte?: number;
       }
 
       const rangeCondition: RangeCondition = {};
-      if (rangeValues[selectedRangeTrait].min !== undefined) {
-          rangeCondition['gte'] = rangeValues[selectedRangeTrait].min;
+      if (state.rangeValues[state.selectedRangeTrait].min !== undefined) {
+          rangeCondition['gte'] = state.rangeValues[state.selectedRangeTrait].min;
       }
-      if (rangeValues[selectedRangeTrait].max !== undefined) {
-          rangeCondition['lte'] = rangeValues[selectedRangeTrait].max;
+      if (state.rangeValues[state.selectedRangeTrait].max !== undefined) {
+          rangeCondition['lte'] = state.rangeValues[state.selectedRangeTrait].max;
       }
       if (Object.keys(rangeCondition).length > 0) {
-          whereConditions.push({ [selectedRangeTrait]: rangeCondition });
-          orderByConditions.push({ [selectedRangeTrait]: 'asc' }); 
+          whereConditions.push({ [state.selectedRangeTrait]: rangeCondition });
+          orderByConditions.push({ [state.selectedRangeTrait]: 'asc' }); 
       }
     }
     
     // Search By Classes
-    if (selectedClasses && selectedClasses.length > 0) {
-      whereConditions.push({ class: { in: selectedClasses } }); // Use 'in' to match any of the selected classes           
+    if (state.selectedClasses && state.selectedClasses.length > 0) {
+      whereConditions.push({ class: { in: state.selectedClasses } }); // Use 'in' to match any of the selected classes           
     }
     
     // Search By Named Trait
-    if (selectedNamedTrait !== null) {
-      whereConditions.push({ ['named']: { equals: selectedNamedTrait } });
+    if (state.selectedNamedTrait !== null) {
+      whereConditions.push({ ['named']: { equals: state.selectedNamedTrait } });
     }
   
     if (whereConditions.length > 0) {
@@ -351,7 +370,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                       name="traitSelect"
                       className="form-select block w-[40%] flex-shrink-0 flex-grow-0 flex-basis-[40%] mr-2 text-sm py-2 px-2 rounded-lg text-pearlwhite focus:outline-none bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray" 
                       onChange={(e) => handleSearchTraitChange(e.target.value)}
-                      value={searchTrait.searchTraitKey}
+                      value={state.searchTrait.searchTraitKey}
                       aria-label="Select a trait"
                     >
                       {sidebarItem.expandedSidebarItems.map((item, idx) => (
@@ -366,7 +385,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                         type="text"
                         placeholder="Enter search term..."
                         ref={inputRef} 
-                        value={searchTrait.searchTraitValue}
+                        value={state.searchTrait.searchTraitValue}
                         className="form-input block w-full py-2 text-sm rounded-lg placeholder-italic placeholder-mediumgray text-pearlwhite bg-davysgray border-naughtygray focus:border-davysgray focus:ring-1 focus:ring-naughtygray"
                         onFocus={(e) => e.target.placeholder = ''} // Clear placeholder on focus
                         onBlur={(e) => {
@@ -375,13 +394,13 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                           }
                         }}
                         onChange={(e) => {
-                          const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey);
+                          const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === state.searchTrait.searchTraitKey);
                           if (selectedTrait) {
                             handleSearchTraitValueChange(e.target.value, selectedTrait);
                           }
                         }}
                         onKeyDown={(e) => {
-                          const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === searchTrait.searchTraitKey);
+                          const selectedTrait = sidebarItem.expandedSidebarItems.find(item => item.dbField === state.searchTrait.searchTraitKey);
                           if (selectedTrait?.inputType === 'number' && !/[\d.]/.test(e.key) && e.key !== 'Enter' && e.key !== '.' && e.key !== 'Backspace') {
                             e.preventDefault(); // Allow only digits, backspace, and decimal point for numbers
                           }
@@ -391,13 +410,13 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                           }
                         }}
                       />
-                      {errorMessages[searchTrait.searchTraitKey] && (
+                      {errorMessages[state.searchTrait.searchTraitKey] && (
                         <FloatingError
-                          message={errorMessages[searchTrait.searchTraitKey]}
-                          onClose={() => setErrorMessages(prev => ({ ...prev, [searchTrait.searchTraitKey]: '' }))}
+                          message={errorMessages[state.searchTrait.searchTraitKey]}
+                          onClose={() => setErrorMessages(prev => ({ ...prev, [state.searchTrait.searchTraitKey]: '' }))}
                         />
                       )}
-                      {searchTrait.searchTraitValue && (
+                      {state.searchTrait.searchTraitValue && (
                         <GrFormClose
                           className="absolute right-4 cursor-pointer"
                           onClick={() => {
@@ -416,7 +435,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                         <div key={`${sidebarItem.title}-${index}`} className="flex items-center cursor-pointer">
                           <CustomCheckbox
                             id={`sort-${expandedSidebarItem.dbField}-${index}`}
-                            checked={selectedRareTrait === expandedSidebarItem.dbField}
+                            checked={state.selectedRareTrait === expandedSidebarItem.dbField}
                             onChange={() => handleRareTraitSelect(expandedSidebarItem.dbField)}
                             label={expandedSidebarItem.title!}
                           />
@@ -432,7 +451,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                         <div className="flex items-center flex-1">
                           <CustomCheckbox
                             id={`range-${expandedSidebarItem.dbField}-${index}`}
-                            checked={selectedRangeTrait === expandedSidebarItem.dbField}
+                            checked={state.selectedRangeTrait === expandedSidebarItem.dbField}
                             onChange={() => handleRangeCheckboxChange(expandedSidebarItem.dbField)}
                             label={expandedSidebarItem.title!}
                           />
@@ -445,7 +464,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                             pattern="\d"
                             id={`min-${expandedSidebarItem.dbField}-${index}`}
                             ref={(el) => (inputRefs.current[`min-${expandedSidebarItem.dbField}`] = el)}
-                            value={rangeValues[expandedSidebarItem.dbField]?.min || ''}
+                            value={state.rangeValues[expandedSidebarItem.dbField]?.min || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'min', e.target.value)}
                             onKeyDown={(e) => {
                               // Allow only digits and control keys
@@ -470,7 +489,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                             pattern="\d"
                             id={`max-${expandedSidebarItem.dbField}-${index}`}
                             ref={(el) => (inputRefs.current[`max-${expandedSidebarItem.dbField}`] = el)}
-                            value={rangeValues[expandedSidebarItem.dbField]?.max || ''}
+                            value={state.rangeValues[expandedSidebarItem.dbField]?.max || ''}
                             onChange={(e) => handleRangeInputChange(expandedSidebarItem.dbField, 'max', e.target.value)}
                             onKeyDown={(e) => {
                               // Allow only digits and control keys
@@ -500,7 +519,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                         <div key={`${sidebarItem.title}-${index}`} className="flex items-center cursor-pointer">
                           <CustomCheckbox
                             id={`class-${expandedSidebarItem.dbField}-${index}`}
-                            checked={selectedClasses?.includes(expandedSidebarItem.dbField) || false}
+                            checked={state.selectedClasses?.includes(expandedSidebarItem.dbField) || false}
                             onChange={() => handleClassChange(expandedSidebarItem.dbField)}
                             label={expandedSidebarItem.title!}
                           />
@@ -513,7 +532,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
                   <div key={`${sidebarItem.title}`} className="flex items-center p-2 pl-6 text-sm rounded w-full">
                     <div className="grid grid-cols-3 gap-3 w-full">
                       {sidebarItem.expandedSidebarItems.map((expandedSidebarItem, index) => {
-                        const isChecked = selectedNamedTrait === (expandedSidebarItem.dbField === 'True');
+                        const isChecked = state.selectedNamedTrait === (expandedSidebarItem.dbField === 'True');
                         return (
                           <div key={`${sidebarItem.title}-${index}`} className="flex items-center cursor-pointer">
                             <CustomCheckbox
