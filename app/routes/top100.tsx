@@ -20,7 +20,7 @@ const Top100 = () => {
   const topCollectors = useLoaderData<TopCollector[]>();
 
   return (
-    <div className="min-h-screen flex flex-col justify-center border bg-darkgray border-deepgray text-pearlwhite">
+    <div className="min-h-screen flex flex-col justify-center border bg-closetoblack border-deepgray text-pearlwhite">
       <div className="text-center items-center pt-8 pb-4">
         <h1 className="text-2xl font-light">Top 100 LostPoets Collectors</h1>
       </div>
