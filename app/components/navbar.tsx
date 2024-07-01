@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import { NavbarProps } from '~/routes/_index';
 import { PiListMagnifyingGlassLight, PiListLight } from "react-icons/pi"; 
 import { GoChevronDown } from "react-icons/go";
+import { PiCaretLeft } from "react-icons/pi";
 import ReleaseNotesModal from '~/components/modals/releasenotesmodal';
 import HelpModal from '~/components/modals/helpmodal';
 import AboutModal from '~/components/modals/aboutmodal';
@@ -42,9 +43,9 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
   };
 
   return (
-    <header ref={navbarRef} className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full justify-between items-center ${className}`}>
+    <header ref={navbarRef} className={`navbar sticky top-0 h-navbar mx-auto border text-pearlwhite bg-verydarkgray border-deepgray p-2 shadow-xl flex w-full items-center ${className}`}>
       {/* Small and Medium Screen Layout */}
-      {/*<div className="md:hidden flex items-center justify-between w-full relative">*/}
+      {/*<div className="md:hidden flex items-center w-full relative">*/}
       <div className="md:hidden grid grid-cols-[.25fr_2.6fr_.4fr] items-center w-full px-2 py-2"> 
         <div className="flex justify-start items-center">
           <button 
@@ -148,39 +149,39 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
               style={{ pointerEvents: isDropdownOpen ? 'auto' : 'none' }}
             ></div>
             <div
-              className={`absolute z-50 right-0 top-full w-52 shadow-xl border bg-charcoalgray border-gunmetalgray text-pearlwhite rounded-xl pointer-events-auto transition-all duration-400 ease-out transform ${
+              className={`absolute z-50 right-0 top-full w-52 shadow-xl border bg-closetoblack border-charcoalgray text-lightmedgray rounded-xl pointer-events-auto transition-all duration-400 ease-out transform ${
                 isDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
               }`}
             >
               <div className="p-3 cursor-pointer" onClick={openTop100}>
-                <div className="flex justify-between items-center">
-                  <h2 className="font-light">Top 100 Collectors</h2>
-                  <GoChevronDown />
+                <div className="flex items-center">
+                  <PiCaretLeft />
+                  <h2 className="font-light ml-2">Top 100 Collectors</h2>
                 </div>
               </div>
-              <div className="border-t border-darkgray2"></div>
+              <div className="border-t border-deepgray"></div>
               <div className="p-3 cursor-pointer" onClick={openHelp}>
-                <div className="flex justify-between items-center">
-                  <h2 className="font-light">Help</h2>
-                  <GoChevronDown />
+                <div className="flex items-center">
+                  <PiCaretLeft />
+                  <h2 className="font-light ml-2">Help</h2>
                 </div>
               </div>
-              <div className="border-t border-darkgray2"></div>
+              <div className="border-t border-deepgray"></div>
               <div className="p-3 cursor-pointer" onClick={openAbout}>
-                <div className="flex justify-between items-center">
-                  <h2 className="font-light">About</h2>
-                  <GoChevronDown />
+                <div className="flex items-center">
+                  <PiCaretLeft />
+                  <h2 className="font-light ml-2">About</h2>
                 </div>
               </div>
-              <div className="border-t border-darkgray2"></div>
+              <div className="border-t border-deepgray"></div>
               <div className="p-3 cursor-pointer" onClick={openReleaseNotes}>
-                <div className="flex justify-between items-center">
-                  <h2 className="font-light">Release Notes</h2>
-                  <GoChevronDown />
+                <div className="flex items-center">
+                  <PiCaretLeft />
+                  <h2 className="font-light ml-2">Release Notes</h2>
                 </div>
               </div>
-              <div className="border-t border-darkgray2"></div>
-              <div className="p-1 flex text-xs items-center justify-center">
+              <div className="border-t border-deepgray"></div>
+              <div className="p-2 flex text-xs items-center justify-center">
                 <span className="font-light">Version: 1.1.0</span>
               </div>
             </div>

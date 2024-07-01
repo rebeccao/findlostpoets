@@ -32,27 +32,27 @@ const Top100List: React.FC<Top100ListProps> = ({ collectors, height, selectable 
     <div className="p-4 flex justify-center">
       <div>
         {/* Separate header element */}
-        <div className="flex bg-darkergray border border-onyxgray">
-          <div className="font-light border-r border-onyxgray p-1.5 w-[70px] text-center">Rank</div>
-          <div className="font-light border-r border-onyxgray p-1.5 w-[240px] text-center">Owner</div>
-          <div className="font-light border-r border-onyxgray p-1.5 w-[420px] text-center">Wallet</div>
-          <div className="font-light border-r border-onyxgray p-1.5 w-[100px] text-center"># of Poets</div>
+        <div className="flex bg-black-900 border border-deepgray">
+          <div className="font-light border-r border-deepgray p-1.5 w-[70px] text-center">Rank</div>
+          <div className="font-light border-r border-deepgray p-1.5 w-[240px] text-center">Owner</div>
+          <div className="font-light border-r border-deepgray p-1.5 w-[420px] text-center">Wallet</div>
+          <div className="font-light border-r border-deepgray p-1.5 w-[100px] text-center"># of Poets</div>
         </div>
         {/* Scrollable table body */}
-        <div className="border-b border-onyxgray">
+        <div className="border-b border-deepgray">
           <div className={`overflow-y-auto ${height}`}>
-            <table className="border-collapse border border-onyxgray">
+            <table className="border-collapse border border-deepgray">
               <tbody>
                 {collectors.map((collector, index) => (
                   <tr
                   key={index}
-                  className={`cursor-pointer ${selectedIndex === index ? 'bg-charcoalgray text-pearlwhite' : 'hover:bg-charcoalgray'} transition-colors`}
+                  className={`cursor-pointer ${selectedIndex === index ? 'bg-closetoblack text-pearlwhite' : 'hover:bg-closetoblack'} transition-colors`}
                   onClick={() => handleRowClick(index, collector)}
                   >
-                    <td className="border border-onyxgray p-1.5 w-[70px] text-center">{index + 1}</td>
-                    <td className="border border-onyxgray p-1.5 w-[240px] pl-4">{collector.oNam || ""}</td>
-                    <td className="border border-onyxgray p-1.5 w-[420px] pl-4">{collector.oAddr}</td>
-                    <td className="border border-onyxgray p-1.5 w-[100px] text-center">{collector.count}</td>
+                    <td className="border border-deepgray p-1.5 w-[70px] text-center">{index + 1}</td>
+                    <td className="border border-deepgray p-1.5 w-[240px] pl-4">{collector.oNam || ""}</td>
+                    <td className="border border-deepgray p-1.5 w-[420px] pl-4">{collector.oAddr}</td>
+                    <td className="border border-deepgray p-1.5 w-[100px] text-center">{collector.count}</td>
                   </tr>
                 ))}
               </tbody>
