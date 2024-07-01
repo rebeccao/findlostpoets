@@ -31,6 +31,7 @@ export default {
         charcoalgray: '#333333',
         deepgray:     '#282828',
         darkgray:     '#212121',
+        darkergray:   '#1E1E1E',
         verydarkgray: '#1A1A1A',
         closetoblack: '#141414',
         deepCrimson:  '#990000',

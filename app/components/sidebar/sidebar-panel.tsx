@@ -238,17 +238,21 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
 
     // Deselect the selected named trait
     onNamedTraitSelect(null);
+  };
+
+  const resetAndRandomSearch = () => {
+    resetSearch();
 
     const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }], skip: 0 };
     console.log("SidebarPanel: resetSearch dbQuery: ", dbQuery);
     performSearch(dbQuery);
-  };
+  }
 
   // Handler for the search button click
   const handleSearchClick = () => {
     let dbQuery: SearchCriteria = { skip: 0 };
     let whereConditions: any[] = [];
-    let orderByConditions: SearchCriteria['orderBy'] = [];
+    let orderByConditions: SearchCriteria['orderBy'] = [];            
 
     // If set, map searchTrait.searchTraitKey === 'ego' to the correct value 
     if (searchTrait.searchTraitKey === 'ego') {
@@ -284,7 +288,6 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
       whereConditions.push({ [selectedRareTrait]: { gt: 0 } });
       orderByConditions.push({ [selectedRareTrait]: 'asc' });
       orderByConditions.push({ [trait]: 'asc' });                // sort the actual trait after sorting the trait count
-      orderByConditions.push({ ['pid']: 'asc' });                // Ensure sorting by pid
     }
 
     // Search By Range Trait
@@ -304,45 +307,26 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
       if (Object.keys(rangeCondition).length > 0) {
           whereConditions.push({ [selectedRangeTrait]: rangeCondition });
           orderByConditions.push({ [selectedRangeTrait]: 'asc' }); 
-          orderByConditions.push({ 'pid': 'asc' });             // Ensure sorting by pid
       }
     }
     
     // Search By Classes
     if (selectedClasses && selectedClasses.length > 0) {
-      whereConditions.push({ class: { in: selectedClasses } }); // Use 'in' to match any of the selected classes
-      orderByConditions.push({ pid: 'asc' });                   // Ensure sorting by pid             
+      whereConditions.push({ class: { in: selectedClasses } }); // Use 'in' to match any of the selected classes           
     }
     
     // Search By Named Trait
     if (selectedNamedTrait !== null) {
       whereConditions.push({ ['named']: { equals: selectedNamedTrait } });
-      orderByConditions.push({ ['pid']: 'asc' });               // Ensure sorting by pid
     }
   
     if (whereConditions.length > 0) {
       dbQuery.where = { AND: whereConditions };
     }
 
-    // Ensure only one { pid: 'asc' } in orderByConditions
-    const uniqueOrderByConditions: { [key: string]: 'asc' | 'desc' }[] = [];
-    const seenOrderByKeys = new Set<string>();
+    orderByConditions.push({ ['pid']: 'asc' });     // Ensure sorting by pid last
+    dbQuery.orderBy = orderByConditions;
 
-    for (const condition of orderByConditions) {
-        const key = Object.keys(condition)[0];
-        if (!seenOrderByKeys.has(key)) {
-            uniqueOrderByConditions.push(condition);
-            seenOrderByKeys.add(key);
-        }
-    }
-  
-    if (uniqueOrderByConditions.length > 0) {
-      dbQuery.orderBy = uniqueOrderByConditions;
-    } else {
-        // Apply default orderBy if no other orderBy conditions are specified
-        dbQuery.orderBy = [{ pid: 'asc' }];
-    }
-  
     console.log("SidebarPanel: handleSearchClick dbQuery: ", dbQuery);
     performSearch(dbQuery);
   };
@@ -558,7 +542,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({
           </button>
           <button
             className="w-1/4 p-2 rounded-lg shadow-sm text-pearlwhite border bg-charcoalgray border-gunmetalgray hover:bg-darkgray hover:border-charcoalgray" // Darker for primary action
-            onClick={resetSearch} // Assuming this resets all search inputs
+            onClick={resetAndRandomSearch} // Assuming this resets all search inputs
           >
             Clear
           </button>

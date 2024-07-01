@@ -5,13 +5,10 @@ import { prisma } from '~/utils/prisma.server'
 import type { TopCollector } from '@prisma/client';
 
 export const loader: LoaderFunction = async () => {
-  console.log("LoaderFunction called");
-
   // Fetch the precomputed top 100 collectors from the TopCollectors collection
   try {
     // Fetch the precomputed top 100 collectors from the TopCollectors collection
     const topCollectors: TopCollector[] = await prisma.topCollector.findMany();
-
     return json(topCollectors);
   } catch (error) {
     console.error("Error fetching topCollectors: ", error);
