@@ -1,36 +1,20 @@
-import { sidebarItems } from "~/components/sidebar/sidebar-data";
 import React, { useState, useRef } from 'react';
-import { GrFormClose } from "react-icons/gr";
+import { State, Action, SearchCriteria } from '~/routes/_index';
+import { sidebarItems } from "~/components/sidebar/sidebar-data";
+import type { ExpandedSidebarItem } from "~/components/sidebar/sidebar-data";
 import CustomCheckbox from "~/components/custom-checkbox";
 import Tooltip from "~/components/tooltip";
-import type { SearchCriteria } from "~/routes/_index";
-import type { ExpandedSidebarItem } from "~/components/sidebar/sidebar-data";
 import { FloatingError } from "~/components/floating-error";
-
-interface State {
-  searchTrait: { searchTraitKey: string; searchTraitValue: string | number };
-  selectedRareTrait: string | null;
-  selectedRangeTrait: string | null;
-  rangeValues: Record<string, { min?: number; max?: number }>;
-  selectedClasses: string[] | null;
-  selectedNamedTrait: boolean | null;
-}
-
-type Action =
-  | { type: 'SET_SEARCH_TRAIT'; payload: { searchTraitKey: string; searchTraitValue: string | number } }
-  | { type: 'SET_SELECTED_RARE_TRAIT'; payload: string | null }
-  | { type: 'SET_SELECTED_RANGE_TRAIT'; payload: string | null }
-  | { type: 'SET_RANGE_VALUES'; payload: { key: string; value: { min?: number; max?: number } } }
-  | { type: 'SET_SELECTED_CLASSES'; payload: string[] | null }
-  | { type: 'SET_SELECTED_NAMED_TRAIT'; payload: boolean | null };
+import { GrFormClose } from "react-icons/gr";
 
 interface SidebarProps {
   state: State;
   dispatch: React.Dispatch<Action>;
   performSearch: (dbQuery: any) => void;
+  resetSearchState: () => void;
 }
 
-const SidebarPanel: React.FC<SidebarProps> = React.memo(({ state, dispatch, performSearch }) => {
+const SidebarPanel: React.FC<SidebarProps> = React.memo(({ state, dispatch, performSearch, resetSearchState }) => {
 
   const egoMapping: { [key: string]: string } = {
     'I': 'I', 'i': 'I', '1': 'I',
@@ -208,26 +192,11 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({ state, dispatch, perf
     dispatch({ type: 'SET_SELECTED_NAMED_TRAIT', payload: booleanValue });  // This function expects a boolean or null
   };
 
-  const resetSearch = () => {
+  const resetSearchInputs = () => {
     // Clear the search term input field and reset its placeholder
     if (inputRef.current) {
       //inputRef.current.value = '';
       inputRef.current.placeholder = 'Enter search term...';
-    }
-    clearSearchTraitInput();
-
-    // Deselect the selected rare trait, if any
-    if (state.selectedRareTrait) {
-      dispatch({ type: 'SET_SELECTED_RARE_TRAIT', payload: null });
-    }
-
-    // Reset the selected range trait and clear min/max values
-    if (state.selectedRangeTrait) {
-      dispatch({ type: 'SET_SELECTED_RANGE_TRAIT', payload: null });
-      // Iterate over the keys in rangeValues and reset their min/max values
-      Object.keys(state.rangeValues).forEach(key => {
-        dispatch({ type: 'SET_RANGE_VALUES', payload: { key, value: { min: undefined, max: undefined } } });
-      });
     }
 
     // Reset all range input fields to their placeholders
@@ -249,19 +218,11 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({ state, dispatch, perf
         }
       });
     });
-
-    // Deselect the selected classes, if any
-    if (state.selectedClasses) {
-      dispatch({ type: 'SET_SELECTED_CLASSES', payload: [] });
-    }
-
-    // Deselect the selected named trait
-    dispatch({ type: 'SET_SELECTED_NAMED_TRAIT', payload: null });
   };
 
   const resetAndRandomSearch = () => {
-    resetSearch();
-
+    resetSearchInputs();
+    resetSearchState();
     const dbQuery: SearchCriteria = {  orderBy: [{ pid: 'asc' }], skip: 0 };
     console.log("SidebarPanel: resetSearch dbQuery: ", dbQuery);
     performSearch(dbQuery);

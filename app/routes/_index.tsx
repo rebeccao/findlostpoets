@@ -71,7 +71,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 // SidebarPanel states
-interface State {
+export interface State {
   searchTrait: { searchTraitKey: string; searchTraitValue: string | number };
   selectedRareTrait: string | null;
   selectedRangeTrait: string | null;
@@ -81,7 +81,7 @@ interface State {
 }
 
 // SidebarPanel actions
-type Action =
+export type Action =
   | { type: 'SET_SEARCH_TRAIT'; payload: { searchTraitKey: string; searchTraitValue: string | number } }
   | { type: 'SET_SELECTED_RARE_TRAIT'; payload: string | null }
   | { type: 'SET_SELECTED_RANGE_TRAIT'; payload: string | null }
@@ -370,14 +370,6 @@ function Index() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const toggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), [setSidebarOpen]);
 
-	const initialTraitDbField = sidebarItems.find(item => item.type === "traitSearch")?.expandedSidebarItems[0].dbField || '';
-	const [searchTrait, setSearchTrait] = useState<{ searchTraitKey: string; searchTraitValue: string | number }>({ searchTraitKey: initialTraitDbField, searchTraitValue: '' });
-	const [selectedRareTrait, setSelectedRareTrait] = useState<string | null>(null);
-	const [selectedRangeTrait, setSelectedRangeTrait] = useState<string | null>(null);
-	const [rangeValues, setRangeValues] = useState<Record<string, { min?: number; max?: number }>>({});
-	const [selectedClasses, setSelectedClasses] = useState<string[] | null>(null);
-	const [selectedNamedTrait, setSelectedNamedTrait] = useState<boolean | null>(null);
-
 	const [navbarSearchCriteriaArray, setNavbarSearchCriteriaArray] = useState<string[]>([]); 
 
 	// searchButtonPressed is used to conditionally control displaying the Rare Trait count on the ImageCard 
@@ -385,7 +377,6 @@ function Index() {
 
 	// Callback from SidebarPanel when the user clicks the Search button or Clear button
 	const performSearch = (query: SearchCriteria) => {
-
 		// Signal that a search has been initiated. This state conditionally controls displaying the Rare Trait count on the ImageCard 
 		setSearchButtonPressed(true);
 
@@ -421,6 +412,36 @@ function Index() {
 		
 		// Use fetcher.load to initiate the request to fetch poets and count
 		fetcher.load(`?index&${dbQueryString}`);              // Note: the following doesn't work: fetcher.load(`/?${queryString}`);
+  };
+
+	const resetSearchState = () => {
+    const updatedSearchTrait = {
+      searchTraitKey: state.searchTrait.searchTraitKey.toString(),
+      searchTraitValue: '',
+    };
+    dispatch({ type: 'SET_SEARCH_TRAIT', payload: updatedSearchTrait });
+
+    // Deselect the selected rare trait, if any
+    if (state.selectedRareTrait) {
+      dispatch({ type: 'SET_SELECTED_RARE_TRAIT', payload: null });
+    }
+
+    // Reset the selected range trait and clear min/max values
+    if (state.selectedRangeTrait) {
+      dispatch({ type: 'SET_SELECTED_RANGE_TRAIT', payload: null });
+      // Iterate over the keys in rangeValues and reset their min/max values
+      Object.keys(state.rangeValues).forEach(key => {
+        dispatch({ type: 'SET_RANGE_VALUES', payload: { key, value: { min: undefined, max: undefined } } });
+      });
+    }
+
+    // Deselect the selected classes, if any
+    if (state.selectedClasses) {
+      dispatch({ type: 'SET_SELECTED_CLASSES', payload: [] });
+    }
+
+    // Deselect the selected named trait
+    dispatch({ type: 'SET_SELECTED_NAMED_TRAIT', payload: null });
   };
 
 	const formatSearchCriteriaArray = () => {
@@ -460,7 +481,7 @@ function Index() {
 
 			// Search By Named Trait
 			if (sidebarItem.type === "named" && state.selectedNamedTrait !== null) {
-				setNavbarSearchCriteriaArray(prev => [...prev, `${selectedNamedTrait ? "Named" : "No Name"}`]);
+				setNavbarSearchCriteriaArray(prev => [...prev, `${state.selectedNamedTrait ? "Named" : "No Name"}`]);
 			}
 		})
 		console.log("Index formatSearchCriteriaArray navbarSearchCriteriaArray - ", navbarSearchCriteriaArray);
@@ -520,14 +541,14 @@ function Index() {
 	// Extract title from sidebarItems based on item.type === 'sort' and expanded item.dbField
 	//const selectedRareTraitLabel = sidebarItems.find(item => item.type === 'sort')?.expandedSidebarItems.find(item => item.dbField === selectedRareTrait)?.title;
 	// Example logic to convert 'brdCnt' into 'brd', etc.
-	const selectedRareTraitLabel = selectedRareTrait ? selectedRareTrait.replace("Cnt", "") : undefined;
+	const selectedRareTraitLabel = state.selectedRareTrait ? state.selectedRareTrait.replace("Cnt", "") : undefined;
 
   return (
 		<ErrorBoundary>
 			<div className="flex min-h-screen bg-closetoblack text-pearlwhite">
 				{sidebarOpen && (
 					<section className="fixed left-0 top-14 bottom-0 w-80 z-5 h-[calc(100vh-56px)]">
-						<SidebarPanel state={state} dispatch={dispatch} performSearch={performSearch} />
+						<SidebarPanel state={state} dispatch={dispatch} performSearch={performSearch} resetSearchState={resetSearchState}/>
 					</section>
 				)}
 				<div className="flex flex-col w-full">
@@ -564,7 +585,7 @@ function Index() {
 												// Dynamically access the Poet property
 												rarityTraitLabel={searchButtonPressed ? `${poet[selectedRareTraitLabel as keyof Poet]}` : undefined}
 												// Dynamically access the rarity count
-												rarityCount={searchButtonPressed && selectedRareTrait ? poet[selectedRareTrait as keyof Poet] as number : undefined}
+												rarityCount={searchButtonPressed && state.selectedRareTrait ? poet[state.selectedRareTrait as keyof Poet] as number : undefined}
 											/>
 										</div>
 									))}
