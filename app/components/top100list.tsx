@@ -10,7 +10,7 @@ interface Top100ListProps {
   collectors: Collector[];
   height: string; 
   selectable?: boolean;
-  onRowSelect?: (keyValue: { key: string; value: string }) => void;
+  onRowSelect?: (topCollector: { key: string; value: string }) => void;
 }
 const Top100List: React.FC<Top100ListProps> = ({ collectors, height, selectable = false, onRowSelect }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);

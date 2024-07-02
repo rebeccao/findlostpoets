@@ -23,7 +23,8 @@ export interface NavbarProps {
   toggleSidebar: () => void;
 	className?: string;  								// Optional string for CSS classes
 	count?: number;   				   				// Optional count to display poet count after performSearch
-	searchCriteriaArray: string[];			// Optional search criteria string
+	searchCriteriaArray: string[];			// Search criteria string
+	onTopCollectorSelect: (topCollector: { key: string; value: string }) => void; // New prop for the callback
 }
 
 export type SearchCriteria = {
@@ -487,6 +488,48 @@ function Index() {
 		console.log("Index formatSearchCriteriaArray navbarSearchCriteriaArray - ", navbarSearchCriteriaArray);
 	}
 
+	/*************** Navbar callback ****************/
+
+	const [selectedTopCollector, setSelectedTopCollector] = useState<{ key: string; value: string } | null>(null);
+	const [performSearchTrigger, setPerformSearchTrigger] = useState(false);
+
+  const handleTopCollectorSelect = (topCollector: { key: string; value: string }) => {
+    setSelectedTopCollector(topCollector);
+    console.log('Index Selected topCollector from Top100Modal:', topCollector);
+  };
+
+	useEffect(() => {
+		console.log('Index selectedTopCollector:', selectedTopCollector);
+		if(selectedTopCollector) {
+			// Reset all search states
+			resetSearchState();
+
+			// Update the state for searchTraitKey and searchTraitValue
+			const updatedSearchTrait = {
+				searchTraitKey: selectedTopCollector.key,
+				searchTraitValue: selectedTopCollector.value,
+			};
+			dispatch({ type: 'SET_SEARCH_TRAIT', payload: updatedSearchTrait });
+
+			// Trigger the performSearch in the next useEffect in order to allow SET_SEARCH_TRAIT to get set
+      setPerformSearchTrigger(true);
+		}
+	}, [selectedTopCollector]);
+
+	useEffect(() => {
+    if (performSearchTrigger && selectedTopCollector) {
+			let dbQuery: SearchCriteria = {
+				skip: 0,
+				take: 24,
+			}
+			dbQuery.where = { AND: [{ [selectedTopCollector.key]: { equals: selectedTopCollector.value, mode: "insensitive" }}]};
+			dbQuery.orderBy = [{ "pid": "asc" }];
+
+			performSearch(dbQuery);
+			setPerformSearchTrigger(false); // Reset the trigger
+		}
+	}, [performSearchTrigger, state.searchTrait.searchTraitKey, state.searchTrait.searchTraitValue]);
+
 	/*************** PoetDetails logic ****************/
 
 	// useEffect to resolve the issue with the infinite scrolling not occurring after returning from the PoetModal
@@ -552,7 +595,14 @@ function Index() {
 					</section>
 				)}
 				<div className="flex flex-col w-full">
-					<Navbar toggleSidebar={toggleSidebar} className="navbar" count={poetCount ? poetCount : undefined} searchCriteriaArray={navbarSearchCriteriaArray} />
+					<Navbar 
+						toggleSidebar={toggleSidebar} 
+						className="navbar" 
+						count={poetCount ? poetCount : undefined} 
+						searchCriteriaArray={navbarSearchCriteriaArray} 
+						onTopCollectorSelect={handleTopCollectorSelect} // Pass the callback to Navbar
+          />
+
 					<div className={`transition-all duration-400 ease-in-out ${sidebarOpen ? 'ml-80' : 'ml-0'}`}>
 						<div className="mt-4 mb-4 px-4">
 							{/* Display loading state */}

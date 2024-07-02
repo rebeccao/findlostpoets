@@ -7,9 +7,10 @@ import BaseModal from '~/components/modals/baseinfomodal';
 interface Top100ModalProps {
   onClose: () => void;
   isOpen: boolean;
+  onTopCollectorSelect: (topCollector: { key: string; value: string }) => void; // callback for TopCollector selected
 }
 
-const Top100Modal: React.FC<Top100ModalProps> = ({ onClose, isOpen }) => {
+const Top100Modal: React.FC<Top100ModalProps> = ({ onClose, isOpen, onTopCollectorSelect }) => {
   const fetcher = useFetcher<TopCollector[]>();
   const hasFetched = useRef(false); // Track if the data has been fetched
 
@@ -21,8 +22,9 @@ const Top100Modal: React.FC<Top100ModalProps> = ({ onClose, isOpen }) => {
     }
   }, [isOpen, fetcher]);
 
-  const handleRowSelect = (keyValue: { key: string; value: string }) => {
-    console.log('Selected collector:', keyValue);
+  const handleRowSelect = (topCollector: { key: string; value: string }) => {
+    console.log('Selected collector:', topCollector);
+    onTopCollectorSelect(topCollector); // Invoke the callback
   };
 
   return (
