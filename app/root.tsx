@@ -32,7 +32,7 @@ export const links: LinksFunction = () => [
 export const meta: MetaFunction = () => [
   { charset: "utf-8" },
   { name: "viewport", content: "width=device-width,initial-scale=1.0" },
-  { name: "description", content: "FINDLOSTPOETS - Explore Pak's LOSTPOETS NFT collection. Browse and search Poets, their Poems and their traits." },
+  { name: "description", content: "Search LostPoets, their traits, their poems and more." },
   { name: "keywords", content: "lostpoets, Murat, Pak, NFT, poets, poems, poetry, find lost poets, NFT, NFTs" },
   { name: "author", content: "0xNosToca" }
 ];
