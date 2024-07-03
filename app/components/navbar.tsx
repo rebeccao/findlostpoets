@@ -1,7 +1,7 @@
 // navbar.tsx
 import React, { useState, useRef } from 'react';
 import { NavbarProps } from '~/routes/_index';
-import { PiListMagnifyingGlassLight, PiListLight } from "react-icons/pi"; 
+import { PiListMagnifyingGlassLight, PiListLight, PiCaretDownFill, PiCaretDownBold } from "react-icons/pi"; 
 import { GoChevronDown } from "react-icons/go";
 import { PiCaretLeft } from "react-icons/pi";
 import ReleaseNotesModal from '~/components/modals/releasenotesmodal';
@@ -28,9 +28,10 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
 
   const handleTop100Select = (topCollector: { key: string; value: string }) => {
     setTimeout(() => {
-      setIsTop100Open(false); // Close the modal after a delay
+      // Close the modal after a delay
+      setIsTop100Open(false); 
       setIsDropdownOpen(false);
-    }, 700);
+    }, 400);
     onTopCollectorSelect(topCollector); // Pass the topCollector to Index
   };
 
@@ -99,7 +100,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
           </button>
         </div>
         {/* Left Middle Container */}
-        <div className="flex flex-col justify-start items-start ml-2">
+        <div className="flex flex-row items-center ml-2 space-x-6">
           {count !== undefined && (
             <div className="flex flex-col items-center">
               <div className="text-xs mt-2 font-[LeagueSpartan-Light]">
@@ -110,6 +111,19 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
               </div>
             </div>
           )}
+          <button 
+            onClick={() => setIsTop100Open(true)} 
+            className="flex flex-col items-center focus:outline-none"
+            aria-label="Open Top 100 Collectors"
+          >
+            <div className="text-xs mt-2 font-[LeagueSpartan-Light]">
+              TOP 100
+            </div>
+            <div className="text-xs -mt-1 font-[LeagueSpartan-Light]">
+              COLLECTORS
+            </div>
+            <PiCaretDownBold size={10} className=" cursor-pointer text-pearlwhite" />
+          </button>
         </div>
 
         {/* Center Container */}
@@ -161,13 +175,6 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
                 isDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
               }`}
             >
-              <div className="p-3 cursor-pointer" onClick={openTop100}>
-                <div className="flex items-center">
-                  <PiCaretLeft />
-                  <h2 className="font-light ml-2">Top 100 Collectors</h2>
-                </div>
-              </div>
-              <div className="border-t border-deepgray"></div>
               <div className="p-3 cursor-pointer" onClick={openHelp}>
                 <div className="flex items-center">
                   <PiCaretLeft />

@@ -50,7 +50,7 @@ const Top100List: React.FC<Top100ListProps> = ({ collectors, height, selectable 
                   onClick={() => handleRowClick(index, collector)}
                   >
                     <td className="border border-deepgray p-1.5 w-[70px] text-center">{index + 1}</td>
-                    <td className="border border-deepgray p-1.5 w-[240px] pl-4">{collector.oNam || ""}</td>
+                    <td className="border border-deepgray p-1.5 w-[240px] max-w-[240px] truncate pl-4">{collector.oNam || ""}</td>
                     <td className="border border-deepgray p-1.5 w-[420px] pl-4">{collector.oAddr}</td>
                     <td className="border border-deepgray p-1.5 w-[100px] text-center">{collector.count}</td>
                   </tr>

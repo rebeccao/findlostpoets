@@ -19,7 +19,7 @@ const LoadingAnimation: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <div className="font-light text-center text-pearlwhite text-xl">
+      <div className="font-light text-center text-pearlwhite text-2xl">
         <span className="inline-block animate-loading-dots-1">L</span>
         <span className="inline-block animate-loading-dots-2">o</span>
         <span className="inline-block animate-loading-dots-3">a</span>
