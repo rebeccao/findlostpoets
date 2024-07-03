@@ -1,8 +1,7 @@
 // navbar.tsx
 import React, { useState, useRef } from 'react';
 import { NavbarProps } from '~/routes/_index';
-import { PiListMagnifyingGlassLight, PiListLight, PiCaretDownFill, PiCaretDownBold } from "react-icons/pi"; 
-import { GoChevronDown } from "react-icons/go";
+import { PiListMagnifyingGlassLight, PiListLight, PiCaretDownBold } from "react-icons/pi"; 
 import { PiCaretLeft } from "react-icons/pi";
 import ReleaseNotesModal from '~/components/modals/releasenotesmodal';
 import HelpModal from '~/components/modals/helpmodal';
@@ -196,7 +195,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
                 </div>
               </div>
               <div className="border-t border-deepgray"></div>
-              <div className="p-2 flex text-xs items-center justify-center">
+              <div className="p-2 flex text-xs items-center justify-start ml-7">
                 <span className="font-light">Version: 1.1.0</span>
               </div>
             </div>

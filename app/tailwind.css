@@ -28,8 +28,8 @@
 }
 
 .hanging-indent {
-  text-indent: -1em;  /* Adjust this value to match the bullet's margin */
-  padding-left: 1em;  /* Adjust this value to match the bullet's margin */
+  text-indent: -.8em;  /* Adjust this value to match the bullet's margin */
+  padding-left: .8em;  /* Adjust this value to match the bullet's margin */
 }
 
 .list-dash {

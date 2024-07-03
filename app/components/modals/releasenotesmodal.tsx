@@ -10,22 +10,28 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
   return (
     <BaseModal onClose={onClose} title="Release Notes" isOpen={isOpen}>
       <div className="space-y-1">
-        <h2 className="text-lg font-light">Release 1.1.0 - Major database update, new features, bug fixes</h2>
+        <h2 className="text-lg font-light">Release 1.1.0 - Major database updates, new features, bug fixes</h2>
         <ul className="list-disc list-inside p-4">
           <li className="pl-2 mb-2 hanging-indent">
-            <span className="font-normal">Database major update:</span> 
+            <span className="font-normal">New fields in the Poets database collection:</span> 
             <ol className="list-dash list-inside ml-8">
-              <li>New Owner field - Used Opensea API to establish the owner names for every poet, if they exist.</li>
-              <li>New Wallet field - Used Etherscan API to establish the wallet addresses for every poet.</li>
-              <li>New Listed field - Future feature.</li>
+              <li>Owner - Used Opensea API to establish the owner names for every poet, if they exist.</li>
+              <li>Wallet - Used Etherscan API to establish the wallet addresses for every poet.</li>
+              <li>Listed - Future feature.</li>
+            </ol>
+          </li>
+          <li className="pl-2 mb-2 hanging-indent">
+            <span className="font-normal">New Top Collectors database collection:</span> 
+            <ol className="list-dash list-inside ml-8">
+              <li>Derived from the Poets collection and includes the top 200 collectors of LostPoets along with their ranking, Opensea account name, wallet address and the number of LostPoets owned.</li>
             </ol>
           </li>
           <li className="pl-2 mb-2 hanging-indent">
             <span className="font-normal">New features:</span> 
             <ol className="list-dash list-inside ml-8">
-              <li><span className="font-normal">Search by Owner:</span> Opensea account owner.</li>
-              <li><span className="font-normal">Search by Wallet:</span> Opensea wallet.</li>
+              <li><span className="font-normal">Two new Search By Traits:</span> Opensea account owner and their wallet.</li>
               <li><span className="font-normal">Display Search Criteria:</span> Search criteria now displayed in the Navbar.</li>
+              <li><span className="font-normal">Top 200 Collectors:</span> Displays a list of the top 200 LostPoet collectors with selectable rows. Selecting a row will initiate a search of the collector's LostPoets.</li>
             </ol>
           </li>
           <li className="pl-2 mb-2 hanging-indent">

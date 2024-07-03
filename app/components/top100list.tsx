@@ -46,7 +46,7 @@ const Top100List: React.FC<Top100ListProps> = ({ collectors, height, selectable 
                 {collectors.map((collector, index) => (
                   <tr
                   key={index}
-                  className={`cursor-pointer ${selectedIndex === index ? 'bg-closetoblack text-pearlwhite' : 'hover:bg-closetoblack'} transition-colors`}
+                  className={`${selectable ? 'cursor-pointer' : ''} ${selectedIndex === index ? 'bg-closetoblack text-pearlwhite' : 'hover:bg-closetoblack'} transition-colors`}
                   onClick={() => handleRowClick(index, collector)}
                   >
                     <td className="border border-deepgray p-1.5 w-[70px] text-center">{index + 1}</td>
