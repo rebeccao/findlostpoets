@@ -5,9 +5,8 @@ import { prisma } from '~/utils/prisma.server'
 import type { TopCollector } from '@prisma/client';
 
 export const loader: LoaderFunction = async () => {
-  // Fetch the precomputed top 100 collectors from the TopCollectors collection
+  // Fetch the precomputed top 200 collectors from the TopCollector collection
   try {
-    // Fetch the precomputed top 100 collectors from the TopCollectors collection
     const topCollectors: TopCollector[] = await prisma.topCollector.findMany();
     return json(topCollectors);
   } catch (error) {
@@ -22,7 +21,7 @@ const Top100 = () => {
   return (
     <div className="min-h-screen flex flex-col justify-center border bg-closetoblack border-deepgray text-pearlwhite">
       <div className="text-center items-center pt-8 pb-4">
-        <h1 className="text-2xl font-light">Top 100 LostPoets Collectors</h1>
+        <h1 className="text-2xl font-light">Top 200 LostPoets Collectors</h1>
       </div>
       <div className="flex-grow font-extralight">
         {topCollectors.length === 0 ? (
