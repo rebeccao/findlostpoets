@@ -7,7 +7,11 @@ import type { TopCollector } from '@prisma/client';
 export const loader: LoaderFunction = async () => {
   // Fetch the precomputed top 200 collectors from the TopCollector collection
   try {
-    const topCollectors: TopCollector[] = await prisma.topCollector.findMany();
+    const topCollectors: TopCollector[] = await prisma.topCollector.findMany({
+      orderBy: {
+        count: 'desc'
+      }
+    });
     return json(topCollectors);
   } catch (error) {
     console.error("Error fetching topCollectors: ", error);
