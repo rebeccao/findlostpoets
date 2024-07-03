@@ -28,7 +28,7 @@ const Top100Modal: React.FC<Top100ModalProps> = ({ onClose, isOpen, onTopCollect
   };
 
   return (
-    <BaseModal onClose={onClose} title="Top 100 Lost Poet Collectors" isOpen={isOpen} noScroll={true}>
+    <BaseModal onClose={onClose} title="Top 200 Lost Poet Collectors" isOpen={isOpen} noScroll={true}>
       <div>
       {fetcher.data ? (
           <Top100List collectors={fetcher.data} height="max-h-[calc(80vh-12rem)]" selectable={true} onRowSelect={handleRowSelect} />
