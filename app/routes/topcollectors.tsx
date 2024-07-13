@@ -2,17 +2,48 @@ import { json, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import TopCollectorsList from '~/components/topcollectorslist';
 import { prisma } from '~/utils/prisma.server'
-import type { TopCollector } from '@prisma/client';
+import type { Collector } from '@prisma/client';
 
 export const loader: LoaderFunction = async () => {
-  // Fetch the precomputed top 200 collectors from the TopCollector collection
   try {
-    const topCollectors: TopCollector[] = await prisma.topCollector.findMany({
+    // Fetch the top 200 collectors
+    const collectors: Collector[] = await prisma.collector.findMany({
+      take: 200,
       orderBy: {
-        count: 'desc'
-      }
+        count: 'desc',
+      },
     });
-    return json(topCollectors);
+
+    // Get the count of the 200th collector
+    const countOf200th = collectors[199].count;
+
+    // Fetch all collectors with the same count as the 200th collector
+    const additionalCollectors: Collector[] = await prisma.collector.findMany({
+      where: {
+        count: countOf200th,
+      },
+      orderBy: {
+        count: 'desc',
+      },
+    });
+    console.log("additionalCollectors count", additionalCollectors.length);
+
+    // Step 4: Filter additional collectors to remove duplicates
+    const filteredAdditionalCollectors = additionalCollectors.filter(
+      filteredCollector => filteredCollector.count === countOf200th && !collectors.some(collector => collector.oAddr === filteredCollector.oAddr)
+    );
+
+    // Log the count of filtered additional collectors
+    console.log("Filtered Additional Collectors Count: ", filteredAdditionalCollectors.length);
+
+    // Step 5: Combine results and ensure no duplicates
+    const combinedCollectors = [
+      ...collectors,
+      ...filteredAdditionalCollectors
+    ];
+
+    console.log("combinedCollectors count ", combinedCollectors.length);
+    return json(combinedCollectors);
   } catch (error) {
     console.error("Error fetching topCollectors: ", error);
     return json([]);
@@ -20,12 +51,12 @@ export const loader: LoaderFunction = async () => {
 };
 
 const TopCollectors = () => {
-  const topCollectors = useLoaderData<TopCollector[]>();
+  const topCollectors = useLoaderData<Collector[]>();
 
   return (
     <div className="min-h-screen flex flex-col justify-center border bg-closetoblack border-deepgray text-pearlwhite">
       <div className="text-center items-center pt-8 pb-4">
-        <h1 className="text-2xl font-light">Top 200 LostPoets Collectors</h1>
+        <h1 className="text-2xl font-light">Top {topCollectors.length} LostPoet Collectors</h1>
       </div>
       <div className="flex-grow font-extralight">
         {topCollectors.length === 0 ? (

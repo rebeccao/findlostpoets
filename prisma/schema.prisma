@@ -57,7 +57,7 @@ model Poet {
   @@index([class, pid])
 }
 
-model TopCollector {
+model Collector {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
   count Int
   oAddr String
