@@ -495,7 +495,7 @@ function Index() {
 
   const handleTopCollectorSelect = (topCollector: { key: string; value: string }) => {
     setSelectedTopCollector(topCollector);
-    console.log('Index Selected topCollector from Top100Modal:', topCollector);
+    console.log('Index Selected topCollector from TopCollectorsModal:', topCollector);
   };
 
 	useEffect(() => {

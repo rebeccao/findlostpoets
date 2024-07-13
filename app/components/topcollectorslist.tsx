@@ -6,13 +6,13 @@ interface Collector {
   count: number;
 }
 
-interface Top100ListProps {
+interface TopCollectorsListProps {
   collectors: Collector[];
   height: string; 
   selectable?: boolean;
   onRowSelect?: (topCollector: { key: string; value: string }) => void;
 }
-const Top100List: React.FC<Top100ListProps> = ({ collectors, height, selectable = false, onRowSelect }) => {
+const TopCollectorsList: React.FC<TopCollectorsListProps> = ({ collectors, height, selectable = false, onRowSelect }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const handleRowClick = (index: number, collector: Collector) => {
@@ -64,4 +64,4 @@ const Top100List: React.FC<Top100ListProps> = ({ collectors, height, selectable 
   );
 };
 
-export default Top100List;
+export default TopCollectorsList;

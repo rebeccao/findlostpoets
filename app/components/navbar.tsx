@@ -6,11 +6,11 @@ import { PiCaretLeft } from "react-icons/pi";
 import ReleaseNotesModal from '~/components/modals/releasenotesmodal';
 import HelpModal from '~/components/modals/helpmodal';
 import AboutModal from '~/components/modals/aboutmodal';
-import Top100Modal from '~/components/modals/top100modal';
+import TopCollectorsModal from '~/components/modals/topcollectorsmodal';
 
 const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, count, searchCriteriaArray, onTopCollectorSelect }) => {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isTop100Open, setIsTop100Open] = useState(false);
+  const [isTopCollectorsOpen, setIsTopCollectorsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
 	const [isReleaseNotesOpen, setIsReleaseNotesOpen] = useState(false);
@@ -25,17 +25,13 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
     setIsDropdownOpen(false);
   };
 
-  const handleTop100Select = (topCollector: { key: string; value: string }) => {
+  const handleTopCollectorSelect = (topCollector: { key: string; value: string }) => {
     setTimeout(() => {
       // Close the modal after a delay
-      setIsTop100Open(false); 
+      setIsTopCollectorsOpen(false); 
       setIsDropdownOpen(false);
     }, 400);
     onTopCollectorSelect(topCollector); // Pass the topCollector to Index
-  };
-
-  const openTop100 = () => {
-    setIsTop100Open(true);
   };
 
 	const openHelp = () => {
@@ -101,7 +97,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
         {/* Left Middle Container */}
         <div className="flex flex-row items-center ml-2 space-x-6">
           <button 
-            onClick={() => setIsTop100Open(true)} 
+            onClick={() => setIsTopCollectorsOpen(true)} 
             className="flex flex-col items-center focus:outline-none"
             aria-label="Open Top 100 Collectors"
           >
@@ -201,13 +197,13 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
             </div>
             <div
               className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-700 ${
-                isTop100Open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                isTopCollectorsOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
               }`}
             >
-              <Top100Modal 
-                onClose={() => setIsTop100Open(false)} 
-                isOpen={isTop100Open} 
-                onTopCollectorSelect={handleTop100Select} // Pass the callback to Top100Modal
+              <TopCollectorsModal 
+                onClose={() => setIsTopCollectorsOpen(false)} 
+                isOpen={isTopCollectorsOpen} 
+                onTopCollectorSelect={handleTopCollectorSelect} // Pass the callback to TopCollectorsModal
               />
             </div>
             <div

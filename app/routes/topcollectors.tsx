@@ -1,6 +1,6 @@
 import { json, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import Top100List from '~/components/top100list';
+import TopCollectorsList from '~/components/topcollectorslist';
 import { prisma } from '~/utils/prisma.server'
 import type { TopCollector } from '@prisma/client';
 
@@ -19,7 +19,7 @@ export const loader: LoaderFunction = async () => {
   }
 };
 
-const Top100 = () => {
+const TopCollectors = () => {
   const topCollectors = useLoaderData<TopCollector[]>();
 
   return (
@@ -31,11 +31,11 @@ const Top100 = () => {
         {topCollectors.length === 0 ? (
           <p className="text-center">No collectors found.</p>
         ) : (
-          <Top100List collectors={topCollectors} height="max-h-[calc(100vh-11rem)]" />
+          <TopCollectorsList collectors={topCollectors} height="max-h-[calc(100vh-11rem)]" />
         )}
       </div>
     </div>
   );
 };
 
-export default Top100;
+export default TopCollectors;

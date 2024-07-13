@@ -1,23 +1,23 @@
 import React, { useEffect, useRef } from 'react';
 import { useFetcher } from '@remix-run/react';
-import Top100List from '~/components/top100list';
+import TopCollectorsList from '~/components/topcollectorslist';
 import type { TopCollector } from '@prisma/client';
 import BaseModal from '~/components/modals/baseinfomodal';
 
-interface Top100ModalProps {
+interface TopCollectorsModalProps {
   onClose: () => void;
   isOpen: boolean;
   onTopCollectorSelect: (topCollector: { key: string; value: string }) => void; // callback for TopCollector selected
 }
 
-const Top100Modal: React.FC<Top100ModalProps> = ({ onClose, isOpen, onTopCollectorSelect }) => {
+const TopCollectorsModal: React.FC<TopCollectorsModalProps> = ({ onClose, isOpen, onTopCollectorSelect }) => {
   const fetcher = useFetcher<TopCollector[]>();
   const hasFetched = useRef(false); // Track if the data has been fetched
 
   React.useEffect(() => {
     console.log("useEffect Called.");
     if (isOpen && !hasFetched.current) {
-      fetcher.load('/top100');
+      fetcher.load('/topcollectors');
       hasFetched.current = true; // Set the ref to true after fetching
     }
   }, [isOpen, fetcher]);
@@ -31,7 +31,7 @@ const Top100Modal: React.FC<Top100ModalProps> = ({ onClose, isOpen, onTopCollect
     <BaseModal onClose={onClose} title="Top 200 Lost Poet Collectors" isOpen={isOpen} noScroll={true}>
       <div>
       {fetcher.data ? (
-          <Top100List collectors={fetcher.data} height="max-h-[calc(80vh-12rem)]" selectable={true} onRowSelect={handleRowSelect} />
+          <TopCollectorsList collectors={fetcher.data} height="max-h-[calc(80vh-12rem)]" selectable={true} onRowSelect={handleRowSelect} />
         ) : (
           <div>Loading...</div>
         )}
@@ -40,4 +40,4 @@ const Top100Modal: React.FC<Top100ModalProps> = ({ onClose, isOpen, onTopCollect
   );
 };
 
-export default Top100Modal;
+export default TopCollectorsModal;
