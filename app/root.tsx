@@ -9,7 +9,7 @@ const originalConsoleLog = console.log;
 
 // Custom logging function to log one console.log in the production environment
 export const customLog = (context: string, ...args: any[]) => {
-  const enabledContexts = ['IndexLoader']; // Only enable logging for IndexLoader in production
+  const enabledContexts = ['IndexLoader', 'TopCollectorsLoader']; // Only enable logging for IndexLoader in production
   if (process.env.NODE_ENV !== 'production' || enabledContexts.includes(context)) {
     originalConsoleLog(`[${context}]`, ...args);      // Use the original console.log to avoid being silenced by the override
   }

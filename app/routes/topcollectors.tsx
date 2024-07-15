@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import TopCollectorsList from '~/components/topcollectorslist';
 import { prisma } from '~/utils/prisma.server'
 import type { Collector } from '@prisma/client';
+import { customLog } from '~/root';
 
 export const loader: LoaderFunction = async () => {
   try {
@@ -42,7 +43,7 @@ export const loader: LoaderFunction = async () => {
       ...filteredAdditionalCollectors
     ];
 
-    console.log("combinedCollectors count ", combinedCollectors.length);
+    customLog('TopCollectorsLoader', `++++++  TopCollectors loader: {take: ${combinedCollectors.length}, orderBy:{count: desc}}`);
     return json(combinedCollectors);
   } catch (error) {
     console.error("Error fetching topCollectors: ", error);

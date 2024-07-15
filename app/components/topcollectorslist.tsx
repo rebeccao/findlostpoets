@@ -36,7 +36,7 @@ const TopCollectorsList: React.FC<TopCollectorsListProps> = ({ collectors, heigh
           <div className="font-light border-r border-deepgray p-1.5 w-[70px] text-center">Rank</div>
           <div className="font-light border-r border-deepgray p-1.5 w-[240px] text-center">Owner</div>
           <div className="font-light border-r border-deepgray p-1.5 w-[420px] text-center">Wallet</div>
-          <div className="font-light border-r border-deepgray p-1.5 w-[100px] text-center"># of Poets</div>
+          <div className="font-light border-r border-deepgray p-1.5 w-[100px] text-center">Poet Count</div>
         </div>
         {/* Scrollable table body */}
         <div className="border-b border-deepgray">

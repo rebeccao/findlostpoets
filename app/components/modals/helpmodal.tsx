@@ -87,7 +87,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
       <div className="flex items-center" style={{ marginTop: '0.25rem', marginBottom: '.5rem' }}>
         <div className="flex flex-col items-center">
           <div className="text-xs mt-2 font-[LeagueSpartan-Light]">
-            TOP 200
+            TOP 200+
           </div>
           <div className="text-xs -mt-1 font-[LeagueSpartan-Light]">
             COLLECTORS
@@ -100,14 +100,14 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
       </div>
       <div style={{ marginBottom: '1.5rem' }}>
         <p>
-          Displays a list of the top 200 collectors their including:
+          Displays a list of the top 200+ collectors. This list may extend beyound 200 in order to include all the collectors for the last Poet Count. For each collector:
         </p>
         <ul className="list-none list-inside m-4 mx-auto w-2/3">
           {[
             { label: "Rank", value: "Ranking of collector starting with the top collector." },
             { label: "Owner", value: "Opensea account name if it exists." },
             { label: "Wallet", value: "Wallet that holds the LostPoets." },
-            { label: "# of Poets", value: "Number of LostPoets held by the wallet." },
+            { label: "Poet Count", value: "Number of LostPoets held by the wallet." },
           ].map((item, index) => (
             <li key={index} className="flex">
               <span className="font-light w-28">{item.label}</span>
