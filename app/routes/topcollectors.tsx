@@ -19,7 +19,7 @@ export const loader: LoaderFunction = async () => {
     const countOf200th = collectors[199].count;
 
     // Fetch all collectors with the same count as the 200th collector
-    const additionalCollectors: Collector[] = await prisma.collector.findMany({
+    const collectorsWithCountOf200th: Collector[] = await prisma.collector.findMany({
       where: {
         count: countOf200th,
       },
@@ -27,15 +27,15 @@ export const loader: LoaderFunction = async () => {
         count: 'desc',
       },
     });
-    console.log("additionalCollectors count", additionalCollectors.length);
+    console.log("Number of collectors with CountOf200th: ", collectorsWithCountOf200th.length);
 
     // Step 4: Filter additional collectors to remove duplicates
-    const filteredAdditionalCollectors = additionalCollectors.filter(
+    const filteredAdditionalCollectors = collectorsWithCountOf200th.filter(
       filteredCollector => filteredCollector.count === countOf200th && !collectors.some(collector => collector.oAddr === filteredCollector.oAddr)
     );
 
     // Log the count of filtered additional collectors
-    console.log("Filtered Additional Collectors Count: ", filteredAdditionalCollectors.length);
+    console.log("Number of nonduplicate collectors with CountOf200th: ", filteredAdditionalCollectors.length);
 
     // Step 5: Combine results and ensure no duplicates
     const combinedCollectors = [
