@@ -100,7 +100,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
       </div>
       <div style={{ marginBottom: '1.5rem' }}>
         <p>
-          Displays a list of the top 200+ collectors. This list may extend beyound 200 in order to include all the collectors for the last Poet Count. For each collector:
+          Displays a list of the top 200+ collectors. This list may extend beyound 200 in order to include all the collectors for the Poet Count at the 200th collector. For instance, if the Poet Count of the 200th ranked collector is 20, then all collectors who own 20 Poets will be included extending the collector count beyound 200. For each collector:
         </p>
         <ul className="list-none list-inside m-4 mx-auto w-2/3">
           {[
