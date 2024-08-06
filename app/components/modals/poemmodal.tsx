@@ -30,7 +30,7 @@ export default function PoemModalMobile({ poem, onReturn }: PoemModalProps) {
         ref={containerRef}
         className="flex-1 flex flex-col justify-start items-center text-center overflow-auto p-4"
       >
-        <pre className="whitespace-pre-wrap max-h-full w-full font-light">
+        <pre className="whitespace-pre-wrap max-h-full w-full font-light text-2xl">
           {poem}
         </pre>
       </div>
