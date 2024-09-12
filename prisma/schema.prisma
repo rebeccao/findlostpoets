@@ -58,8 +58,10 @@ model Poet {
 }
 
 model Collector {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  count Int
-  oAddr String
-  oNam  String?
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  count  Int
+  oAddr  String
+  oNam   String?
+  wrdCnt Int
+  lexCnt Int
 }

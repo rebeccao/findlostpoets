@@ -33,6 +33,7 @@ const TopCollectorsModal: React.FC<TopCollectorsModalProps> = ({ onClose, isOpen
       title={`Top ${fetcher.data ? fetcher.data.length : '...'} LostPoet Collectors`} 
       isOpen={isOpen} 
       noScroll={true}
+      customWidth="w-[86vw]" 
     >
       <div>
       {fetcher.data ? (

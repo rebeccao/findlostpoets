@@ -99,7 +99,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
           <button 
             onClick={() => setIsTopCollectorsOpen(true)} 
             className="flex flex-col items-center focus:outline-none"
-            aria-label="Open Top 100 Collectors"
+            aria-label="Open Top Collectors"
           >
             <div className="text-xs mt-2 font-[LeagueSpartan-Light]">
               TOP 200+
