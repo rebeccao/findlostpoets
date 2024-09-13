@@ -107,7 +107,9 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
             { label: "Rank", value: "Ranking of collector starting with the top collector." },
             { label: "Owner", value: "Opensea account name if it exists." },
             { label: "Wallet", value: "Wallet that holds the LostPoets." },
-            { label: "Poet Count", value: "Number of LostPoets held by the wallet." },
+            { label: "Poet Count", value: "Number of LostPoets held by the Owner/Wallet." },
+            { label: "Word Count", value: "Total Word Count of all the poets for that Owner/Wallet." },
+            { label: "Lexicon", value: "Total Lexicon of all the poets for that Owner/Wallet." },
           ].map((item, index) => (
             <li key={index} className="flex">
               <span className="font-light w-28">{item.label}</span>
@@ -116,7 +118,11 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
           ))}
         </ul>
         <p>
-          Every row in the Top Collectors list is selectable and will initiate a search of the collector's LostPoets. In addition to the Search By Traits in the Sidebar Panel, this provides a another way to search by collectors. The collector's LostPoets can be further refined by rarities, word counts, etc.
+          The Poet Count, Word Count and Lexicon are sortable in descending order by clicking the ↓ in the header.  
+        </p>
+        <br></br>
+        <p>
+          Every row in the Top Collectors list is selectable and will initiate a search of that collector's LostPoets. In addition to the Search By Traits in the Sidebar Panel, this provides a another way to search by collectors. The collector's LostPoets can be further refined by rarities, word counts, etc.
         </p>
       </div>
       </div>

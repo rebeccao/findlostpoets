@@ -10,13 +10,23 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
   return (
     <BaseModal onClose={onClose} title="Release Notes" isOpen={isOpen}>
       <div className="space-y-1">
-      <h2 className="text-lg font-light">Release 1.2.0 - Major database updates, new features, bug fixes</h2>
+        <h2 className="text-lg font-light">Release 1.3.0 - Database updates, new features, bug fixes</h2>
+        <ul className="list-disc list-inside p-4">
+          <li className="pl-2 mb-2 hanging-indent">
+            <span className="font-normal">Top 200 Collectors:</span> 
+            <ol className="list-dash list-inside ml-8">
+              <li>Added two new columns: Word Count and Lexicon.</li>
+              <li>Modified the Collectors MongoDB collection to include the new columns.</li>
+            </ol>
+          </li>
+        </ul>
+        <h2 className="text-lg font-light">Release 1.2.0 - Major database updates, new features, bug fixes</h2>
         <ul className="list-disc list-inside p-4">
           <li className="pl-2 mb-2 hanging-indent">
             <span className="font-normal">Top 200 Collectors:</span> 
             <ol className="list-dash list-inside ml-8">
               <li>This list is now the Top 200+ Collectors and was extended in order to include all the collectors of the Poet Count of the 200th entry.</li>
-              <li>Modified the Collectors MongoDB collection to inlcude all 5,400+ collectors.</li>
+              <li>Modified the Collectors MongoDB collection to include the 5,400+ collectors.</li>
             </ol>
           </li>
         </ul>

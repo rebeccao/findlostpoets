@@ -192,7 +192,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
               </div>
               <div className="border-t border-deepgray"></div>
               <div className="p-2 flex text-xs items-center justify-start ml-7">
-                <span className="font-light">Version: 1.2.0</span>
+                <span className="font-light">Version: 1.3.0</span>
               </div>
             </div>
             <div
