@@ -17,7 +17,6 @@ interface TopCollectorsListProps {
 const TopCollectorsList: React.FC<TopCollectorsListProps> = ({ collectors, height, selectable = false, onRowSelect }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [sortKey, setSortKey] = useState<keyof Collector>('count'); // Default sort by 'count'
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [sortedCollectors, setSortedCollectors] = useState(collectors);
 
   const handleRowClick = (index: number, collector: Collector) => {
@@ -33,15 +32,9 @@ const TopCollectorsList: React.FC<TopCollectorsListProps> = ({ collectors, heigh
   };
 
   const sortByKey = (key: keyof Collector) => {
-    // If the new key is different from the current sortKey, default to 'desc'
-    const newOrder = key === sortKey ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'desc';
-
-    // Sort the collectors based on the new order
-    const sorted = [...collectors].sort((a, b) =>
-      newOrder === 'asc' ? (a[key] as number) - (b[key] as number) : (b[key] as number) - (a[key] as number)
-    );
+    // Always sort in descending order
+    const sorted = [...collectors].sort((a, b) => (b[key] as number) - (a[key] as number));
     setSortedCollectors(sorted);
-    setSortOrder(newOrder);
     setSortKey(key);
   };
 
@@ -57,19 +50,28 @@ const TopCollectorsList: React.FC<TopCollectorsListProps> = ({ collectors, heigh
             className="font-light border-r border-deepgray p-1.5 w-[120px] text-center cursor-pointer"
             onClick={() => sortByKey('count')}
           >
-            Poet Count {sortKey === 'count' && (sortOrder === 'asc' ? '↑' : '↓')}
+            Poet Count{' '}
+            <span className={`${sortKey === 'count' ? 'text-pearlwhite' : 'text-davysgray'}`}>
+              ↓
+            </span>
           </div>
           <div
             className="font-light border-r border-deepgray p-1.5 w-[150px] text-center cursor-pointer"
             onClick={() => sortByKey('wrdCnt')}
           >
-            Word Count {sortKey === 'wrdCnt' && (sortOrder === 'asc' ? '↑' : '↓')}
+            Word Count{' '}
+            <span className={`${sortKey === 'wrdCnt' ? 'text-pearlwhite' : 'text-davysgray'}`}>
+              ↓
+            </span>
           </div>
           <div
             className="font-light border-r border-deepgray p-1.5 w-[150px] text-center cursor-pointer"
             onClick={() => sortByKey('lexCnt')}
           >
-            Lexicon {sortKey === 'lexCnt' && (sortOrder === 'asc' ? '↑' : '↓')}
+            Lexicon{' '}
+            <span className={`${sortKey === 'lexCnt' ? 'text-pearlwhite' : 'text-davysgray'}`}>
+              ↓
+            </span>
           </div>
         </div>
         {/* Scrollable table body */}
