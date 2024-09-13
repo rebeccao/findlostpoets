@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react';
 
 interface Collector {
   oAddr: string;
@@ -14,10 +14,15 @@ interface TopCollectorsListProps {
   selectable?: boolean;
   onRowSelect?: (topCollector: { key: string; value: string }) => void;
 }
-const TopCollectorsList: React.FC<TopCollectorsListProps> = ({ collectors, height, selectable = false, onRowSelect }) => {
+const TopCollectorsList = forwardRef<HTMLDivElement, TopCollectorsListProps>(({ collectors, height, selectable = false, onRowSelect }, ref) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [sortKey, setSortKey] = useState<keyof Collector>('count'); // Default sort by 'count'
   const [sortedCollectors, setSortedCollectors] = useState(collectors);
+
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // Expose the ref from this component to the parent
+  useImperativeHandle(listRef, () => listRef.current!);
 
   const handleRowClick = (index: number, collector: Collector) => {
     console.log("collector ", collector);
@@ -39,7 +44,7 @@ const TopCollectorsList: React.FC<TopCollectorsListProps> = ({ collectors, heigh
   };
 
   return (
-    <div className="p-4 flex justify-center">
+    <div className="p-4 flex justify-center" ref={listRef}>
       <div>
         {/* Separate header element */}
         <div className="flex bg-black-900 border border-deepgray">
@@ -100,6 +105,6 @@ const TopCollectorsList: React.FC<TopCollectorsListProps> = ({ collectors, heigh
       </div>
     </div>
   );
-};
+});
 
 export default TopCollectorsList;
