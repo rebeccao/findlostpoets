@@ -45,63 +45,48 @@ const TopCollectorsList = forwardRef<HTMLDivElement, TopCollectorsListProps>(({ 
 
   return (
     <div className="p-4 flex justify-center" ref={listRef}>
-      <div>
-        {/* Separate header element */}
-        <div className="flex bg-black-900 border border-deepgray">
-          <div className="font-light border-r border-deepgray p-1.5 w-[70px] text-center">Rank</div>
-          <div className="font-light border-r border-deepgray p-1.5 w-[240px] text-center">Owner</div>
-          <div className="font-light border-r border-deepgray p-1.5 w-[420px] text-center">Wallet</div>
-          <div
-            className="font-light border-r border-deepgray p-1.5 w-[120px] text-center cursor-pointer"
-            onClick={() => sortByKey('count')}
-          >
-            Poet Count{' '}
-            <span className={`${sortKey === 'count' ? 'text-pearlwhite' : 'text-davysgray'}`}>
-              ↓
-            </span>
-          </div>
-          <div
-            className="font-light border-r border-deepgray p-1.5 w-[150px] text-center cursor-pointer"
-            onClick={() => sortByKey('wrdCnt')}
-          >
-            Word Count{' '}
-            <span className={`${sortKey === 'wrdCnt' ? 'text-pearlwhite' : 'text-davysgray'}`}>
-              ↓
-            </span>
-          </div>
-          <div
-            className="font-light border-r border-deepgray p-1.5 w-[150px] text-center cursor-pointer"
-            onClick={() => sortByKey('lexCnt')}
-          >
-            Lexicon{' '}
-            <span className={`${sortKey === 'lexCnt' ? 'text-pearlwhite' : 'text-davysgray'}`}>
-              ↓
-            </span>
-          </div>
-        </div>
-        {/* Scrollable table body */}
-        <div className="border-b border-deepgray">
-          <div className={`overflow-y-auto ${height}`}>
-            <table className="border-collapse border border-deepgray">
-              <tbody>
-                {sortedCollectors.map((collector, index) => (
-                  <tr
-                  key={index}
-                  className={`${selectable ? 'cursor-pointer' : ''} ${selectedIndex === index ? 'bg-closetoblack text-pearlwhite' : 'hover:bg-closetoblack'} transition-colors`}
-                  onClick={() => handleRowClick(index, collector)}
-                  >
-                    <td className="border border-deepgray p-1.5 w-[70px] text-center">{index + 1}</td>
-                    <td className="border border-deepgray p-1.5 w-[240px] max-w-[240px] truncate pl-4">{collector.oNam || ""}</td>
-                    <td className="border border-deepgray p-1.5 w-[420px] pl-4">{collector.oAddr}</td>
-                    <td className="border border-deepgray p-1.5 w-[120px] text-center">{collector.count}</td>
-                    <td className="border border-deepgray p-1.5 w-[150px] text-center">{collector.wrdCnt}</td>
-                    <td className="border border-deepgray p-1.5 w-[150px] text-center">{collector.lexCnt}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div className={`overflow-x-auto w-full border border-deepgray pb-1 ${height}`}>
+        <table className="min-w-full border-collapse">
+          {/* Table header */}
+          <thead className="bg-black-900 border border-deepgray">
+            <tr>
+              <th className="font-light border-r border-deepgray p-1.5 w-[70px] text-center">Rank</th>
+              <th className="font-light border-r border-deepgray p-1.5 w-[240px] text-center">Owner</th>
+              <th className="font-light border-r border-deepgray p-1.5 w-[420px] text-center">Wallet</th>
+              <th className="font-light border-r border-deepgray p-1.5 w-[120px] text-center cursor-pointer" onClick={() => sortByKey('count')}>
+                Poet Count{' '}
+                <span className={`${sortKey === 'count' ? 'text-pearlwhite' : 'text-davysgray'}`}>
+                  ↓
+                </span>
+              </th>
+              <th className="font-light border-r border-deepgray p-1.5 w-[150px] text-center cursor-pointer" onClick={() => sortByKey('wrdCnt')}>
+                Word Count{' '}
+                <span className={`${sortKey === 'wrdCnt' ? 'text-pearlwhite' : 'text-davysgray'}`}>
+                  ↓
+                </span>
+              </th>
+              <th className="font-light border-r border-deepgray p-1.5 w-[150px] text-center cursor-pointer" onClick={() => sortByKey('lexCnt')}>
+                Lexicon{' '}
+                <span className={`${sortKey === 'lexCnt' ? 'text-pearlwhite' : 'text-davysgray'}`}>
+                  ↓
+                </span>
+              </th>
+            </tr>
+          </thead>
+          {/* Table body */}
+          <tbody>
+            {sortedCollectors.map((collector, index) => (
+              <tr key={index} className={`${selectable ? 'cursor-pointer' : ''} ${selectedIndex === index ? 'bg-closetoblack text-pearlwhite' : 'hover:bg-closetoblack'} transition-colors`} onClick={() => handleRowClick(index, collector)}>
+                <td className="border border-deepgray p-1.5 w-[70px] text-center">{index + 1}</td>
+                <td className="border border-deepgray p-1.5 w-[240px] max-w-[240px] truncate pl-4">{collector.oNam || ""}</td>
+                <td className="border border-deepgray p-1.5 w-[420px] pl-4">{collector.oAddr}</td>
+                <td className="border border-deepgray p-1.5 w-[120px] text-center">{collector.count}</td>
+                <td className="border border-deepgray p-1.5 w-[150px] text-center">{collector.wrdCnt}</td>
+                <td className="border border-deepgray p-1.5 w-[150px] text-center">{collector.lexCnt}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table> 
       </div>
     </div>
   );

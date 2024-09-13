@@ -44,12 +44,18 @@ const TopCollectorsModal: React.FC<TopCollectorsModalProps> = ({ onClose, isOpen
       noScroll={true}
       customWidth={listWidth}
     >
-      <div>
-      {fetcher.data ? (
-          <TopCollectorsList ref={listRef} collectors={fetcher.data} height="max-h-[calc(80vh-12rem)]" selectable={true} onRowSelect={handleRowSelect} />
-        ) : (
-          <div>Loading...</div>
-        )}
+      <div className="overflow-y-auto">
+        {fetcher.data ? (
+            <TopCollectorsList 
+              ref={listRef} 
+              collectors={fetcher.data} 
+              height="max-h-[calc(80vh-10rem)]" 
+              selectable={true} 
+              onRowSelect={handleRowSelect} 
+            />
+          ) : (
+            <div>Loading...</div>
+          )}
       </div>
     </BaseModal>
   );

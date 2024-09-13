@@ -59,11 +59,11 @@ const TopCollectors = () => {
       <div className="text-center items-center pt-8 pb-4">
         <h1 className="text-2xl font-light">Top {topCollectors.length} LostPoet Collectors</h1>
       </div>
-      <div className="flex-grow font-extralight">
+      <div className="flex-grow font-extralight px-5">
         {topCollectors.length === 0 ? (
           <p className="text-center">No collectors found.</p>
         ) : (
-          <TopCollectorsList collectors={topCollectors} height="max-h-[calc(100vh-11rem)]" />
+          <TopCollectorsList collectors={topCollectors} height="max-h-[calc(100vh-8rem)]" />
         )}
       </div>
     </div>
