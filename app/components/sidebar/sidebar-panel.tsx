@@ -252,8 +252,9 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({ state, dispatch, perf
       const searchValue = state.searchTrait.searchTraitValue;
       if (state.searchTrait.searchTraitKey === 'age') {
         whereConditions.push({
-          [state.searchTrait.searchTraitKey]: { equals: Number(searchValue) }
+          [state.searchTrait.searchTraitKey]: { gte: Number(searchValue) }
         });
+        orderByConditions.push({ ['age']: 'asc' }); 
       } else if (searchValue !== '') {
         whereConditions.push({
           [state.searchTrait.searchTraitKey]: { equals: searchValue, mode: "insensitive" }
