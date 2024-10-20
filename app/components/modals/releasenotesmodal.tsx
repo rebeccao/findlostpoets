@@ -10,6 +10,16 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
   return (
     <BaseModal onClose={onClose} title="Release Notes" isOpen={isOpen}>
       <div className="space-y-1">
+      <h2 className="text-lg font-light">Release 1.3.1</h2>
+        <ul className="list-disc list-inside p-4">
+          <li className="pl-2 mb-2 hanging-indent">
+            <span className="font-normal">Bug fixes:</span> 
+            <ol className="list-dash list-inside ml-8">
+              <li>Fixed search by trait: Owner to included allowing for a '.' to be included in the search. Now owners using their ENS domains are allowed.</li>
+              <li>Fixed search by trait: Age to return 'greater or equal' instead of 'equal'. Now when searching age of .1 or .2 returns poets starting at age .11 and .22 respectively. Previously it would return no poets."</li>
+            </ol>
+          </li>
+        </ul>
         <h2 className="text-lg font-light">Release 1.3.0 - Database updates, new features, bug fixes</h2>
         <ul className="list-disc list-inside p-4">
           <li className="pl-2 mb-2 hanging-indent">
