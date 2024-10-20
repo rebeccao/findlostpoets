@@ -91,7 +91,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({ state, dispatch, perf
   function validateSearchTraitInput(type: string, value: string, trait: ExpandedSidebarItem): boolean {
     switch (type) {
       case 'alphanumeric':
-        return /^[a-z0-9#_ \-]+$/i.test(value);
+        return /^[a-z0-9#_ \-.]+$/i.test(value);
       case 'alpha':
         return /^[a-zA-Z]+$/.test(value);
       case 'decimal':
