@@ -4,6 +4,8 @@ import TopCollectorsList from '~/components/topcollectorslist';
 import type { Collector } from '@prisma/client';
 import BaseModal from '~/components/modals/baseinfomodal';
 
+type SortableField = 'count' | 'wrdCnt' | 'lexCnt';
+
 interface TopCollectorsModalProps {
   onClose: () => void;
   isOpen: boolean;
@@ -11,18 +13,25 @@ interface TopCollectorsModalProps {
 }
 
 const TopCollectorsModal: React.FC<TopCollectorsModalProps> = ({ onClose, isOpen, onTopCollectorSelect }) => {
-  const fetcher = useFetcher<Collector[]>();
+  const fetcher = useFetcher<{ collectors: Collector[]; sortKey: SortableField }>();
   const hasFetched = useRef(false); // Track if the data has been fetched
   const listRef = useRef<HTMLDivElement | null>(null); // Ref for TopCollectorsList
   const [listWidth, setListWidth] = useState<string>('w-[80vw]'); // Default width
+  const [sortKey, setSortKey] = useState<SortableField>('count');
+  
+  const handleSort = (key: SortableField) => {
+    setSortKey(key);
+    hasFetched.current = false; // Allow refetching next time modal opens
+    fetcher.load(`/topcollectors?sort=${key}`);
+  };
 
   useEffect(() => {
     console.log("TopCollectorsModal useEffect Called. fetcher.load('/topcollectors')");
     if (isOpen && !hasFetched.current) {
-      fetcher.load('/topcollectors');
-      hasFetched.current = true; // Set the ref to true after fetching
+      fetcher.load(`/topcollectors?sort=${sortKey}`);
+      hasFetched.current = true;
     }
-  }, [isOpen, fetcher]);
+  }, [isOpen, fetcher, sortKey]);
 
   useEffect(() => {
     if (listRef.current) {
@@ -36,10 +45,12 @@ const TopCollectorsModal: React.FC<TopCollectorsModalProps> = ({ onClose, isOpen
     onTopCollectorSelect(topCollector); // Invoke the callback
   };
 
+  const collectors = fetcher.data?.collectors ?? [];
+
   return (
     <BaseModal 
       onClose={onClose} 
-      title={`Top ${fetcher.data ? fetcher.data.length : '...'} LostPoet Collectors`} 
+      title={`Top ${collectors.length} LostPoet Collectors by ${sortKey === "wrdCnt" ? "Word Count" : sortKey === "lexCnt" ? "Lexicon" : "Poet Count"}`} 
       isOpen={isOpen} 
       noScroll={true}
       customWidth={listWidth}
@@ -48,10 +59,12 @@ const TopCollectorsModal: React.FC<TopCollectorsModalProps> = ({ onClose, isOpen
         {fetcher.data ? (
             <TopCollectorsList 
               ref={listRef} 
-              collectors={fetcher.data} 
+              collectors={collectors} 
               height="max-h-[calc(80vh-10rem)]" 
               selectable={true} 
               onRowSelect={handleRowSelect} 
+              sortKey={sortKey}
+              onSort={handleSort}
             />
           ) : (
             <div>Loading...</div>
