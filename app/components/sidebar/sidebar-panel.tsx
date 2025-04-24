@@ -50,12 +50,7 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({ state, dispatch, perf
 
     // Check if the input is for "Poet Name" and if a number was entered
     if (selectedTrait.dbField === 'pNam') {
-      if (!isNaN(Number(newSearchTraitValue))) {
-          // Prepend the required prefix
-          finalValue = `#${newSearchTraitValue}`;
-      } else {
-          isValidInput = /^[a-z0-9# ]+$/i.test(newSearchTraitValue);
-      }
+      isValidInput = /^[a-z0-9# ]+$/i.test(newSearchTraitValue);
     } else if (selectedTrait.validationType) {
         // Perform type-specific validation if a validation type is specified
         isValidInput = validateSearchTraitInput(selectedTrait.validationType, newSearchTraitValue, selectedTrait);
@@ -249,7 +244,12 @@ const SidebarPanel: React.FC<SidebarProps> = React.memo(({ state, dispatch, perf
   
     // Search By Trait
     if (state.searchTrait.searchTraitValue || state.searchTrait.searchTraitValue === 0) { // Ensure zero is considered a valid number
-      const searchValue = state.searchTrait.searchTraitValue;
+      let searchValue = state.searchTrait.searchTraitValue;
+
+      // Fix: Prepend # to numeric Ghost names at search time only
+      if (state.searchTrait.searchTraitKey === 'pNam' && /^\d+$/.test(String(searchValue))) {
+        searchValue = `#${searchValue}`;
+      }
       if (state.searchTrait.searchTraitKey === 'age') {
         whereConditions.push({
           [state.searchTrait.searchTraitKey]: { gte: Number(searchValue) }
