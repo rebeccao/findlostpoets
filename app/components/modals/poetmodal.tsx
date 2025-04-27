@@ -10,12 +10,13 @@ interface PoetModalProps {
   poet: Poet;
   hasPoem: boolean;
   onReturn: () => void;
+  isStandalone?: boolean;   // Is poet details called by _index in a modal or stand alone called by the user
 }
 
 export type ImageSize = '1X' | '2X';
 
 // Display Poet's details. The poem m
-export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
+export default function PoetModal({ poet, hasPoem, onReturn, isStandalone }: PoetModalProps) {
   const [showPoemModal, setShowPoemModal] = useState(false);
   const [isPoemOverflowing, setIsPoemOverflowing] = useState(false);
   const poemContainerRef = useRef<HTMLDivElement>(null);
@@ -24,20 +25,33 @@ export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
   const [currentModalImage, setCurrentModalImage] = useState<string>('');
   const [imageSize, setImageSize] = useState<ImageSize>('1X');
   const [containerDimensions, setContainerDimensions] = useState({ height: '75vh', width: '50%' });
+  const [isVisible, setIsVisible] = useState(false);    // Controls opacity/scale animation of PoetModal fade-out
 
   const draggableRef = useRef<HTMLDivElement>(null);
-
-  const [imageContainerHeight, setImageContainerHeight] = useState(() => {
-    const navbarHeight = 56; // Assuming navbar height is known and fixed
-    const initialViewportHeight = window.innerHeight;
-    const availableHeight = initialViewportHeight - navbarHeight;
-    return `${availableHeight * 0.75}px`;
-  });
+  const [imageContainerHeight, setImageContainerHeight] = useState('75vh'); 
 
   const handlePoemModalBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (showPoemModal) {
       togglePoemModal();
     }
+  };
+
+  // Fade-in animation of PoetModal when it mounts
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsVisible(true);
+    }, 10); // small delay to trigger animation
+  
+    return () => clearTimeout(timeout);
+  }, []);
+
+  // Fade-out animation of PoetModal when returns
+  const handleCloseModal = () => {
+    setIsVisible(false); // Trigger fade-out
+  
+    setTimeout(() => {
+      onReturn(); // Actually close after animation duration
+    }, 400); // Match duration-400 or whatever you used in Tailwind
   };
 
   // checkOverflow useEffect to check for poem overflowing the poem section
@@ -56,9 +70,7 @@ export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
       const viewportHeight = window.innerHeight;
       const availableHeight = viewportHeight - navbarHeight; // Total available height minus the Navbar height
   
-      const newImageContainerHeight = `${availableHeight * 0.75}px`; // 75% for the image container
-  
-      setImageContainerHeight(newImageContainerHeight);
+      setImageContainerHeight(`${availableHeight * 0.75}px`); // 75% for the image container
     };
   
     window.addEventListener('resize', adjustLayoutHeights);
@@ -102,13 +114,26 @@ export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-y-auto" onClick={handlePoemModalBackgroundClick}>
-      <PoetDetailNavbar poetClass={poet.class} poetName={poet.pNam} className="navbar" onReturn={onReturn} />
+    <div 
+      className={`flex flex-col h-screen overflow-y-auto bg-closetoblack text-pearlwhite transform transition-all duration-500 ${isStandalone ? 'bg-closetoblack' : ''} ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`} 
+      onClick={handlePoemModalBackgroundClick}
+    >
+      <PoetDetailNavbar 
+        poetClass={poet.class} 
+        poetName={poet.pNam} 
+        className="navbar" 
+        onReturn={onReturn} 
+        isStandalone={isStandalone}
+        onClose={handleCloseModal} 
+      />
       <div className="flex flex-1 relative bg-closetoblack items-center">
         {/* Main content container for images and traits */}
         <div className="grid grid-rows-[auto,1fr] min-h-0 w-full mx-auto my-4 overflow-y-auto">
           {/* Images container */}
-          <div className="flex justify-between items-center font-thin bg-closetoblack text-pearlwhite" style={{ height: containerDimensions.height, width: containerDimensions.width, margin: '0 auto' }}>
+          <div 
+            className="flex justify-between items-center font-thin bg-closetoblack text-pearlwhite" 
+            style={{ height: imageContainerHeight, width: containerDimensions.width, margin: '0 auto' }}
+          >
             <div style={{ width: 'calc(50% - 15px)' }} onClick={() => openImageModal(poet.g0Url, '1X')}>  {/* Add right padding to the first image */}
               <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full h-full object-contain" loading="lazy" />
             </div>
@@ -136,7 +161,9 @@ export default function PoetModal({ poet, hasPoem, onReturn }: PoetModalProps) {
                   }`}
                   aria-label="Click to toggle poem details"
                 >
-                  <pre className="whitespace-pre-wrap">{poet.poem}</pre>
+                  <div className="whitespace-pre-wrap font-sans text-lg">
+                    {poet.poem}
+                  </div>
                 </div>
               </div>
             ) : (

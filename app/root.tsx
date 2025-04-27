@@ -47,14 +47,15 @@ export default function App() {
   const { isMaintenanceMode } = useLoaderData<{ isMaintenanceMode: boolean }>();
 
   return (
-    <html lang="en">
+    <html lang="en" className="h-full text-base">
       <head>
+        <meta name="theme-color" content="#000000" />
         <Meta />
         <Links />
         <title>FINDLOSTPOETS - Explore LOSTPOETS NFT Collection</title>
       </head>
       {/* Use the first font in tailwind.config.ts fontFamily */}
-      <body className="font-sans">
+      <body className="font-sans bg-closetoblack text-pearlwhite h-full">
         {/* Conditionally render Maintenance page or the main Outlet based on maintenance mode */}
         {isMaintenanceMode ? <MaintenancePage /> : <Outlet />}
         {/*<h1 className="screenreader-only">FINDLOSTPOETS: Browse Poets, Poems and Traits</h1>*/}

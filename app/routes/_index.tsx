@@ -540,13 +540,50 @@ function Index() {
     }
   }, [showPoetModal, showPoemModal]);
 
+	// Handles user hitting the browser back and forward buttons
+	useEffect(() => {
+		const handlePopState = (event: PopStateEvent) => {
+			const state = event.state;
+			if (state?.poetPid) {
+				// Find the poet in memory
+				const foundPoet = poetSlidingWindow.find(p => p.pid === state.poetPid);
+	
+				if (foundPoet) {
+					if (window.innerWidth >= 1024) {
+						setShowPoetModal(foundPoet);
+					} else {
+						setShowPoemModal(foundPoet.poem);
+					}
+				} else {
+					// If not found (maybe scrolled out of buffer), just close modal safely
+					setShowPoetModal(null);
+					setShowPoemModal(null);
+				}
+			} else {
+				// No poetPid? Just close
+				setShowPoetModal(null);
+				setShowPoemModal(null);
+			}
+		};
+	
+		window.addEventListener('popstate', handlePopState);
+		return () => window.removeEventListener('popstate', handlePopState);
+	}, [poetSlidingWindow]);
+
 	const handleShowingPoetDetail = (poet: Poet) => {
 		// Save current scroll position
 		sessionStorage.setItem('lastScrollPosition', window.scrollY.toString());
+
+		// Only push URL (browser will handle fetching the page if needed)
+		window.history.pushState({}, '', `/poet/${poet.pNam}`);
+
 		window.innerWidth >= 1024 ? setShowPoetModal(poet) : setShowPoemModal(poet.poem);
 	};
 
 	const handleReturnFromPoetDetail = () => {
+		// Revert the fake route
+		window.history.pushState({}, '', '/');
+
 		window.innerWidth >= 1024 ? setShowPoetModal(null) : setShowPoemModal(null);
 		// Restore scroll position if available
 		requestAnimationFrame(() => {
