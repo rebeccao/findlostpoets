@@ -17,7 +17,7 @@ function PoetModalTraits({ poet }: PoetModalTraitsProps) {
         <div><span className="font-thin">Lexicon:</span><span className="ml-2 font-normal">{poet.lexCnt}</span></div>
         <div><span className="font-thin">Poet ID:</span><span className="ml-2 font-normal">{poet.pid}</span></div>
         <div><span className="font-thin">Age:</span><span className="ml-2 font-normal">{poet.age}</span></div>
-        <div><span className="font-thin">Influence:</span><span className="ml-2 font-normal">{poet.infl}</span></div>
+        <div><span className="font-thin">Prime:</span><span className="ml-2 font-normal">{poet.prim}</span></div>
         <div><span className="font-thin">Rewrites:</span><span className="ml-2 font-normal">{poet.rewrCnt}</span></div>
       </div>
   );

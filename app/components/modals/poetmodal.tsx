@@ -161,7 +161,7 @@ export default function PoetModal({ poet, hasPoem, onReturn, isStandalone }: Poe
                   }`}
                   aria-label="Click to toggle poem details"
                 >
-                  <div className="whitespace-pre-wrap font-sans text-lg">
+                  <div className="whitespace-pre-wrap font-sans font-light text-lg">
                     {poet.poem}
                   </div>
                 </div>

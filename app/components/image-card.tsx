@@ -121,7 +121,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
             <div><span className="text-sm font-normal">{poet.ori.substring(0, 6) + (poet.ori.length > 6 ? "... " : '')}</span></div>
             <div><span className="text-sm font-normal">{poet.brd}</span></div>
             <div><span className="text-sm font-normal">{poet.pol}</span></div>
-            <div><span className="text-sm font-normal">{poet.wrdCnt}</span></div>
+            <div className="text-right"><span className="text-sm font-normal">{poet.wrdCnt}</span></div>
             </div>
             <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr]">
             <div><span className="text-xs font-light">Latent:</span></div>
@@ -131,17 +131,17 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
             <div><span className="text-sm font-normal">{poet.lat}</span></div>
             <div><span className="text-sm font-normal">{poet.gen}</span></div>
             <div><span className="text-sm font-normal">{poet.ego}</span></div>
-            <div><span className="text-sm font-normal">{poet.lexCnt}</span></div>
+            <div className="text-right"><span className="text-sm font-normal">{poet.lexCnt}</span></div>
             </div>
             <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr]">
             <div><span className="text-xs font-light">{rarityCount !== undefined && rarityTraitLabel ? rarityTraitLabel : "Poet ID:"}</span></div>
             <div><span className="text-xs font-light">Age:</span></div>
-            <div><span className="text-xs font-light">Influ:</span></div>
+            <div><span className="text-xs font-light">Prime:</span></div>
             <div><span className="text-xs font-light">Rewrites:</span></div>
             <div><span className="text-sm font-normal">{rarityCount !== undefined ? rarityCount : poet.pid}</span></div>
             <div><span className="text-sm font-normal">{poet.age}</span></div>
-            <div><span className="text-sm font-normal">{poet.infl}</span></div>
-            <div><span className="text-sm font-normal">{poet.rewrCnt}</span></div>
+            <div><span className="text-sm font-normal">{poet.prim}</span></div>
+            <div className="text-right"><span className="text-sm font-normal">{poet.rewrCnt}</span></div>
             </div>
           </div>
           <div className="mt-3 text-sm font-light">
