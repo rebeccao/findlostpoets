@@ -10,7 +10,22 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
   return (
     <BaseModal onClose={onClose} title="Release Notes" isOpen={isOpen}>
       <div className="space-y-1">
-      <h2 className="text-lg font-light">Release 1.3.1</h2>
+      <h2 className="text-lg font-light">Release 1.3.2</h2>
+        <ul className="list-disc list-inside p-4">
+          <li className="pl-2 mb-2 hanging-indent">
+            <span className="font-normal">Bug fixes:</span> 
+            <ol className="list-dash list-inside ml-8">
+              <li>Fixed the Top 200 Collectors to correctly report the Top 200 Collectors by Word Count and the Top 200 Collectors by Lexicon Count.</li>
+              <li>Fixed the Search Panel's search by Poet Name. Removed '#' from automatically being added to the search bar.</li>
+              <li>Added a new URL (route) for Poet Details - findlostpoets.xyz/poet/poet.pNam.</li>
+              <li>Added logic so the new URL will display without hitting the DB, when the Poet Details modal is called.</li>
+              <li>Added a fade in/out animation to the Poet Details modal.</li>
+              <li>Changed the Poet Details Poem section from <code>&lt;pre&gt;&lt;/pre&gt;</code> to <code>&lt;div&gt;&lt;/div&gt;</code> and modfied Root to address font size differences.</li>
+              <li>Modified Root to fix the different sized fonts in production versus local.</li>
+            </ol>
+          </li>
+        </ul>
+        <h2 className="text-lg font-light">Release 1.3.1</h2>
         <ul className="list-disc list-inside p-4">
           <li className="pl-2 mb-2 hanging-indent">
             <span className="font-normal">Bug fixes:</span> 
