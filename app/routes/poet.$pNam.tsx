@@ -3,7 +3,7 @@
 import { json } from '@remix-run/node';
 import { useLoaderData, useParams } from '@remix-run/react';
 import { prisma } from '~/utils/prisma.server'; // your prisma helper
-import type { LoaderFunction } from '@remix-run/node';
+import type { LoaderFunction, MetaFunction } from '@remix-run/node';
 import type { Poet } from '@prisma/client';
 import PoetModal from '~/components/modals/poetmodal';
 
@@ -42,3 +42,26 @@ export default function PoetRoute() {
     </div>
   );
 }
+
+// ⬇️ Meta function to generate dynamic Open Graph metadata
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) return [];
+
+  const poet = data;
+  const poetName = poet.pNam;
+  const imageUrl = poet.g1Url;
+
+  return [
+    { title: `${poetName} – LostPoet` },
+    { name: 'description', content: `Explore the poem and traits of ${poetName} in the LostPoets collection.` },
+    { property: 'og:title', content: `${poetName} – LostPoet` },
+    { property: 'og:description', content: `Explore the poem and traits of ${poetName} in the LostPoets collection.` },
+    { property: 'og:image', content: imageUrl },
+    { property: 'og:url', content: `https://findlostpoets.xyz/poet/${encodeURIComponent(poet.pNam)}` },
+    { property: 'og:type', content: 'website' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: `${poetName} – LostPoet` },
+    { name: 'twitter:description', content: `Explore the poem and traits of ${poetName} in the LostPoets collection.` },
+    { name: 'twitter:image', content: imageUrl },
+  ];
+};
