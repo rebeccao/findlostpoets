@@ -49,12 +49,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
   const poet = data;
   const poetName = poet.pNam;
+  const poetClass = poet.class;
   const imageUrl = poet.g1Url;
 
   return [
     { title: `${poetName} – LostPoet` },
-    { name: 'description', content: `Explore the poem and traits of ${poetName} in the LostPoets collection.` },
-    { property: 'og:title', content: `${poetName} – LostPoet` },
+    { name: 'description', content: `Explore the traits and poem of ${poetName} in the LostPoets collection.` },
+    { property: 'og:title', content: `${poetName} – poetClass` },
     { property: 'og:description', content: `Explore the poem and traits of ${poetName} in the LostPoets collection.` },
     { property: 'og:image', content: imageUrl },
     { property: 'og:url', content: `https://findlostpoets.xyz/poet/${encodeURIComponent(poet.pNam)}` },
