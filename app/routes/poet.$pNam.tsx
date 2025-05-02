@@ -25,6 +25,15 @@ export const loader: LoaderFunction = async ({ params }) => {
   return json(poet);
 };
 
+function truncate(text: string, maxLength = 200): string {
+  if (text.length <= maxLength) return text;
+
+  // Find the last space before the cutoff to avoid mid-word truncation
+  const truncated = text.slice(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(' ');
+  return truncated.slice(0, lastSpace) + '…';
+}
+
 export default function PoetRoute() {
   const poet = useLoaderData<Poet>();
 
@@ -69,9 +78,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
   // Add description fields only if a poem exists
   if (poetPoem) {
+    const shortPoem = truncate(poetPoem, 200);
     tags.push(
-      { property: 'og:description', content: poetPoem },
-      { name: 'twitter:description', content: poetPoem }
+      { property: 'og:description', content: shortPoem },
+      { name: 'twitter:description', content: shortPoem }
     );
   }
 
