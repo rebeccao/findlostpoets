@@ -53,7 +53,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const poetPoem = poet.poem;
   const imageUrl = poet.g1Url;
 
-  return [
+  const tags = [
     { title: `${poetName} – LostPoet` },
     { name: 'description', content: `Explore the traits and poem of ${poetName} in the LostPoets collection.` },
     { property: 'og:title', content: `${poetName} – ${poetClass}` },
@@ -66,4 +66,14 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     { name: 'twitter:description', content: `Explore the poem and traits of ${poetName} in the LostPoets collection.` },
     { name: 'twitter:image', content: imageUrl },
   ];
+
+  // Add description fields only if a poem exists
+  if (poetPoem) {
+    tags.push(
+      { property: 'og:description', content: poetPoem },
+      { name: 'twitter:description', content: poetPoem }
+    );
+  }
+
+  return tags;
 };
