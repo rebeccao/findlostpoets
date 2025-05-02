@@ -59,10 +59,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const poet = data;
   const poetName = poet.pNam;
   const poetClass = poet.class;
-  const poetPoem = poet.poem;
   const imageUrl = poet.g1Url;
+  const twitterImage = `https://images.weserv.nl/?url=${encodeURIComponent(poet.g1Url.replace(/^https?:\/\//, ''))}&w=1200&h=630&fit=cover`;
 
-  const tags = [
+  return [
     { title: `${poetName} – LostPoet` },
     { property: 'og:title', content: `${poetName} – ${poetClass}` },
     { property: 'og:image', content: imageUrl },
@@ -70,18 +70,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     { property: 'og:type', content: 'website' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: `${poetName} ${poetClass}` },
-    { name: 'twitter:image', content: imageUrl },
+    { name: 'twitter:image', content: twitterImage },
   ];
-
-  // Add description fields only if a poem exists
- /* if (poetPoem) {
-    const normalizedPoem = poetPoem.replace(/\s+/g, ' ').trim();
-    const shortPoem = truncate(normalizedPoem, 100); 
-    tags.push(
-      { property: 'og:description', content: shortPoem },
-      { name: 'twitter:description', content: shortPoem }
-    );
-  }*/
-
-  return tags;
 };
