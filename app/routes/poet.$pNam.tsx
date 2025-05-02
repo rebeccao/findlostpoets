@@ -78,7 +78,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
   // Add description fields only if a poem exists
   if (poetPoem) {
-    const shortPoem = truncate(poetPoem, 200);
+    const normalizedPoem = poetPoem.replace(/\s+/g, ' ').trim();
+    const shortPoem = truncate(normalizedPoem, 200);  
     tags.push(
       { property: 'og:description', content: shortPoem },
       { name: 'twitter:description', content: shortPoem }
