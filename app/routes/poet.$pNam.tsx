@@ -68,20 +68,20 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     { property: 'og:image', content: imageUrl },
     { property: 'og:url', content: `https://findlostpoets.xyz/poet/${encodeURIComponent(poet.pNam)}` },
     { property: 'og:type', content: 'website' },
-    { name: 'twitter:card', content: 'summary' },
+    { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: `${poetName} ${poetClass}` },
     { name: 'twitter:image', content: imageUrl },
   ];
 
   // Add description fields only if a poem exists
-  if (poetPoem) {
+ /* if (poetPoem) {
     const normalizedPoem = poetPoem.replace(/\s+/g, ' ').trim();
     const shortPoem = truncate(normalizedPoem, 100); 
     tags.push(
       { property: 'og:description', content: shortPoem },
       { name: 'twitter:description', content: shortPoem }
     );
-  }
+  }*/
 
   return tags;
 };
