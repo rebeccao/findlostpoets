@@ -64,15 +64,12 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
   const tags = [
     { title: `${poetName} – LostPoet` },
-    { name: 'description', content: `Explore the traits and poem of ${poetName} in the LostPoets collection.` },
     { property: 'og:title', content: `${poetName} – ${poetClass}` },
-    { property: 'og:description', content: `Explore the poem and traits of ${poetName} in the LostPoets collection.` },
     { property: 'og:image', content: imageUrl },
     { property: 'og:url', content: `https://findlostpoets.xyz/poet/${encodeURIComponent(poet.pNam)}` },
     { property: 'og:type', content: 'website' },
     { name: 'twitter:card', content: 'summary' },
     { name: 'twitter:title', content: `${poetName} ${poetClass}` },
-    { name: 'twitter:description', content: `Explore the poem and traits of ${poetName} in the LostPoets collection.` },
     { name: 'twitter:image', content: imageUrl },
   ];
 
