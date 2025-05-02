@@ -50,6 +50,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const poet = data;
   const poetName = poet.pNam;
   const poetClass = poet.class;
+  const poetPoem = poet.poem;
   const imageUrl = poet.g1Url;
 
   return [
@@ -60,8 +61,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     { property: 'og:image', content: imageUrl },
     { property: 'og:url', content: `https://findlostpoets.xyz/poet/${encodeURIComponent(poet.pNam)}` },
     { property: 'og:type', content: 'website' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: `${poetName} – LostPoet` },
+    { name: 'twitter:card', content: 'summary' },
+    { name: 'twitter:title', content: `${poetName} ${poetClass}` },
     { name: 'twitter:description', content: `Explore the poem and traits of ${poetName} in the LostPoets collection.` },
     { name: 'twitter:image', content: imageUrl },
   ];
