@@ -22,6 +22,22 @@ export const loader: LoaderFunction = async ({ params }) => {
     throw new Response("Poet not found", { status: 404 });
   }
 
+  if (poet?.g1Url?.includes('ipfs.io/ipfs/')) {
+    const resizedUrl = poet.g1Url.replace(
+      'https://ipfs.io/ipfs/',
+      'https://findlostpoets.xyz/ipfs/'
+    );
+  
+    // Fire to cache the Gen1 image and forget preload
+    void fetch(resizedUrl, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Accept': 'image/jpeg,image/*,*/*;q=0.8'
+      }
+    });
+  }
+
   return json(poet);
 };
 
@@ -59,17 +75,17 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const poet = data;
   const poetName = poet.pNam;
   const poetClass = poet.class;
-  const imageUrl = poet.g1Url;
-  const twitterImage = `https://images.weserv.nl/?url=${encodeURIComponent(poet.g1Url.replace(/^https?:\/\//, ''))}&w=1200&h=630&fit=cover`;
+
+  const compositeImageUrl = `https://og-composite-worker.findlostpoets.workers.dev/?g0=${encodeURIComponent(poet.g0Url)}&g1=${encodeURIComponent(poet.g1Url)}&name=${encodeURIComponent(poetName)}&class=${encodeURIComponent(poetClass)}`;
 
   return [
     { title: `${poetName} – LostPoet` },
     { property: 'og:title', content: `${poetName} – ${poetClass}` },
-    { property: 'og:image', content: imageUrl },
+    { property: 'og:image', content: compositeImageUrl },
     { property: 'og:url', content: `https://findlostpoets.xyz/poet/${encodeURIComponent(poet.pNam)}` },
     { property: 'og:type', content: 'website' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: `${poetName} ${poetClass}` },
-    { name: 'twitter:image', content: twitterImage },
+    { name: 'twitter:image', content: compositeImageUrl },
   ];
 };
