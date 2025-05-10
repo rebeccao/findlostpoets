@@ -106,7 +106,7 @@ export default function PoetModal({ poet, hasPoem, onReturn, isStandalone }: Poe
       window.removeEventListener('resize', adjustContainerDimensions);
     };
   }, []);
-
+/*
   // useEffect to ensure that the browser's address bar is correctly encoded
   useEffect(() => {
     if (isStandalone) {
@@ -117,7 +117,7 @@ export default function PoetModal({ poet, hasPoem, onReturn, isStandalone }: Poe
       }
     }
   }, [isStandalone, poet.pNam]);
-  
+ */ 
   const openImageModal = (imageSrc: string, imageSize: ImageSize) => {
     setCurrentModalImage(imageSrc);
     setImageModalOpen(true);
