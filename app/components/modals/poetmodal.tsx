@@ -29,6 +29,10 @@ export default function PoetModal({ poet, hasPoem, onReturn, isStandalone }: Poe
 
   const draggableRef = useRef<HTMLDivElement>(null);
   const [imageContainerHeight, setImageContainerHeight] = useState('75vh'); 
+  // Pass the Gen1 image to the ipfs-image-resizer-worker to retrive the image. Addresses 
+  // issues with ipfs not consistently loading 
+  const proxiedG1Url = poet.g1Url.replace("https://ipfs.io/ipfs/", "https://findlostpoets.xyz/ipfs/") + "?raw=true";
+
 
   const handlePoemModalBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (showPoemModal) {
@@ -106,7 +110,7 @@ export default function PoetModal({ poet, hasPoem, onReturn, isStandalone }: Poe
       window.removeEventListener('resize', adjustContainerDimensions);
     };
   }, []);
-/*
+
   // useEffect to ensure that the browser's address bar is correctly encoded
   useEffect(() => {
     if (isStandalone) {
@@ -117,7 +121,7 @@ export default function PoetModal({ poet, hasPoem, onReturn, isStandalone }: Poe
       }
     }
   }, [isStandalone, poet.pNam]);
- */ 
+  
   const openImageModal = (imageSrc: string, imageSize: ImageSize) => {
     setCurrentModalImage(imageSrc);
     setImageModalOpen(true);
@@ -149,7 +153,7 @@ export default function PoetModal({ poet, hasPoem, onReturn, isStandalone }: Poe
               <img src={poet.g0Url} alt={`${poet.pNam} Gen0`} className="w-full h-full object-contain" loading="lazy" />
             </div>
             <div style={{ width: 'calc(50% - 15px)' }} onClick={() => openImageModal(poet.g1Url, '2X')}>  {/* Add left padding to the second image */}
-              <img src={poet.g1Url} alt={`${poet.pNam} Gen1`} className="w-full h-full object-contain" loading="lazy" />
+              <img src={proxiedG1Url} alt={`${poet.pNam} Gen1`} className="w-full h-full object-contain" loading="lazy" />
             </div>
           </div>
           <ImageModal isOpen={isImageModalOpen} onClose={() => setImageModalOpen(false)} imageSrc={currentModalImage} imageSize={imageSize}/>
