@@ -21,7 +21,7 @@ const getResizedIPFSUrl = (originalIPFSUrl: string): string => {
       ? 'https://staging.findlostpoets.xyz/ipfs/'
       : 'https://findlostpoets.xyz/ipfs/';
 
-    return `${baseUrl}${ipfsPath}`;
+    return `${baseUrl}${ipfsPath}?resize=1024&format=webp`;
   };
 
 const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(

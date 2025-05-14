@@ -22,13 +22,14 @@ export const loader: LoaderFunction = async ({ params }) => {
     throw new Response("Poet not found", { status: 404 });
   }
 
+  // Call ipfs-image-resizer-worker
   if (poet?.g1Url?.includes('ipfs.io/ipfs/')) {
     const resizedUrl = poet.g1Url.replace(
       'https://ipfs.io/ipfs/',
       'https://findlostpoets.xyz/ipfs/'
     );
   
-    // Fire to cache the Gen1 image and forget preload
+    // Preload Gen1 image via Cloudflare. 
     void fetch(resizedUrl, {
       method: 'GET',
       headers: {
