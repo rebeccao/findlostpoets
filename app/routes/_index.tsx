@@ -575,7 +575,7 @@ function Index() {
 		sessionStorage.setItem('lastScrollPosition', window.scrollY.toString());
 
 		// Only push URL (browser will handle fetching the page if needed)
-		window.history.pushState({}, '', `/poet/${poet.pNam}`);
+		window.history.pushState({}, '', `/poet/${encodeURIComponent(poet.pNam)}`);
 
 		window.innerWidth >= 1024 ? setShowPoetModal(poet) : setShowPoemModal(poet.poem);
 	};
