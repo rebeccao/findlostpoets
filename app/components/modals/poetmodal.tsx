@@ -31,7 +31,7 @@ export default function PoetModal({ poet, hasPoem, onReturn, isStandalone }: Poe
   const [imageContainerHeight, setImageContainerHeight] = useState('75vh'); 
   // Pass the Gen1 image to the ipfs-image-resizer-worker to retrive the image. Addresses 
   // issues with ipfs not consistently loading 
-  const proxiedG1Url = poet.g1Url.replace("https://ipfs.io/ipfs/", "https://findlostpoets.xyz/ipfs/") + "?raw=true";
+  const proxiedG1Url = poet.g1Url.replace("https://ipfs.io/ipfs/", "https://findlostpoets.xyz/ipfs/") + "?format=webp";
 
 
   const handlePoemModalBackgroundClick = (event: React.MouseEvent<HTMLDivElement>) => {

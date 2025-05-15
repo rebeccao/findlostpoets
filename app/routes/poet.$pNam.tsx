@@ -24,10 +24,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   // Call ipfs-image-resizer-worker
   if (poet?.g1Url?.includes('ipfs.io/ipfs/')) {
-    const resizedUrl = poet.g1Url.replace(
-      'https://ipfs.io/ipfs/',
-      'https://findlostpoets.xyz/ipfs/'
-    );
+    const resizedUrl = poet.g1Url.replace('https://ipfs.io/ipfs/', 'https://findlostpoets.xyz/ipfs/') + "?format=jpeg";
   
     // Preload Gen1 image via Cloudflare. 
     void fetch(resizedUrl, {
