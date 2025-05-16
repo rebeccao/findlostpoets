@@ -31,7 +31,8 @@ export const loader: LoaderFunction = async ({ params }) => {
       method: 'GET',
       headers: {
         'User-Agent': 'Mozilla/5.0',
-        'Accept': 'image/jpeg,image/*,*/*;q=0.8'
+        'Accept': 'image/jpeg,image/*,*/*;q=0.8',
+        'Cache-Control': 'no-cache'     // Bypass local cache to force Cloudflare cache.
       }
     });
   }
