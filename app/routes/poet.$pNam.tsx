@@ -85,7 +85,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     { property: 'og:url', content: `https://findlostpoets.xyz/poet/${encodeURIComponent(poet.pNam)}` },
     { property: 'og:type', content: 'website' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: `${poetName} ${poetClass}` },
     { name: 'twitter:image', content: compositeImageUrl },
   ];
 };
