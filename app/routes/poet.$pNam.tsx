@@ -81,7 +81,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
   return [
     { title: `${poetName} – LostPoet` },
-    { property: 'og:title', content: `${poetName} – ${poetClass}` },
     { property: 'og:image', content: compositeImageUrl },
     { property: 'og:url', content: `https://findlostpoets.xyz/poet/${encodeURIComponent(poet.pNam)}` },
     { property: 'og:type', content: 'website' },
