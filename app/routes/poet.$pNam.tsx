@@ -30,9 +30,8 @@ export const loader: LoaderFunction = async ({ params }) => {
     void fetch(resizedUrl, {
       method: 'GET',
       headers: {
-        'User-Agent': 'Mozilla/5.0',
+        'User-Agent': 'Mozilla/5.0 (Prewarm)',
         'Accept': 'image/jpeg,image/*,*/*;q=0.8',
-        'Cache-Control': 'no-cache'     // Bypass local cache to force Cloudflare cache.
       }
     });
   }
