@@ -77,8 +77,11 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const poetName = poet.pNam;
   const poetClass = poet.class;
 
+  // To fix a Discord issue, strip '#' from ghost poets for og:image URL
+  const safePoetName = poetName.startsWith('#') ? poetName.slice(1) : poetName;
+
   const resizedG1 = poet.g1Url.replace('https://ipfs.io/ipfs/', 'https://findlostpoets.xyz/ipfs/') + '?resize=600&format=jpg';
-  const compositeImageUrl = `https://og-composite-worker.findlostpoets.workers.dev/?g0=${encodeURIComponent(poet.g0Url)}&g1=${encodeURIComponent(resizedG1)}&name=${encodeURIComponent(poetName)}&class=${encodeURIComponent(poetClass)}`;
+  const compositeImageUrl = `https://og-composite-worker.findlostpoets.workers.dev/?g0=${encodeURIComponent(poet.g0Url)}&g1=${encodeURIComponent(resizedG1)}&name=${encodeURIComponent(safePoetName)}&class=${encodeURIComponent(poetClass)}`;
 
   return [
     { title: `${poetName} – LostPoet` },
