@@ -11,7 +11,8 @@ export const loader: LoaderFunction = async ({ params }) => {
   const { pNam } = params;
   if (!pNam) throw new Response("Poet not found", { status: 404 });
 
-  const poet = await prisma.poet.findFirst({ where: { pNam: pNam } });
+  const decodedName = decodeURIComponent(pNam);
+  const poet = await prisma.poet.findFirst({ where: { pNam: decodedName } });
   if (!poet) throw new Response("Poet not found", { status: 404 });
 
   // Call ipfs-image-resizer-worker
