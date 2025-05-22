@@ -578,7 +578,7 @@ function Index() {
 
 		const prewarm = () => {
 			void fetch(compositeImageUrl, { 
-				method: 'HEAD', 
+				method: 'GET', 
 				headers: { 'User-Agent': 'Mozilla/5.0 (Prewarm)' } 
 			});
 		};
