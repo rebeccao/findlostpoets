@@ -575,7 +575,20 @@ function Index() {
 		// Prewarm the Cloudflare cache in the background
 		const g1 = poet.g1Url.replace('https://ipfs.io/ipfs/', 'https://findlostpoets.xyz/ipfs/') + '?resize=600&format=jpg';
 		const compositeImageUrl = `https://og-composite-worker.findlostpoets.workers.dev/?g0=${encodeURIComponent(poet.g0Url)}&g1=${encodeURIComponent(g1)}&name=${encodeURIComponent(poet.pNam)}&class=${encodeURIComponent(poet.class)}`;
-		void fetch(compositeImageUrl, { method: 'GET', headers: { 'User-Agent': 'Mozilla/5.0 (Prewarm)', 'Accept': 'image/png' } });
+
+		const prewarm = () => {
+			void fetch(compositeImageUrl, { 
+				method: 'HEAD', 
+				headers: { 'User-Agent': 'Mozilla/5.0 (Prewarm)' } 
+			});
+		};
+
+		// Run non-critical prewarm task when the browser is idle, if browser supports it
+		if ('requestIdleCallback' in window) {
+      requestIdleCallback(prewarm);
+    } else {
+      setTimeout(prewarm, 300);
+    }
 
 		// Save current scroll position
 		sessionStorage.setItem('lastScrollPosition', window.scrollY.toString());
