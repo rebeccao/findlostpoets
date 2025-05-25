@@ -75,7 +75,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const siteTitle = "FindLostPoets - Explore the Lost Poets NFT collection by Pak";
   const siteDescription = "Discover the traits and poetry of the 28,170 Lost Poets including Origins, Poets and Ghosts.";
   const siteUrl = "https://findlostpoets.xyz/";
-  const staticOgImageUrl = "https://findlostpoets.xyz/public/assets/og-home.jpg?v=1"; 
+  const staticOgImageUrl = "https://findlostpoets.xyz/assets/og-home.jpg?v=1"; 
 
   return [
     { title: siteTitle },
