@@ -38,7 +38,6 @@ export const meta: MetaFunction = () => {
   return [
     { charset: "utf-8" },
     { name: "viewport", content: "width=device-width,initial-scale=1.0" },
-    { title: siteTitle },
     { name: "description", content: siteDescription },
     { name: "keywords", content: "lostpoets, Murat, Pak, NFT, poets, poems, poetry, find lost poets, NFT, NFTs" },
     { name: "author", content: "0xNosToca" },
