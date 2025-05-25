@@ -81,7 +81,11 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const safePoetName = poetName.startsWith('#') ? poetName.slice(1) : poetName;
 
   const resizedG1 = poet.g1Url.replace('https://ipfs.io/ipfs/', 'https://findlostpoets.xyz/ipfs/') + '?resize=600&format=jpg';
-  const compositeImageUrl = `https://og-composite-worker.findlostpoets.workers.dev/?g0=${encodeURIComponent(poet.g0Url)}&g1=${encodeURIComponent(resizedG1)}&name=${encodeURIComponent(safePoetName)}&class=${encodeURIComponent(poetClass)}`;
+
+  // **IMPORTANT:** Add the cacheBuster to the URL for Discord aggressive caching
+  // This is also added in index -> handleShowingPoetDetail
+  const cacheBuster = Date.now(); // Or a simple version number, like '&v=1', then '&v=2' for manual testing
+  const compositeImageUrl = `https://og-composite-worker.findlostpoets.workers.dev/?g0=${encodeURIComponent(poet.g0Url)}&g1=${encodeURIComponent(resizedG1)}&name=${encodeURIComponent(safePoetName)}&_=${cacheBuster}`;
 
   return [
     { title: `${poetName} – LostPoet` },

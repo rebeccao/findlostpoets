@@ -574,8 +574,12 @@ function Index() {
 
 		// Prewarm the Cloudflare cache in the background
 		const g1 = poet.g1Url.replace('https://ipfs.io/ipfs/', 'https://findlostpoets.xyz/ipfs/') + '?resize=600&format=jpg';
-		const compositeImageUrl = `https://og-composite-worker.findlostpoets.workers.dev/?g0=${encodeURIComponent(poet.g0Url)}&g1=${encodeURIComponent(g1)}&name=${encodeURIComponent(poet.pNam)}&class=${encodeURIComponent(poet.class)}`;
 
+		// **IMPORTANT:** Add the cacheBuster to the prewarm URL for Discord aggressive caching
+    // This matches the construct the URL in poet.$pNam.tsx's meta function
+    const cacheBuster = Date.now(); // Or use a static version like '&v=1' if you manage versions manually
+    const compositeImageUrl = `https://og-composite-worker.findlostpoets.workers.dev/?g0=${encodeURIComponent(poet.g0Url)}&g1=${encodeURIComponent(g1)}&name=${encodeURIComponent(poet.pNam)}&_=${cacheBuster}`;
+		
 		const prewarm = () => {
 			void fetch(compositeImageUrl, { 
 				method: 'GET', 
