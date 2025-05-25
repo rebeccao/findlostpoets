@@ -29,13 +29,36 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" },
 ];
 
-export const meta: MetaFunction = () => [
-  { charset: "utf-8" },
-  { name: "viewport", content: "width=device-width,initial-scale=1.0" },
-  { name: "description", content: "Search LostPoets, their traits, their poems and more." },
-  { name: "keywords", content: "lostpoets, Murat, Pak, NFT, poets, poems, poetry, find lost poets, NFT, NFTs" },
-  { name: "author", content: "0xNosToca" }
-];
+export const meta: MetaFunction = () => {
+  const siteTitle = "FindLostPoets – Explore the Lost Poets NFT collection by Pak";
+  const siteDescription = "Discover the traits and poetry of the 28,170 Lost Poets including Origins, Poets and Ghosts.";
+  const siteImage = "https://findlostpoets.xyz/assets/og-home.jpg?v=1";
+  const siteUrl = "https://findlostpoets.xyz";
+
+  return [
+    { charset: "utf-8" },
+    { name: "viewport", content: "width=device-width,initial-scale=1.0" },
+    { title: siteTitle },
+    { name: "description", content: siteDescription },
+    { name: "keywords", content: "lostpoets, Murat, Pak, NFT, poets, poems, poetry, find lost poets, NFT, NFTs" },
+    { name: "author", content: "0xNosToca" },
+
+    // Open Graph
+    { property: "og:title", content: siteTitle },
+    { property: "og:description", content: siteDescription },
+    { property: "og:image", content: siteImage },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: siteUrl },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+
+    // Twitter Card
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: siteTitle },
+    { name: "twitter:description", content: siteDescription },
+    { name: "twitter:image", content: siteImage },
+  ];
+};
 
 export const loader: LoaderFunction = () => {
   return {

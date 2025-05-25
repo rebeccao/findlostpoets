@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useReducer } from 'react';
 import { useLoaderData, useFetcher } from '@remix-run/react'
-import type { LoaderFunction, MetaFunction } from '@remix-run/node'
+import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { prisma } from '~/utils/prisma.server'
 import debounce from 'lodash/debounce';
@@ -69,31 +69,6 @@ export const loader: LoaderFunction = async ({ request }) => {
             detail: error instanceof Error ? error.message : 'Unknown error'
         }, { status: 500 });
 	}
-};
-
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  const siteTitle = "FindLostPoets - Explore the Lost Poets NFT collection by Pak";
-  const siteDescription = "Discover the traits and poetry of the 28,170 Lost Poets including Origins, Poets and Ghosts.";
-  const siteUrl = "https://findlostpoets.xyz/";
-  const staticOgImageUrl = "https://findlostpoets.xyz/assets/og-home.jpg?v=1"; 
-
-  return [
-    { title: siteTitle },
-		{ name: "description", content: siteDescription },
-    // Open Graph tags
-    { property: "og:title", content: siteTitle },
-    { property: "og:description", content: siteDescription },
-    { property: "og:type", content: "website" },
-    { property: "og:url", content: siteUrl },
-    { property: "og:image", content: staticOgImageUrl },
-    { property: "og:image:width", content: "1200" },
-    { property: "og:image:height", content: "630" },
-    // Twitter Card tags
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: siteTitle },
-    { name: "twitter:description", content: siteDescription },
-    { name: "twitter:image", content: staticOgImageUrl },
-  ];
 };
 
 // SidebarPanel states
