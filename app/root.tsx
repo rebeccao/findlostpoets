@@ -29,11 +29,20 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" },
 ];
 
-export const meta: MetaFunction = () => {
+type LoaderData = {
+  origin: string;
+  isMaintenanceMode: boolean;
+};
+
+export const meta: MetaFunction = ({ matches }) => {
+  const rootMatch = matches.find((m) => m.id === "root");
+  const data = rootMatch?.data as LoaderData | undefined;
+
+  const origin = data?.origin || "https://findlostpoets.xyz"; // fallback
   const siteTitle = "FindLostPoets – Explore the Lost Poets NFT collection by Pak";
   const siteDescription = "Discover the traits and poetry of the 28,170 Lost Poets including Origins, Poets and Ghosts.";
-  const siteImage = "https://findlostpoets.xyz/assets/og-home.jpg?v=1";
-  const siteUrl = "https://findlostpoets.xyz";
+  const siteImage = `${origin}/assets/og-home.jpg?v=1`;
+  const siteUrl = origin;
 
   return [
     { charset: "utf-8" },
@@ -59,9 +68,13 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = () => {
+export const loader: LoaderFunction = ({ request }) => {
+  const url = new URL(request.url);
+  const origin = url.origin;
+
   return {
-    isMaintenanceMode: process.env.MAINTENANCE_MODE === 'true'
+    isMaintenanceMode: process.env.MAINTENANCE_MODE === 'true',
+    origin,
   };
 };
 
