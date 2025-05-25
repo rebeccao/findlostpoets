@@ -41,7 +41,7 @@ export const meta: MetaFunction = ({ matches }) => {
   const origin = data?.origin || "https://findlostpoets.xyz"; // fallback
   const siteTitle = "FindLostPoets – Explore the Lost Poets NFT collection by Pak";
   const siteDescription = "Discover the traits and poetry of the 28,170 Lost Poets including Origins, Poets and Ghosts.";
-  const siteImage = `${origin}/assets/og-home.jpg?v=22`;
+  const siteImage = `${origin}/assets/og-home.jpg?v=2`;
   const siteUrl = origin;
 
   return [
