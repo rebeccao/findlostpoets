@@ -76,7 +76,11 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const poet = data;
   const poetName = poet.pNam;
   const poetClass = poet.class;
-  const poem = poet.poem ? `${poet.poem.slice(0, 50)}...` : undefined;
+  const poem = poet.poem
+  ? poet.poem.length > 50
+    ? `${poet.poem.slice(0, 50)}...`
+    : poet.poem
+  : undefined;
 
   // To fix a Discord issue, strip '#' from ghost poets for og:image URL
   const safePoetName = poetName.startsWith('#') ? poetName.slice(1) : poetName;
