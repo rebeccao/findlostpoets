@@ -76,7 +76,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const poet = data;
   const poetName = poet.pNam;
   const poetClass = poet.class;
-  const poetPoem = poet.poem;
+  const poem = poet.poem ? `${poet.poem.slice(0, 50)}...` : undefined;
 
   // To fix a Discord issue, strip '#' from ghost poets for og:image URL
   const safePoetName = poetName.startsWith('#') ? poetName.slice(1) : poetName;
@@ -88,11 +88,11 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const cacheBuster = Date.now(); // Or a simple version number, like '&v=1', then '&v=2' for manual testing
   const compositeImageUrl = `https://og-composite-worker.findlostpoets.workers.dev/?g0=${encodeURIComponent(poet.g0Url)}&g1=${encodeURIComponent(resizedG1)}&name=${encodeURIComponent(safePoetName)}&_=${cacheBuster}`;
   const poetTitle = `${poetClass}: ${poetName}`;
-  const poetDescription = poetPoem ? `Poem: ${poetPoem.slice(0, 15)} + ...` : undefined;
+  const poetDescription = poem;
 
   return [
     { title: poetTitle },
-    
+
     // Open Graph
     { property: "og:title", content: poetTitle },
     { property: "og:description", content: poetDescription },
