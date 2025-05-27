@@ -13,17 +13,17 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
       <div className="px-6">
         <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
           <h3 className="text-lg font-normal flex items-center">
-            <PiListMagnifyingGlassLight size={34} className="mr-4 mb-2" /> Search
+            <PiListMagnifyingGlassLight size={34} className="mr-4 mb-2" /> Search Icon
           </h3>
           <p>
-            Click the Search icon to open and close the search panel. Here you can search LostPoets by trait, trait rarities, trait ranges, class or named. Searches display LostPoets in ascending order based on Poet Number. The count of the resulting LostPoets for each search is displayed in the upper left corner of the page. Combine multiple search selections to narrow the results even further.
+            Click the Search icon to open and close the search panel. Here you can search Lost Poets by trait, trait rarities, trait ranges, class or named. Searches display Lost Poets in ascending order based on Poet Number. The count of the resulting Lost Poets for each search is displayed in the upper left corner of the page. Combine multiple search selections to narrow the results even further.
           </p>
         </div>
         <div className="px-6">
           <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
             <h4 className="text-md font-normal">Search By Trait</h4>
             <p>
-              Choose the trait you want to search from the dropdown menu: Poet Name, Origin, Latent, Breed, Age, Genre, Ego, Owner and Wallet. Enter the trait information and hit Return or click the Search button. Note: Upper or lower case may be used. Examples:
+              Choose the trait you want to search from the dropdown menu: Poet Name, Origin, Latent, Breed, Age, Genre, Ego, Owner and Wallet. Enter the trait information and hit Return or click the Search Button. Note: Upper or lower case may be used. Examples:
             </p>
             <ul className="list-none list-inside m-4 mx-auto w-2/3">
               {[
@@ -45,40 +45,40 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
           <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
             <h4 className="text-md font-normal mb-2">Search By Rarest</h4>
             <p className="mb-2">
-              Select the checkbox for any of the four traits (Breed, Age, Genre, and Ego) and click the Search button. The LostPoets are displayed starting with the rarest LostPoets for the selected trait. Example of searching by Breed rarities:
+              Select the checkbox for any of the four traits (Breed, Age, Genre, and Ego) and click the Search Button. The Lost Poets are displayed starting with the rarest Lost Poets for the selected trait. Example of searching by Breed rarities:
             </p>
             <ul className="list-none list-inside m-2 pl-4">
               <li><span className="font-normal">Breed:</span> iazee (1), zeeia (1), naia (2), zeevi (2), iana (4), nato (6), ...</li>
             </ul>
             <p className="mb-4">
-            LostPoets displayed: One LostPoet with Breed iazee, one LostPoet with Breed zeeia, two LostPoets with Breed naia, etc. The Breed count (or rarity) for each Breed name is displayed at the bottom left of each image card.
+            Lost Poets displayed: One Lost Poet with Breed iazee, one Lost Poet with Breed zeeia, two Lost Poets with Breed naia, etc. The Breed count (or rarity) for each Breed name is displayed at the bottom left of each image card.
             </p>
           </div>
           <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
             <h4 className="text-md font-normal mb-2">Search By Ranges</h4>
             <p className="mb-4">
-              Select the checkbox, enter the range in the minimium and maximum input fields and click the Search button. The input fields default with placeholders of minimum and maximum values. If nothing is entered, the search will be performed on the default placeholder value. <span className="font-normal">Important:</span> You must select the checkbox before you click the Search button to activate the range search.
+              Select the checkbox, enter the range in the minimium and maximum input fields and click the Search Button. The input fields default with placeholders of minimum and maximum values. If nothing is entered, the search will be performed on the default placeholder value. <span className="font-normal">Important:</span> You must select the checkbox before you click the Search Button to activate the range search.
             </p>
           </div>
           <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
             <h4 className="text-md font-normal mb-2">Search By Class</h4>
             <p className="mb-4">
-            Select one or more of the three checkboxes (Origin, Poet, and Ghost), then click the Search button.
+            Select one or more of the three checkboxes (Origin, Poet, and Ghost), then click the Search Button.
             </p>
           </div>
           <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
             <h4 className="text-md font-normal mb-2">Search By Named</h4>
             <p className="mb-4">
-            Select either Named or No Name, then click the Search button. Named LostPoets include all Origins and LostPoets that have been named. No Name LostPoets are all the LostPoets that have not been named. Note: LostPoets with no name can have words! 
+            Select either Named or No Name, then click the Search Button. Named Lost Poets include all Origins and Lost Poets that have been named. No Name Lost Poets are all the Lost Poets that have not been named. Note: Lost Poets with no name can have words! 
             </p>
           </div>
           <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
           <h4 className="text-md font-normal mb-2">Buttons</h4>
             <p>
-            <span className="font-light">Search button: </span>Performs the search.
+            <span className="font-light">Search Button: </span>Performs the search.
             </p>
             <p className="mb-4">
-            <span className="font-light">Clear button: </span>Clears the search and displays LostPoets from a random place in the database.
+            <span className="font-light">Clear Button: </span>Clears the search and displays Lost Poets from a random place in the database.
             </p>
           </div>
         </div>
@@ -95,7 +95,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
           <PiCaretDownBold size={10} className="cursor-pointer text-pearlwhite -mt-" />
         </div>
         <div className="ml-3 text-lg font-normal">
-          Top Collectors
+          Top Collectors Pulldown
         </div>
       </div>
       <div style={{ marginBottom: '1.5rem' }}>
@@ -106,8 +106,8 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
           {[
             { label: "Rank", value: "Ranking of collector starting with the top collector." },
             { label: "Owner", value: "Opensea account name if it exists." },
-            { label: "Wallet", value: "Wallet that holds the LostPoets." },
-            { label: "Poet Count", value: "Number of LostPoets held by the Owner/Wallet." },
+            { label: "Wallet", value: "Wallet that holds the Lost Poets." },
+            { label: "Poet Count", value: "Number of Lost Poets held by the Owner/Wallet." },
             { label: "Word Count", value: "Total Word Count of all the poets for that Owner/Wallet." },
             { label: "Lexicon", value: "Total Lexicon of all the poets for that Owner/Wallet." },
           ].map((item, index) => (
@@ -122,14 +122,14 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
         </p>
         <br></br>
         <p>
-          Every row in the Top Collectors list is selectable and will initiate a search of that collector's LostPoets. In addition to the Search By Traits in the Sidebar Panel, this provides a another way to search by collectors. The collector's LostPoets can be further refined by rarities, word counts, etc.
+          Every row in the Top Collectors list is selectable and will initiate a search of that collector's Lost Poets. In addition to the Search By Traits in the Sidebar Panel, this provides a another way to search by collectors. The collector's Lost Poets can be further refined by rarities, word counts, etc.
         </p>
       </div>
       </div>
       <div className="px-6">
         <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
           <h3 className="text-lg font-normal flex items-center">
-            <PiListLight size={34} className="mr-4 mb-2" /> Information 
+            <PiListLight size={34} className="mr-4 mb-2" /> Information Icon
           </h3>
           <p>
             The Information icon opens and closes a dropdown of different information: 
@@ -151,10 +151,12 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose, isOpen }) => {
       </div>
       <div className="px-6">
         <div style={{ marginTop: '0.25rem', marginBottom: '1.5rem' }}>
-          <h3 className="text-lg font-normal mb-2">LostPoet Details</h3>
-          <p className="mb-4">
-            Click any LostPoet to display its details, including larger images, the LostPoet's traits, and the poem (if one exists). Some poems are large and can be clicked to show a full view of the poem, which can be moved around on the screen.
-          </p>
+          <h3 className="text-lg font-normal mb-2">Lost Poet Details Page</h3>
+          <ol className="list-dash list-inside hanging-indent ml-8">
+              <li>Click any Lost Poet to display its details: larger Gen 0 and Gen 1 images, the Lost Poet's traits, and the poem if one exists.</li>
+              <li>Some poems are large and run off the bottom of the screen. Click the large poem to show its full view on half of the display. It can be dragged around on the display.</li>
+              <li>Copy the Lost Poet's URL and share it on Discord and Twitter.</li>
+            </ol>
           </div>
       </div>
     </BaseModal>

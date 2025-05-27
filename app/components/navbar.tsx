@@ -177,13 +177,6 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
                 </div>
               </div>
               <div className="border-t border-deepgray"></div>
-              <div className="p-3 cursor-pointer" onClick={openAbout}>
-                <div className="flex items-center">
-                  <PiCaretLeft />
-                  <h2 className="font-light ml-2">About</h2>
-                </div>
-              </div>
-              <div className="border-t border-deepgray"></div>
               <div className="p-3 cursor-pointer" onClick={openReleaseNotes}>
                 <div className="flex items-center">
                   <PiCaretLeft />
@@ -191,8 +184,15 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, className, co
                 </div>
               </div>
               <div className="border-t border-deepgray"></div>
+              <div className="p-3 cursor-pointer" onClick={openAbout}>
+                <div className="flex items-center">
+                  <PiCaretLeft />
+                  <h2 className="font-light ml-2">About</h2>
+                </div>
+              </div>
+              <div className="border-t border-deepgray"></div>
               <div className="p-2 flex text-xs items-center justify-start ml-7">
-                <span className="font-light">Version: 1.3.2</span>
+                <span className="font-light">Version: 1.3.3</span>
               </div>
             </div>
             <div

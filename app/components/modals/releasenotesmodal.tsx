@@ -10,7 +10,17 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
   return (
     <BaseModal onClose={onClose} title="Release Notes" isOpen={isOpen}>
       <div className="space-y-1">
-      <h2 className="text-lg font-light">Release 1.3.2</h2>
+        <h2 className="text-lg font-light">Release 1.3.3</h2>
+        <ul className="list-disc list-inside p-4">
+          <li className="pl-2 mb-2 hanging-indent">
+            <span className="font-normal">Social Media Features Added:</span> 
+            <ol className="list-dash list-inside ml-8">
+              <li>Sharing https://findlostpoets.xyz/ on Discord or X now displays a preview image of the FindLostPoet's home page.</li>
+              <li>Sharing any Lost Poet's details page (e.g., https://findlostpoets.xyz/poet/I) on Discord or X now displays a preview image that includes the Lost Poet's Gen0 and Gen1 images, name, category and poem (if one exists).</li>
+            </ol>
+          </li>
+        </ul>
+        <h2 className="text-lg font-light">Release 1.3.2</h2>
         <ul className="list-disc list-inside p-4">
           <li className="pl-2 mb-2 hanging-indent">
             <span className="font-normal">Bug fixes:</span> 
@@ -68,7 +78,7 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
           <li className="pl-2 mb-2 hanging-indent">
             <span className="font-normal">New Top Collectors database collection:</span> 
             <ol className="list-dash list-inside ml-8">
-              <li>Derived from the Poets collection and includes the top 200 collectors of LostPoets along with their ranking, Opensea account name, wallet address and the number of LostPoets owned.</li>
+              <li>Derived from the Poets collection and includes the top 200 collectors of Lost Poets along with their ranking, Opensea account name, wallet address and the number of Lost Poets owned.</li>
             </ol>
           </li>
           <li className="pl-2 mb-2 hanging-indent">
@@ -76,7 +86,7 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
             <ol className="list-dash list-inside ml-8">
               <li><span className="font-normal">Two new Search By Traits:</span> Opensea account owner and their wallet.</li>
               <li><span className="font-normal">Display Search Criteria:</span> Search criteria now displayed in the Navbar.</li>
-              <li><span className="font-normal">Top 200 Collectors:</span> Displays a list of the top 200 LostPoet collectors with selectable rows. Selecting a row will initiate a search of the collector's LostPoets.</li>
+              <li><span className="font-normal">Top 200 Collectors:</span> Displays a list of the top 200 Lost Poet collectors with selectable rows. Selecting a row will initiate a search of the collector's Lost Poets.</li>
             </ol>
           </li>
           <li className="pl-2 mb-2 hanging-indent">
@@ -85,7 +95,7 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
           <li className="pl-2 mb-2 hanging-indent">
             <span className="font-normal">Bug fixes:</span>
             <ol className="list-dash list-inside ml-8">
-              <li><span className="font-normal">Slow app startup fix:</span> FINDLOSTPOETS uses a free plan on Heroku for hosting and is idled after 30 minutes of inactivity, causing slow start up. Added a Cloudflare Worker cron job to peridically ping the server to prevent idling.</li>
+              <li><span className="font-normal">Slow app startup fix:</span> FindLostPoets uses a free plan on Heroku for hosting and is idled after 30 minutes of inactivity, causing slow start up. Added a Cloudflare Worker cron job to peridically ping the server to prevent idling.</li>
             </ol>
           </li>
           <li className="pl-2 mb-2 hanging-indent">
@@ -99,7 +109,7 @@ const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({ onClose, isOpen }
         <h2 className="text-lg font-light">Release 1.0.0 - Major database update, new features, bug fixes</h2>
         <ul className="list-disc list-inside p-4">
           <li className="pl-2 mb-2 hanging-indent">
-            <span className="font-normal">Database major update:</span> Migrated the latest Manifold LostPoets Gen1 metadata into the FINDLOSTPOETS database and simplified the database schema. Data that changed: 
+            <span className="font-normal">Database major update:</span> Migrated the latest Manifold Lost Poets Gen1 metadata into the FindLostPoets database and simplified the database schema. Data that changed: 
             <ol className="list-dash list-inside ml-8">
               <li>New origin names for Pak's 16 orphan Origin families.</li>
               <li>New Class trait: Origin, Poet and Ghost.</li>
